@@ -1,0 +1,128 @@
+Relations:
+Ticket(i id, STR customer_name, STR from_city, STR to_city, STR date, NUM num_free_baggages, Airline aid)
+Airline(i id, NUM max_weight, NUM min_overweight, NUM overweight_charge, NUM extra_baggage_charge)
+
+
+Hierarchy:
+Checkin -> VerifyInfo,
+Checkin -> AddBaggages
+
+Checkin:
+Variables: Ticket tid, NUM baggage_fee, STR status, NUM amount_paid
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Start:
+Pre: status == "" 
+Post: tid == NULL && baggage_fee == 0 && status == "Init"
+Update: Write(tid, baggage_fee, status)
+
+RejectCustomer:
+Pre: status == "NotVerified"
+Post: status == "CustomerRejected"
+Update: Write(status)
+
+ConfirmItinerary:
+Pre: status == "Verified"
+Post: status == "ItineraryConfirmed"
+Update: Write(status)
+
+AskProhibitedObjects:
+Pre: status == "ItineraryConfirmed"
+Post: status == "HasProhibitedObjects" || status == "HasNoProhibitedObjects"
+Update: Write(status)
+
+RemoveProhibitedObjects:
+Pre: status == "HasProhibitedObjects"
+Post: status == "HasProhibitedObjects" || status == "HasNoProhibitedObjects"
+Update: Write(status)
+
+AskforBaggages:
+Pre: status == "HasNoProhibitedObjects"
+Post: status == "AddingBaggages"
+Update: Write(status)
+
+InformPassagerAdditionalFee:
+Pre: status == "BaggagesAdded" && baggage_fee > 0
+Post: status == "PassagerInformed"
+Update: Write(status)
+
+CollectPayment:
+Pre: status == "PassagerInformed" && baggage_fee > 0
+Post: amount_paid = baggage_fee && status == "Paid"
+Update: Write(status, amount_paid)
+
+PrintBoardingPass:
+Pre: status == "Paid" || (status == "BaggagesAdded" && baggage_fee == 0)
+Post: status == "BoardingPassPrinted"
+Update: Write(status)
+
+HandOutBoardingPass:
+Pre: status == "BoardingPassPrinted"
+Post: status == "HandedOutBoardingPass"
+Update: Write(status)
+
+------
+
+VerifyInfo:
+Variables: Ticket tid, STR customer_name, STR from_city, STR to_city, STR date, STR status
+Input:
+Return: tid, status
+Open: status == "Init"
+Close: status == "NotVerified" || status == "Verified"
+
+Services:
+
+Verify:
+Pre: status == "" || status == "AnotherTicket"
+Post: (Ticket(tid, customer_name, from_city, to_city, date, _, _) && status == "Verified") || status == "NotVerified" || status == "AnotherTicket"
+Update: Write(status, tid, customer_name, from_city, to_city, date)
+
+------
+AddBaggages:
+Variables: Ticket tid, Airline aid, NUM max_weight, NUM min_overweight, NUM overweight_charge, NUM extra_baggage_charge, NUM baggage_fee, NUM weight, NUM weight1, NUM weight2, NUM weight3, NUM weight4, NUM p1, NUM p2, NUM p3, NUM p4, NUM c1, NUM c2, NUM c3, NUM c4, NUM num_baggages, NUM num_free_baggages, STR status
+Input: tid
+Return: baggage_fee, status
+Open: status == "AddingBaggages"
+Close: status == "BaggagesAdded"
+
+Services:
+Initialize:
+Pre: status != "BaggagesAdded"
+Post: weight1 = 0 && weight2 = 0 && weight3 = 0 && weight4 = 0 && status == "AddingBaggages" && Ticket(tid, _, _, _, _, _, aid)
+Update: Write(weight1, weight2, weight3, weight4, aid, status)
+
+AddBaggage:
+Pre: status == "AddingBaggages"
+Post: weight >= 0
+Update: Baggages++(weight)
+
+SelectFirstBaggageToAdd:
+Pre: status == "AddingBaggages"
+Post: weight == weight1 && Airline(aid, max_weight, _, _, _) && weight <= max_weight
+Update: --Baggages(weight), Write(weight1, max_weight)
+
+SelectSecondBaggageToAdd:
+Pre: status == "AddingBaggages"
+Post: weight == weight2 && Airline(aid, max_weight, _, _, _) && weight <= max_weight
+Update: --Baggages(weight), Write(weight2, max_weight)
+
+SelectThirdBaggageToAdd:
+Pre: status == "AddingBaggages"
+Post: weight == weight3 && Airline(aid, max_weight, _, _, _) && weight <= max_weight
+Update: --Baggages(weight), Write(weight3, max_weight)
+
+SelectFourthBaggageToAdd:
+Pre: status == "AddingBaggages"
+Post: weight == weight4 && Airline(aid, max_weight, _, _, _) && weight <= max_weight
+Update: --Baggages(weight), Write(weight4, max_weight)
+
+CalculateCharge:
+Pre: status == "AddingBaggages"
+Post: Airline(aid, _, min_overweight, overweight_charge, extra_baggage_charge) && Ticket(tid, _, _, _, _, num_free_baggages, _) && (weight1 > min_overweight -> p1 = overweight_charge) && (weight1 <= min_overweight -> p1 = 0) && (weight2 > min_overweight -> p2 = overweight_charge) && (weight2 <= min_overweight -> p2 = 0) && (weight3 > min_overweight -> p3 = overweight_charge) && (weight3 <= min_overweight -> p3 = 0) && (weight4 > min_overweight -> p4 = overweight_charge) && (weight4 <= min_overweight -> p4 = 0) && (weight1 > 0 -> c1 = 1) && (weight1 == 0 -> c1 = 0) &&  (weight2 > 0 -> c2 = 1) && (weight2 == 0 -> c2 = 0) && (weight3 > 0 -> c3 = 1) && (weight3 == 0 -> c3 = 0) && (weight4 > 0 -> c4 = 1) && (weight4 == 0 -> c4 = 0) && (c1 + c2 + c3 + c4 >= num_free_baggages -> baggage_fee = (c1 + c2 + c3 + c4 - num_free_baggages) * extra_baggage_charge + p1 + p2 + p3 + p4) && (c1 + c2 + c3 + c4 <= num_free_baggages -> baggage_fee = p1 + p2 + p3 + p4) && status == "BaggagesAdded"
+Update: Write(min_overweight, overweight_charge, extra_baggage_charge, num_free_baggages, p1, p2, p3, p4, c1, c2, c3, c4, baggage_fee, status)
+------

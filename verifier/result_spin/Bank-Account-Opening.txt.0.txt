@@ -1,0 +1,37 @@
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+pan:1: acceptance cycle (at depth 40)
+pan: wrote output.pml.trail
+
+(Spin Version 6.4.5 -- 1 January 2016)
+Warning: Search not completed
+	+ Partial Order Reduction
+	+ Compression
+
+Full statespace search for:
+	never claim         	+ (never_0)
+	assertion violations	+ (if within scope of claim)
+	acceptance   cycles 	+ (fairness disabled)
+	invalid end states	- (disabled by never claim)
+
+State-vector 68 byte, depth reached 42, errors: 1
+      153 states, stored (225 visited)
+      225 states, matched
+      450 transitions (= visited+matched)
+     1121 atomic steps
+hash conflicts:         0 (resolved)
+
+Stats on memory usage (in Megabytes):
+    0.015	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.523	actual memory usage for states
+  128.000	memory used for hash table (-w24)
+    0.534	memory used for DFS stack (-m10000)
+  128.925	total actual memory usage
+
+
+nr of templates: [ 0:globals 1:chans 2:procs ]
+collapse counts: [ 0:99 2:8 3:2 ]
+
+pan: elapsed time 0.05 seconds
+pan: rate      4500 states/second
+time = 1.534523

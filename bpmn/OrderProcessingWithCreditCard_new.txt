@@ -1,0 +1,56 @@
+Relations:
+FinancialInstitution(STR fname, Customer cid, STR holderName, NUM remaining)
+Customer(i id, STR cname, STR creditCardName, STR address)
+Order(i id, NUM price, Customer cid)
+
+Hierarchy:
+ReceiveOrder-> CheckCredit
+ReceiveOrder-> PlaceOrder
+
+ReceiveOrder:
+Variables: Order oid, STR status, NUM price, Customer cid, STR creditCardName
+Input: oid, status, price, cid, creditCardName
+Return: status
+Open: True
+Close: False
+
+Services:
+
+InitializeOrder:
+Pre: True
+Post: oid != NULL && price >= 0 && status == “OrderReceived” && cid != NULL && creditCardName != NULL
+Update: Write(oid, price, status, cid, creditCardName)
+
+------
+
+CheckCredit:
+Variables: STR status, NUM price, STR fname, Customer cid, NUM remaining
+Input: status, price, fname, cid, remaining
+Return: status, remaining
+Open: status == “OrderReceived”
+Close: status == “accepted”|| status == “declined”
+
+Services:
+
+CheckCreditInfo:
+Pre: status == “OrderReceived”
+Post: ((fname == creditCardName && Customer cid !=NULL) -> remaining >= price) -> status == “accepted” && ((fname == creditCardName && Customer cid !=NULL) -> remaining < price) -> status == “declined” && (status == “accept”) -> (remaining == remaining – price)
+Update: Write(fname, creditCardName, cid), log++(remaining)
+
+------
+
+PlaceOrder:
+Variables: STR status, STR address
+Input: status, address
+Return: status
+Open: status == “accepted”
+Close: status == “shipped”
+
+Services:
+
+ShippingGoods:
+Pre: status == “accepted” && address != NULL
+Post: status == “shipped”
+Update: (status)
+
+------

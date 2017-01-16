@@ -1,0 +1,79 @@
+Relations:
+Customer(i id, STR name, NUM credit_score)
+Policy(i id, NUM coverage, STR type, Customer cid, NUM required_credit, NUM deductible)
+BankAcct(i id, STR bank_name, Customer cid)
+
+Hierarchy:
+Insurance -> Review,
+Insurance -> Payment
+
+Insurance:
+Variables: STR status, Customer cid, STR claim_name, STR type, NUM amount, Policy pid
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+AddNewClaim:
+Pre: True
+Post: Customer(cid, _, _) && claim_name != "" && type != "" && amount > 0
+Update: Claims++(cid, claim_name, type, amount)
+
+InsertClaim:
+Pre: cid != NULL && claim_name != "" && type != "" && amount > 0
+Post: True
+Update: ++Claims(cid, claim_name, type, amount)
+
+UpdateClaim:
+Pre: status != "Init" && cid != NULL
+Post: True
+Update: Write(claim_name, type, amount)
+
+RetrieveClaim:
+Pre: True
+Post: status == "Init" && pid == NULL
+Update: --Claims(cid, claim_name, type, amount)
+
+------
+
+Review:
+Variables: Customer cid, Policy pid, STR claim_name, STR type, NUM amount, STR status, NUM credit_score, NUM coverage, NUM required_credit
+Input: cid, claim_name, type, amount
+Return: status, pid
+Open: status == "Init"
+Close: status != "PolicyFound"
+
+Services:
+
+GetPolicy:
+Pre: Customer(cid, _, _)
+Post: Policy(pid, _, _, cid, _, _) && status == "PolicyFound"
+Update: Write(status, pid)
+
+CheckPolicy:
+Pre: status == "PolicyFound"
+Post: Customer(cid, _, credit_score) && credit_score >= 400 && Policy(pid, coverage, type, cid, required_credit, _) && coverage >= amount && status == "Accepted" && credit_score >= required_credit
+Update: Write(status, credit_score, coverage, required_credit)
+
+RejectPolicy:
+Pre: status == "PolicyFound"
+Post: Customer(cid, _, credit_score) && Policy(pid, coverage, type, cid, required_credit, _) && ((coverage <= amount || credit_score < required_credit) -> status == "Rejected")
+Update: Write(status, credit_score, coverage, required_credit)
+
+------
+
+Payment: 
+Variables: Customer cid, Policy pid, NUM amount, STR status, BankAcct aid, NUM amount_paid, NUM deductible
+Input: cid, pid, amount
+Return: status
+Open: status == "Accepted"
+Close: status == "Closed" && amount_paid >= 0
+
+Services:
+Pay:
+Pre: True
+Post: deductible >= 0 && Policy(pid, _, _, _, _, deductible) && amount_paid == amount - deductible && BankAcct(aid, _, cid) && status == "Closed"
+Update: Write(amount_paid, aid, status, deductible)
+
+------

@@ -1,0 +1,7 @@
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+Depth=      32 States=    1e+06 Transitions= 1.54e+06 Memory=   249.823	t=     0.65 R=   2e+06
+Depth=      32 States=    2e+06 Transitions= 2.93e+06 Memory=   365.448	t=     1.28 R=   2e+06
+Depth=      32 States=    3e+06 Transitions= 4.46e+06 Memory=   486.151	t=     1.98 R=   2e+06
+Depth=      32 States=    4e+06 Transitions= 6.13e+06 Memory=   611.737	t=     2.77 R=   1e+06
+time = 5.101245

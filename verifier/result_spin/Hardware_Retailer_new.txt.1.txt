@@ -1,0 +1,20 @@
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+Depth=      58 States=    1e+06 Transitions= 2.23e+07 Memory=   239.472	t=      7.3 R=   1e+05
+Depth=      58 States=    2e+06 Transitions= 4.47e+07 Memory=   350.019	t=     14.7 R=   1e+05
+Depth=      58 States=    3e+06 Transitions=  6.7e+07 Memory=   460.761	t=     22.1 R=   1e+05
+Depth=      58 States=    4e+06 Transitions= 8.93e+07 Memory=   571.308	t=     29.6 R=   1e+05
+Depth=      58 States=    5e+06 Transitions= 1.12e+08 Memory=   682.050	t=     37.2 R=   1e+05
+Depth=      58 States=    6e+06 Transitions= 1.34e+08 Memory=   792.597	t=     44.8 R=   1e+05
+Depth=      58 States=    7e+06 Transitions= 1.56e+08 Memory=   903.339	t=     52.5 R=   1e+05
+Depth=      58 States=    8e+06 Transitions= 1.79e+08 Memory=  1013.886	t=     60.2 R=   1e+05
+Depth=      58 States=    9e+06 Transitions= 2.01e+08 Memory=  1124.628	t=       68 R=   1e+05
+Depth=      58 States=    1e+07 Transitions= 2.23e+08 Memory=  1235.175	t=     75.9 R=   1e+05
+Depth=      58 States=  1.1e+07 Transitions= 2.46e+08 Memory=  1345.917	t=     83.7 R=   1e+05
+Depth=      58 States=  1.2e+07 Transitions= 2.68e+08 Memory=  1456.464	t=     91.7 R=   1e+05
+Depth=      58 States=  1.3e+07 Transitions=  2.9e+08 Memory=  1567.206	t=     99.6 R=   1e+05
+Depth=      58 States=  1.4e+07 Transitions= 3.13e+08 Memory=  1677.753	t=      108 R=   1e+05
+Depth=      58 States=  1.5e+07 Transitions= 3.35e+08 Memory=  1788.300	t=      116 R=   1e+05
+Depth=      58 States=  1.6e+07 Transitions= 3.57e+08 Memory=  1899.042	t=      124 R=   1e+05
+Depth=      58 States=  1.7e+07 Transitions=  3.8e+08 Memory=  2009.589	t=      132 R=   1e+05
+time = 141.581679

@@ -1,0 +1,58 @@
+version 1.1.3 (2016-09-06)
+
+  -- Compilation issues with GCC 6.1 fixed. (Thanks to Alexandre Duret-Lutz for reporting it.)
+  -- Using namespace std was removed to prevent collisions between the existing code and new features introduced to std namespace.
+  -- Formulae simplifications are called recursively again if R formulae with alternating subformulae were rewritten.
+  -- HOA output of a TGBA with more initial states fixed. In case some of the initial states got removed during optimization an initial state with invalid name was reported. (Thanks to Alexandre Duret-Lutz and Fanda Blahoudek for reporting it.)
+  -- HOA acceptance condition for TGBA and BA corresponding to false fixed. (Thanks to Alexandre Duret-Lutz for reporting it.)
+  -- The output of intermediate automata in HOA format was refined (option -dH). All non-HOA information is omitted so the output can be processed by other tool supporting HOA format. (Use '-dh -H' to get pure HOA output including the final automaton.)
+
+version 1.1.2 (2015-02-06)
+
+  -- The Acceptance item of HOA output for TGBA with one acceptance set fixed. (Thanks to Fanda Blahoudek for reporting it.)
+  -- Compilation issues on OS X 10.9 fixed. (Thanks to Joachim Klein for reporting it.)
+  -- Queue replaced by std::queue.
+  -- Macro min(x,y) replaced by std::min.
+  -- The -static linking option removed.
+
+version 1.1.1 (2015-01-24)
+
+  -- Options -L and -M replaced by options -M0 and -M1 respectively. (Thanks to Alexandre Duret-Lutz for the suggestion.)
+
+version 1.1.0 (2015-01-23)
+
+  -- Bug in VWAA construction fixed. An incorrect automaton could be build if there was a disjunction on the right side of R operator. (Thanks to Joachim Klein for reporting it.)
+  -- A nondeterministic behavior in TGBA and BA construction fixed.
+  -- Support for output in HOA format added (options -H[1|2|3] and -dH).
+  -- Options -T and -U replaced by options -T1 and -T2 respectively.
+  -- Options -B and -S replaced by options -S1 and -S2 respectively.
+  -- Strong fair simulation reduction is enabled by default (option -S2). Use -S0 to disable it.
+  -- Deterministic construction is enabled by default (option -M). Use new option -L to disable it.
+  -- Read from stdin when '-' is given as a file, i.e. when "ltl3ba -F -" is called.
+  -- Useless check for states with duplicate names in simplify_bstates removed.
+  -- Some other minor fixes and code improvements.
+
+version 1.0.2 (2012-12-13)
+
+  -- R, G and F operators are used to dump formulas when -d, -T options are used.
+  -- When a VWAA state is removed, it is removed from accepting states set as well.
+  -- Fix segmentation fault when a VWAA state without any transition was degeneralized.
+  -- Fix some formula reductions for X operator that were not applied under some conditions.
+  -- Method count_predecessors_sets was rewriten to gain some speedup.
+  -- Add options -T and -U to output TGBA and BA in SPOT format, respectively.
+  -- Add option -v to display version number.
+
+version 1.0.1 (2012-05-21)
+
+  -- Fix bug in alternating automata construction for conjunction.
+  -- Fix segmentation fault when only -C option is used.
+  -- Fix that some formula reductions for disjunction were not applied.
+  -- Fix some mistypes.
+  -- Fix useless calls of formulae reductions when extra parenthesis are added.
+  -- Add option -h and some error explanations.
+  -- Fix to call bdd_done even when an error occurs.
+  -- The check, whether a TGBA state can be suspended, is done only if there is
+     some alternating formula in that state.
+  -- Do not display unnecessary auxiliary information in alternating automata.
+  -- When doing rewriting of R formulae with alternating subformulae,
+     formula simplifications are called only if the formula is changed.

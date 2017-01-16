@@ -1,0 +1,73 @@
+Relations:
+BookWriter(i id, STR name, Publisher preferred_publisher)
+Publisher(i id, STR name)
+
+Hierarchy:
+WriteBook -> WriteCover,
+WriteBook -> WriteText
+
+WriteBook:
+Variables: STR chapter, STR content, BookWriter wid, Publisher pid, STR text_edited, STR cover_completed, STR published
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Initialize:
+Pre: text_edited == "" || cover_completed == ""
+Post: text_edited == "No" && cover_completed == "No" && published == "No" && wid != ""
+Update: Write(text_edited, cover_completed, published, wid)
+
+AddNewChapter:
+Pre: chapter == ""
+Post: chapter != "" && content == ""
+Update: Write(chapter, content), Chapter++(chapter, content)
+
+RetrieveOutline:
+Pre: chapter == ""
+Post: chapter != ""
+Update: --Chapter(chapter, content)
+
+PublishBook:
+Pre: cover_completed == "Yes" && text_edited == "Yes"
+Post: published == "Yes" && (pid != NULL || BookWriter(wid, _, pid))
+Update: Write(published, pid), PublishBook++(wid, pid)
+
+------
+WriteCover:
+Variables: STR chapter, STR content, STR cover_edited
+Input: chapter
+Return: content, cover_edited as cover_completed
+Open: chapter != ""
+Close: content != "" && cover_edited == "Yes"
+
+Services:
+
+DevelopBookCover:
+Pre: content == ""
+Post: content != "" && cover_edited == "Yes"
+Update: Write(content, cover_edited)
+
+------
+
+WriteText:
+Variables: STR chapter, STR content, STR text_edited, STR concept
+Input: chapter
+Return: content, text_edited
+Open: chapter != ""
+Close: content != "" && text_edited == "Yes"
+
+Services:
+
+DevelopBookTextAndConcepts:
+Pre: concept == ""
+Post: (concept != "" || concept == "") && content != ""
+Update: Write(concept, content)
+
+EditBookText:
+Pre: concept != ""
+Post: content != "" && text_edited == "Yes"
+Update: Write(content, text_edited)
+------

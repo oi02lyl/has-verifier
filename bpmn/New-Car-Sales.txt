@@ -1,0 +1,87 @@
+Relations:
+CarModel(i id, STR name, STR is_available, STR available_in_store, NUM price)
+Special(i id, CarModel cid, NUM discount)
+CreditHistory(i id, STR customer_name, NUM score)
+Loan(i id, NUM length, NUM max_amount, NUM interest_rate)
+
+Hierarchy:
+Order -> Financing,
+Order -> FactoryOrder
+
+Order:
+Variables: CarModel cid, Special sid, STR status, STR order_from_factory, STR finance_status
+Input: 
+Return:
+Open: True
+Close: False
+
+Services:
+
+EnterOrder:
+Pre: cid == NULL
+Post: cid != NULL && (sid == NULL || Special(sid, cid, _)) && status == "OrderEntered" && (order_from_factory == "Yes" || (CarModel(cid, _, _, "Yes", _) && order_from_factory == "No"))
+Update: Write(cid, sid, status, order_from_factory)
+
+PrepareDelivery:
+Pre: order_from_factory == "No" || status == "FactoryOrderSuccessful"
+Post: status == "DeliveryReady"
+Update: Write(status)
+
+CloseOrderAndDelivery:
+Pre: status == "DeliveryReady" && finance_status == "FanancingReady"
+Post: status == "ClosedAndDelivered"
+Update: Write(status)
+------
+
+Financing:
+Variables: CarModel cid, Special sid, STR finance_status, STR name, NUM amount, Loan lid, NUM amount_financed, NUM length, NUM interest_rate, NUM price, NUM discount, NUM max_amount
+Input: cid, sid
+Return: finance_status
+Open: status == "OrderEntered"
+Close: finance_status == "FanancingReady" || finance_status == "FanancingFailed"
+
+Services:
+
+CompleteApplication:
+Pre: finance_status == ""
+Post: finance_status == "RequestSubmitted" && Loan(lid, length, max_amount, interest_rate) && 
+((sid == NULL -> discount == 0) || Special(sid, _, discount)) && CarModel(cid, _, _, _, price) && amount == price - discount && max_amount >= amount && interest_rate >= 0 && price > 0 && amount >= 0
+Update: Write(finance_status, name, amount, lid, length, max_amount, interest_rate, price, discount)
+
+RequestFinancing:
+Pre: finance_status == "RequestSubmitted"
+Post: finance_status == "ClosingDate" || finance_status == "Denial" || finance_status == "FanancingFailed"
+Update: Write(finance_status)
+
+FinancingAvailable:
+Pre: finance_status == "Acceptance"
+Post: finance_status == "FanancingReady"
+Update: Write(finance_status)
+
+------
+
+FactoryOrder:
+Variables: CarModel cid, CarModel new_cid, STR status, STR delivery_date, NUM new_price, NUM price
+Input: cid
+Return: status
+Open: order_from_factory == "Yes" && status == "OrderEntered"
+Close: status == "FactoryOrderSuccessful" || status == "CarUnavailable"
+
+Services:
+
+PlaceFactoryOrder:
+Pre: status == "" || status == "CustomerAcceptAlternative"
+Post: status == "CarAvailable" || status == "CarUnavailable"
+Update: Write(status)
+
+NofifyPromisedDate:
+Pre: status == "CarAvailable"
+Post: (status == "CustomerAccept" || status == "CustomerDecline") && delivery_date != ""
+Update: Write(status, delivery_date)
+
+OfferAlternatives:
+Pre: status == "CustomerDecline" || status == "CarUnavailable"
+Post: (status == "CustomerAcceptAlternative" && (CarModel(cid, _, _, _, price) && CarModel(new_cid, _, "Yes", _, new_price) && new_price <= price * 1.1)) || status == "CarUnavailable"
+Update: Write(status, new_cid, price, new_price) 
+
+------

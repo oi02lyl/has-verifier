@@ -1,0 +1,76 @@
+Relations:
+TransactionHistory(i id, STR name, STR type)
+
+Hierarchy:
+CreditReview -> ApproveCredit
+
+CreditReview:
+Variables: STR name, STR status, STR approaved, TransactionHistory bad1, TransactionHistory bad2, TransactionHistory bad3, TransactionHistory bad4, TransactionHistory bad5, STR internal
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+EvaluateCreditReport:
+Pre: True 
+Post: name != "" && status == "Evaluating" && approaved == "" && bad1 == NULL && bad2 == NULL && bad3 == NULL && bad4 == NULL && bad5 == NULL && (internal == "Yes" || internal == "No")
+Update: Write(name, status, approaved, bad1, bad2, bad3, bad4, bad5, internal)
+
+SendResultAccept:
+Pre: status == "Evaluated" && approaved == "Yes" && internal == "No"
+Post: status == "Accepted"
+Update: ++Letter1(name, status, approaved), Write(status)
+
+SendResultReject:
+Pre: status == "Evaluated" && approaved == "Yes" && internal == "No"
+Post: status == "Rejected"
+Update: ++Letter2(name, status, approaved, bad1, bad2, bad3, bad4, bad5)
+
+------
+
+ApproveCredit:
+Variables: STR name, STR status, STR approaved, TransactionHistory tid, TransactionHistory bad1, TransactionHistory bad2, TransactionHistory bad3, TransactionHistory bad4, TransactionHistory bad5, STR type, STR is_bad1, STR is_bad2, STR is_bad3, STR is_bad4, STR is_bad5
+Input: name
+Return: status, approaved, bad1, bad2, bad3, bad4, bad5
+Open: status == "Evaluating"
+Close: status == "Evaluated"
+
+Services:
+
+SearchHistory:
+Pre: True
+Post: TransactionHistory(tid, name, _)
+Update: FoundTransaction++(tid)
+
+RetrieveBadTransaction1:
+Pre: bad1 == NULL
+Post: bad1 == tid && TransactionHistory(tid, name, type) && (type == "Bad" -> is_bad1 == "Yes") && (type != "Bad" -> is_bad1 == "No")
+Update: --FoundTransaction(tid), Write(bad1, type, is_bad1)
+
+RetrieveBadTransaction2:
+Pre: bad2 == NULL
+Post: bad2 == tid && TransactionHistory(tid, name, type) && (type == "Bad" -> is_bad2 == "Yes") && (type != "Bad" -> is_bad2 == "No")
+Update: --FoundTransaction(tid), Write(bad2, type, is_bad2)
+
+RetrieveBadTransaction3:
+Pre: bad3 == NULL
+Post: bad3 == tid && TransactionHistory(tid, name, type) && (type == "Bad" -> is_bad3 == "Yes") && (type != "Bad" -> is_bad3 == "No")
+Update: --FoundTransaction(tid), Write(bad3, type, is_bad3)
+
+RetrieveBadTransaction4:
+Pre: bad4 == NULL
+Post: bad4 == tid && TransactionHistory(tid, name, type) && (type == "Bad" -> is_bad4 == "Yes") && (type != "Bad" -> is_bad4 == "No")
+Update: --FoundTransaction(tid), Write(bad4, type, is_bad4)
+
+RetrieveBadTransaction5:
+Pre: bad5 == NULL
+Post: bad5 == tid && TransactionHistory(tid, name, type) && (type == "Bad" -> is_bad5 == "Yes") && (type != "Bad" -> is_bad5 == "No")
+Update: --FoundTransaction(tid), Write(bad5, type, is_bad5)
+
+Decide:
+Pre: bad1 != NULL && bad2 != NULL && bad3 != NULL && bad4 != NULL && bad5 != NULL
+Post: status = "Evaluated" && ((is_bad1 == "Yes" || is_bad2 == "Yes" || is_bad3 == "Yes" || is_bad4 == "Yes" || is_bad5 == "Yes") -> approaved == "No") && ((is_bad1 != "Yes" && is_bad2 != "Yes" && is_bad3 != "Yes" && is_bad4 != "Yes" && is_bad5 != "Yes") -> approaved == "Yes")
+Update: Write(status, approaved)
+------

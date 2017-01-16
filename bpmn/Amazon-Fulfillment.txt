@@ -1,0 +1,142 @@
+Relations:
+Customer(i id, STR name, NUM phone_num, STR home_addr, STR billing_addr, CreditCard card)
+Package(i id, NUM cost)
+Item(i id, STR name, NUM price, Package p1, Package p2)
+CreditCard(i card_number, STR name, STR address)
+Truck(i id, STR name, Package comp_pkg1, Package comp_pkg2, Package comp_pkg3)
+
+
+Hierarchy:
+Amazon -> Shopping,
+Amazon -> Payment,
+Amazon -> Packing,
+Packing -> Shipment
+
+
+Amazon:
+Variables: Customer cid, STR name, NUM phone_num, STR addr, STR billing_addr, Item iid, STR status
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+EnterCustomerInfo:
+Pre: cid == NULL
+Post: name != "" && phone_num != 0 && addr != ""
+Update: Write(name, phone_num, addr, billing_addr)
+
+CustomerLogin:
+Pre: cid == NULL
+Post: Customer(cid, name, phone_num, addr, _, _)
+Update: Write(cid, name, phone_num, addr, billing_addr)
+
+InitStatus:
+Pre: True
+Post: status = "init" && iid == NULL
+Update: Write(status, iid)
+
+------
+
+Shopping:
+Variables: Item item_id
+Input:
+Return: item_id as iid
+Open: status = "init"
+Close: item_id != NULL
+
+Services:
+PickItem:
+Pre: item_id = NULL
+Post: item_id != NULL && Item(item_id, _, _, _, _)
+Update: Write(item_id)
+
+AddToCart:
+Pre: item_id != NULL
+Post: item_id = NULL
+Update: ++Items(item_id)
+
+RetrieveFromCart:
+Pre: item_id == NULL
+Post: item_id != NULL
+Update: --Items(item_id)
+
+------
+
+Payment:
+Variables: Customer cid, STR name, NUM phone_num, STR addr, STR billing_addr, CreditCard card_id, STR status
+Input: cid, name, phone_num, addr
+Return: status
+Open: (cid != NULL || name != "") && status == "init"
+Close: status == "shipped" || status = "Canceled"
+
+Services:
+
+Initialize:
+Pre: status != "paid" && status != "shipped" && status != "canceled"
+Post: status = "unpaid" && card_id = NULL && billing_addr = ""
+Update: Write(status)
+
+VerifyCardInfo:
+Pre: card_id == NULL && status == "unpaid"
+Post: ((CreditCard(card_id, name, billing_addr) ) || (cid != NULL -> (Customer(cid, _, _, _, billing_addr, card_id) && CreditCard(card_id, name, billing_addr) ))) && status == "Paid"
+Update: Write(card_id, billing_addr, status)
+
+CancelPayment:
+Pre: status == "unpaid"
+Post: status == "canceled"
+Update: Write(status)
+
+------
+
+Packing:
+Variables: Item iid, STR name, NUM phone_num, STR addr, STR status, Package pid
+Input: iid, name, phone_num, addr
+Return: status
+Open: status == "paid"
+Close: status == "shipped"
+
+Services:
+
+Start:
+Pre: True
+Post: pid == NULL
+Update: Write(pid)
+
+Pack:
+Pre: pid == NULL
+Post: Package(pid, _) && (Item(iid, _, _, pid, _) || Item(iid, _, _, _, pid))
+Update: Write(pid)
+
+------
+
+Shipment:
+Variables: Item iid, STR name, NUM phone_num, STR addr, STR status, Package pid, Truck tid
+Input: iid, name, phone_num, addr, pid
+Return: status
+Open: pid != NULL
+Close: status == "shipped"
+
+Services:
+
+NewTruck:
+Pre: tid == NULL
+Post: Truck(tid, _, _, _, _) && status == "adding_truck"
+Update: Write(tid, status)
+
+AddCandidateTruck:
+Pre: tid != NULL && (Truck(tid, _, pid, _, _) || Truck(tid, _, _, pid, _) || Truck(tid, _, _, _, pid))
+Post: tid == NULL && status == "adding_truck"
+Update: ++CandidateTruck(tid)
+
+RetrieveTruck:
+Pre: tid == NULL
+Post: tid != NULL && (Truck(tid, _, pid, _, _) || Truck(tid, _, _, pid, _) || Truck(tid, _, _, _, pid)) && status == "truck_ready"
+Update: --CandidateTruck(tid)
+
+Ship:
+Pre: status == "truck_ready"
+Post: status == "shipped"
+Update: Write(status)
+------

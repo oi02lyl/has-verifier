@@ -1,0 +1,389 @@
+/*
+ * SpinVerifier.cpp
+ *
+ *  Created on: Dec 8, 2016
+ *      Author: lyl
+ */
+
+#include "SpinVerifier.h"
+
+namespace std {
+
+
+SpinVerifier::~SpinVerifier() {
+}
+
+
+string SpinVerifier::promela_translate_eq(int expr1, int expr2) {
+	string res = "(" + expr_name[expr1] + " == " + expr_name[expr2] + ")";
+
+	if ((is_navi(expr1) || is_var(expr1)) && (is_navi(expr2) || is_var(expr2))) {
+		vector<int> ch1, ch2;
+		get_child_expr(expr1, ch1);
+		get_child_expr(expr2, ch2);
+
+		if (ch1.size() != ch2.size()) {
+			printf("children sizes of %s and %s doesn't match!", expr_name[expr1].c_str(), expr_name[expr2].c_str());
+			exit(0);
+		}
+
+		string tmp = "";
+		int sz = ch1.size();
+		for (int i = 0; i < sz; i++) {
+			int c1 = ch1[i];
+			int c2 = ch2[i];
+            if (i > 0)
+    			tmp += " && "; 
+            tmp += promela_translate_eq(c1, c2);
+		}
+
+		// handle NULL
+        if (tmp != "") {
+            if (is_var(expr1) && is_var(expr2))
+	    		res = "(" + res + " && ( (" + expr_name[expr1] + " == 0) || (" + tmp + ")))";
+    		else
+		    	res = "(" + res + " && (" + tmp + "))";
+        }
+	}
+	return res;
+}
+
+
+string SpinVerifier::promela_translate_condition(int task_id, Formula* form) {
+	if (form == NULL)
+		return "true";
+
+	if (form->is_const()) {
+		ConstTerm* term = (ConstTerm*) form;
+		if (term->value)
+			return "true";
+		else
+			return "false";
+	} else if (form->is_cmp()) {
+		CmpTerm* term = (CmpTerm*) form;
+		int expr1 = para_to_expr(term->p1, task_id);
+		int expr2 = para_to_expr(term->p2, task_id);
+
+		if (term->equal)
+			return promela_translate_eq(expr1, expr2);
+		else
+			return "(" + expr_name[expr1] + " != " + expr_name[expr2] + ")";
+	} else if (form->is_relation()) {
+		RelationTerm* term = (RelationTerm*) form;
+
+		vector<int> lefts, rights;
+		for (int i = 1; i < (int) term->paras.size(); i++) {
+			int expr_right = para_to_expr(term->paras[i], task_id);
+			if (expr_right >= 0) {
+				lefts.push_back(
+						get_expr_id_navi(task_id, term->paras[0].id, i - 1));
+				rights.push_back(expr_right);
+			}
+		}
+
+		string res = "";
+		for (int i = 0; i < (int) lefts.size(); i++) {
+			if (i > 0)
+				res += " && ";
+			res += promela_translate_eq(lefts[i], rights[i]);
+		}
+        if (res == "")
+            res = "true";
+
+		if (term->negated)
+			res = "!( " + res + " )";
+		return res;
+	} else if (form->is_internal()) {
+		Internal* term = (Internal*) form;
+
+		string left = promela_translate_condition(task_id, term->paras[0]);
+		string right = promela_translate_condition(task_id, term->paras[1]);
+		return "(" + left + " " + term->op +  " " + right + ")";
+	}
+	return "true";
+}
+
+string SpinVerifier::promela_get_assignment(int task_id, vector<int>& prop_vars) {
+	string res = "";
+	set<int> unchanged(prop_vars.begin(), prop_vars.end());
+	unchanged.insert(input_vars[task_id].begin(), input_vars[task_id].end());
+
+	for (int vid = 0; vid < art.tasks[task_id].num_var; vid++)
+		if (unchanged.count(vid) == 0) {
+			for (int expr : task_var_expr_ids[task_id][vid])
+				if (is_navi(expr))
+					res += "choose1( " + expr_name[expr] + "); ";
+				else
+					res += "choose0( " + expr_name[expr] + "); ";
+		}
+	return res;
+}
+
+void SpinVerifier::get_prop_exprs(int task_id, vector<int>& prop_vars, vector<int>& res) {
+    res.clear();
+	set<int> unchanged(prop_vars.begin(), prop_vars.end());
+	unchanged.insert(input_vars[task_id].begin(), input_vars[task_id].end());
+
+	for (int vid = 0; vid < art.tasks[task_id].num_var; vid++)
+		if (unchanged.count(vid) == 0) 
+			for (int expr : task_var_expr_ids[task_id][vid])
+                res.push_back(expr);
+
+}
+
+string SpinVerifier::promela_is_current(int task_id) {
+	return "(current == " + to_string(task_id) + ")";
+}
+
+string SpinVerifier::promela_is_active(int task_id) {
+	return "running[" + to_string(task_id) + "]";
+}
+
+string SpinVerifier::promela_is_ready(int task_id) {
+	return "ready[" + to_string(task_id) + "]";
+}
+
+string SpinVerifier::promela_all_child_inactive(int task_id) {
+	string res = "";
+	Task& task = art.tasks[task_id];
+	res += "(";
+	for (int child_id = 0; child_id < (int) task.children.size(); child_id++) {
+		int child = task.children[child_id];
+		if (child_id > 0)
+			res += " && ";
+		res += "!(" +promela_is_active(child) + ")";
+	}
+	res += ")";
+
+    if (res == "()")
+        res = "true";
+	return res;
+}
+
+string SpinVerifier::promela_resolve() {
+    string res = "";
+    /*
+    for (int i = 1; i < max_type_count; i++)
+        res += "mp[" + to_string(i) + "] = 0; ";
+    res += "new_val = 1; ";
+    */
+
+    for (int i = 0; i < (int) expr_name.size(); i++) {
+        res += "if :: mp[" + expr_name[i] + "] == 0 && " + expr_name[i] + " > 0 -> mp[" + expr_name[i] + "] = new_val; new_val++; :: else -> skip; fi; ";
+        res += expr_name[i] + " = mp[" + expr_name[i] + "]; ";
+    }
+    for (int i = 1; i < max_type_count; i++)
+        res += "mp[" + to_string(i) + "] = 0; ";
+    res += "new_val = 1; ";
+
+    return res;
+}
+
+string SpinVerifier::generate_promela(int taskid, Formula* target) {
+	// TODO HLTL-FO
+
+	// pre-processing
+	preprocess();
+	// rename_expressions
+	for (string& name : expr_name) {
+        if (name == "NULL")
+            name = "CONST_NULL";
+		int len = name.length();
+		for (int i = 0; i < len; i++)
+			if (name[i] == '.')
+				name[i] = '_';
+	}
+	// count number of expressions
+	type_count[-1] = art.num_consts.size();
+	type_count[-2] = art.str_consts.size();
+	for (int rid = 0; rid < art.db.num_rels; rid++)
+		type_count[rid] = 0;
+
+	for (Task& task : art.tasks) {
+		for (int vid = 0; vid < task.num_var; vid++)
+			type_count[task.var_types[vid]]++;
+	}
+	for (int type_id = -2; type_id < art.db.num_rels; type_id++)
+		if (type_count[type_id] >= max_type_count)
+			max_type_count = type_count[type_id];
+    max_type_count = 5;
+
+	// TODO: count recursively all expressions
+
+	int num_tasks = art.tasks.size();
+	vector<int> parent_task(num_tasks, -1);
+	for (int i = 0; i < num_tasks; i++)
+		for (int child : art.tasks[i].children)
+			parent_task[child] = i;
+	string target_cond = promela_translate_condition(taskid, target);
+
+	string promela = "";
+
+    // marcos for selecting values
+    promela += "#define choose0(x) if ";
+    for (int i = 0; i < max_type_count; i++)
+        promela += " :: x = " + to_string(i) + "; ";
+    promela += " fi \n";
+    promela += "#define choose1(x) if ";
+    for (int i = 1; i < max_type_count; i++)
+        promela += " :: x = " + to_string(i) + "; ";
+    promela += " fi \n";
+
+    promela += "#define resolve() " + promela_resolve() + "\n";
+
+
+	// variables to indicate status of tasks
+	promela += "byte current;\n";
+	promela += "bool running[" + to_string(num_tasks) + "];\n";
+	promela += "bool ready[" + to_string(num_tasks) + "];\n\n";
+
+    promela += "byte new_val;\n";
+    promela += "byte mp[" + to_string(max_type_count) + "];\n\n";
+
+	// all expressions
+	for (int expr = 0; expr < (int) expr_name.size(); expr++) {
+		promela += "byte " + expr_name[expr] + ";\n";
+	}
+
+    // resolve
+    /*
+    promela += "\n\nproctype resolve() {\n";
+    promela += "  " + promela_resolve() + "\n";
+    promela += "}\n\n";
+    */
+
+	promela += "proctype exec() {\n";
+    promela += "  new_val = 1;\n";
+	promela += "  do\n";
+
+	for (int task_id = 0; task_id < num_tasks; task_id++) {
+		Task& task = art.tasks[task_id];
+
+		promela += "  :: " + promela_is_active(task_id) + " ->\n";
+		promela += "  if\n";
+		// services
+		promela += "  :: atomic { " + promela_all_child_inactive(task_id) + " -> \n";
+		promela += "    if\n";
+
+		for (Service& ser : task.services) {
+			// pre-condition
+			promela += "    :: (" + promela_translate_condition(task_id, ser.pre_cond) + ") -> \n";
+            
+			// assignment and post-condition
+            promela += "      current = 255; \n";
+
+            /*
+            promela += "      do\n";
+            vector<int> prop_exprs;
+            get_prop_exprs(task_id, ser.var_prop, prop_exprs);
+            for (int expr : prop_exprs)
+                promela += "      :: " + expr_name[expr] + " = (" + expr_name[expr] + " + 1) % " + to_string(4) + "; \n";
+			promela += "      :: (" + promela_translate_condition(task_id, ser.post_cond)+ ") -> break; \n";
+            promela += "      od\n";
+            */
+            
+
+            
+			promela += "      " + promela_get_assignment(task_id, ser.var_prop) + " \n";
+            promela += "      atomic { resolve() }; \n";
+            promela += "      if \n";
+			promela += "      :: !(" + promela_translate_condition(task_id, ser.post_cond)+ ") -> goto end; \n";
+			promela += "      fi;   \n ";
+            
+            promela += "      current = " + to_string(task_id) + "; \n";
+		}
+        promela += "    :: else -> skip; \n";
+		promela += "  fi } \n";
+
+		// opening child tasks
+		for (int child : task.children) {
+			promela += "  :: atomic { !" + promela_is_active(child) + " && (" + promela_translate_condition(task_id, art.tasks[child].open_cond) + ") ->\n";
+			promela += "    current = " + to_string(child) + ";\n";
+			promela += "    running[" + to_string(child) + "] = true;\n";
+			// copy and initialize
+			Task& child_task = art.tasks[child];
+			set<int> input_var_set(input_vars[child].begin(), input_vars[child].end());
+
+			for (int vid = 0; vid < child_task.num_var; vid++) {
+				if (input_var_set.count(vid) == 0) {
+					for (int expr : task_var_expr_ids[child][vid])
+						promela += "    " + expr_name[expr] + " = 0;\n";
+				} else {
+					for (int expr : task_var_expr_ids[child][vid])
+						promela += "    " + expr_name[expr] + " = " + expr_name[expr_rename_to_parent[expr]] + ";\n";
+				}
+			}
+            promela += "} \n";
+		}
+
+		// closing child tasks
+		for (int child : task.children) {
+			promela += "  :: atomic { " + promela_is_ready(child) + " ->\n";
+			promela += "    ready[" + to_string(child) + "] = false;\n";
+			promela += "    running[" + to_string(child) + "] = false;\n";
+			// copy
+			for (int vid : return_vars[child]) {
+				for (int expr : task_var_expr_ids[child][vid])
+					promela += "    " + expr_name[expr_rename_to_parent[expr]] + " = " + expr_name[expr] + ";\n";
+			}
+            promela += " } \n";
+		}
+
+		// task finishes
+		if (task_id > 0) {
+			promela += "  :: atomic { (" + promela_translate_condition(task_id, art.tasks[task_id].close_cond) + ") ->\n";
+			promela += "    current = " + to_string(parent_task[task_id]) + ";\n";
+			promela += "    ready[" + to_string(task_id) + "] = true;\n";
+            promela += " } \n";
+		}
+
+		promela += "  fi\n";
+	}
+	// check for final condition
+	// promela += "    :: assert(" + target_cond + "); \n";
+	// promela += "    :: assert(true); \n";
+    // promela += "    :: break; \n";
+	promela += "    od;\n";
+    promela += "end:\n";
+	promela += "}\n";
+	promela += "\n";
+	promela += "init {\n";
+    promela += "    atomic { ";
+	promela += "    current = 255;\n";
+	for (int i = 0; i < num_tasks; i++) {
+		promela += "    ready[" + to_string(i) + "] = false;\n";
+		if (i == 0)
+			promela += "    running[" + to_string(i) + "] = true;\n";
+		else
+			promela += "    running[" + to_string(i) + "] = false;\n";
+	}
+	promela += "\n";
+	for (int expr = 0; expr < (int) expr_name.size(); expr++) {
+		if (is_const(expr)) {
+			if (is_null(expr))
+				promela += "    " + expr_name[expr] + " = 0;\n";
+			else {
+				ConstNode* node = (ConstNode*) expr_to_node[expr];
+				int value = 0;
+				if ((node->type == -1 && art.num_consts[node->id] == 0) ||
+					(node->type == -2 && art.str_consts[node->id] == "\"\""))
+					value = 0;
+				else
+					value = node->id + 1;
+
+				promela += "    " + expr_name[expr] + " = " + to_string(value) + ";\n";
+			}
+		} else
+			promela += "    " + expr_name[expr] + " = 0;\n";
+	}
+	promela += "    } \n";
+	promela += "    atomic { current = 0; run exec(); }\n";
+	promela += "}\n";
+
+    promela += "never { true; do :: (current == 0) && (" + target_cond + ") -> break; :: else od } ";
+
+	return promela;
+}
+
+
+} /* namespace std */

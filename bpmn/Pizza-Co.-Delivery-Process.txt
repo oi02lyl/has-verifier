@@ -1,0 +1,96 @@
+Relations:
+Pizza(i id, STR name, NUM price, STR size, Ingredient i1, Ingredient i2, Ingredient i3)
+Ingredient(i id, STR name, NUM price)
+Customer(i id, STR name, STR address)
+Driver(i id, STR name)
+
+Hierarchy:
+PizzaOrder -> CustomerCall,
+PizzaOrder -> Delivery
+
+PizzaOrder:
+Variables: Customer cid, STR name, STR address, Pizza pid, Ingredient in1, Ingredient in2, Ingredient in3, Driver did, STR status, NUM total_price, NUM price, NUM p1, NUM p2, NUM p3, NUM amount_paid
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+ReceivePizzaOrder:
+Pre: True 
+Post: status == "Init" && cid == NULL && pid == NULL && in1 = NULL && in2 = NULL && in3 = NULL
+Update: Write(cid, pid, in1, in2, in3, status)
+
+PreparePizza:
+Pre: status == "Ordered"
+Post: status == "Cooked" && did == NULL
+Update: Write(status, did)
+
+PackagePizza:
+Pre: status == "Cooked"
+Post: status == "PizzaPacked"
+Update: Write(status)
+
+DeliveryPizza:
+Pre: status == "PizzaPacked" && did != NULL
+Post: status == "delivered"
+Update: Write(status)
+
+ReceivePayment:
+Pre: status == "delivered"
+Post: amount_paid == price + p1 + p2 + p3 && status == "Paid" && (Pizza(pid, _, price, _, _, _, _) && ((in1 == NULL && p1 = 0) || Ingredient(in1, p1)) && ((in2 == NULL && p2 = 0) || Ingredient(in2, p2)) && ((in3 == NULL && p3 = 0) || Ingredient(in3, p3)))
+Update: Write(status, price, p1, p2, p3, amount_paid)
+
+------
+
+CustomerCall:
+Variables: Customer cid, STR name, STR address, Pizza pid, Ingredient in1, Ingredient in2, Ingredient in3, STR status, Ingredient temp_in1, Ingredient temp_in2, Ingredient temp_in3
+Input: 
+Return: cid, name, address, pid, in1, in2, in3, status
+Open: status == "Init"
+Close: status == "Ordered"
+
+Services:
+
+TakeCustomerCoordinates:
+Pre: address == ""
+Post: address != "" && name != "" && status == "Validate"
+Update: Write(address, name, cid, status)
+
+ValidateCoordinatesWithHistoryFile:
+Pre: status == "Validate"
+Post: (Customer(cid, name, address) || cid == NULL) && status == "TakeOrder"
+Update: Write(cid)
+
+TakePizzaOrder:
+Pre: status == "TakeOrder" || status == "ReTakeOrder"
+Post: Pizza(pid, _, _, _, temp_in1, temp_in2, temp_in3) && (in1 == NULL || in1 == temp_in1) && (in2 == NULL || in2 == temp_in2) && (in3 == NULL || in3 == temp_in3) && (status == "ReTakeOrder" || status == "Ordered")
+Update: Write(pid, temp_in1, temp_in2, temp_in3, in1, in2, in3, status)
+
+------
+
+Delivery:
+Variables: Driver did, STR zone, STR address, STR status
+Input: address
+Return: did, status
+Open: status == "Cooked"
+Close: status == "DriverAssigned"
+
+Services:
+
+AddFreeDriver:
+Pre: True
+Post: Driver(did, _) && zone != ""
+Update: CandidateDrive++(did, zone)
+
+GetFreeDriver:
+Pre: True
+Post: status == "HasDriver"
+Update: Write(status), --CandidateDrive(did, zone)
+
+AssignDriver:
+Pre: status == "HasDriver" 
+Post: (zone == address -> status == "DriverAssigned") || (zone != address -> (status == ""))
+Update: Write(status)
+------

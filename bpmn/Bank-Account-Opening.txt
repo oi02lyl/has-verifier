@@ -1,0 +1,104 @@
+Relations:
+Customer(i id, STR name, STR phone, STR address)
+ExistingAccount(i id, Customer cid, STR acct_type, STR acct_status)
+Document(i id, STR acct_type)
+
+Hierarchy:
+BankAccountOpening -> GetCustomerCoordinates,
+BankAccountOpening -> SignDocuments,
+BankAccountOpening -> StatusReview
+
+
+BankAccountOpening:
+Variables: STR name, STR phone, STR address, STR acct_type, STR status, NUM amount_deposit, STR review_status
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Initialize:
+Pre: True
+Post: name == "" && phone == "" && address == "" && acct_type = "" && status == "GettingCustomerCoordinates" && amount_deposit == 0 && review_status == ""
+Update: Write(name, phone, address, acct_type, status, amount_deposit, review_status)
+
+IdentifyCustomerAccountSelection:
+Pre: acct_type == "" && status == "GotCustomerCoordinates"
+Post: acct_type != "" && status == "AccountSelected"
+Update: Write(acct_type, status)
+
+RegisterDeposit:
+Pre: status == "AccountSelected"
+Post: amount_deposit > 0
+Update: Write(amount_deposit)
+
+OpenBankAccount:
+Pre: status == "DocumentsSigned" && review_status == "Good"
+Post: status == "AccountOpened"
+Update: ++NewAccount(name, phone, address, acct_type, amount_deposit), Write(status)
+
+------
+
+GetCustomerCoordinates:
+Variables: Customer cid, STR name, STR phone, STR address, STR status
+Input:
+Return: name, phone, address, status
+Open: status == "GettingCustomerCoordinates"
+Close: status == "GotCustomerCoordinates"
+
+Services:
+
+GetExistingCustomer:
+Pre: name == ""
+Post: Customer(cid, name, phone, address) && status == "GotCustomerCoordinates"
+Update: Write(cid, name, phone, address, status)
+
+GetNewCustomer:
+Pre: name == ""
+Post: name != "" && phone != "" && address != "" && status == "GotCustomerCoordinates"
+Update: Write(name, phone, address, status)
+
+------
+
+SignDocuments:
+Variables: STR name, STR phone, STR address, STR acct_type, STR status, Document did
+Input: name, phone, address, acct_type
+Return: status
+Open: status == "AccountSelected"
+Close: status == "DocumentsSigned"
+
+Services:
+
+PrepareAccountOpeningDocuments:
+Pre: True
+Post: Document(did, acct_type)
+Update: Documents++(did)
+
+------
+
+StatusReview:
+Variables: STR name, STR phone, STR address, STR acct_type, STR review_status, ExistingAccount aid, Customer cid
+Input: name, phone, address, acct_type
+Return: review_status
+Open: status == "AccountSelected"
+Close: review_status != ""
+
+Services:
+
+SearchExistingAccount:
+Pre: True
+Post: ExistingAccount(aid, cid, _, _) && Customer(cid, name, phone, address)
+Update: FoundAccounts++(aid)
+
+CheckAccountStatus:
+Pre: review_status == ""
+Post: ExistingAccount(aid, _, _, "Bad") && review_status == "Bad"
+Update: --FoundAccounts(aid), Write(review_status)
+
+FinishChecking:
+Pre: review_status == ""
+Post: review_status == "Good"
+Update: Write(review_status)
+
+------

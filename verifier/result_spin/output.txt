@@ -1,0 +1,23 @@
+Commercial-Financing.txt	1.986854	False
+Bank-Account-Opening.txt	1.534523	False
+Journal-Review-Process.txt	3.465613	True
+Hardware_Retailer_new.txt	1.582372	True
+Airline-Check-In.txt	82.245546	True	OUT_OF_MEM
+New-Car-Sales.txt	1.440662	True
+LaserProduction.txt	1.183674	False
+Book-Writing-and-Publishing.txt	1.230107	True
+Credit-Review-and-Approval.txt	1.810142	True
+Customer-Quotation-Request.txt	1.452750	True
+OrderProcessing_new.txt
+Acquisition-following-RFQ.txt	1.697455	True
+Incident-Management-as-Detailed-Collaboration.txt	1.508188	True
+Insurance-Claim-Processing.txt	4.642833	False
+Morgage-Approval.txt	1.532317	True
+Travel-Booking.txt	125.982067	True
+Pizza-Co.-Delivery-Process.txt	1.775795	True
+Employee-Expense-Reimbursement-Alternative-1.txt	1.360253	True
+BPI-Web-Registration-with-Moderator.txt	1.617093	False
+Amazon-Fulfillment.txt	1.941131	True
+Patient-Treatment-Collaboration.txt	3.396185	True
+OrderFulfillment_new.txt	1.196526	True
+OrderProcessingWithCreditCard_new.txt

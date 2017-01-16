@@ -1,0 +1,109 @@
+Relations:
+Customer(i id, STR name, STR is_vip)
+ProblemType(i id, STR type, STR importance)
+SupportAgent(i id, STR is_developer, NUM level, ProblemType pid)
+
+Hierarchy:
+KeyAccountManager -> FirstLevelSupport,
+FirstLevelSupport -> SecondLevelSupport,
+SecondLevelSupport -> SoftwareDeveloper
+
+KeyAccountManager:
+Variables: STR problem, Customer cid, ProblemType pid, STR status, STR solution
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+GetProblemDescription:
+Pre: True
+Post: problem != "" && Customer(cid, _, "yes") && pid != NULL && status == "ProblemReceived" && solution == ""
+Update: Write(problem, cid, pid, status, solution)
+
+HandleProblem:
+Pre: ProblemType(pid, _, "low") && status == "ProblemReceived"
+Post: solution != ""
+Update: Write(solution)
+
+ExplainSolution:
+Pre: status == "ProblemReceived" && solution != ""
+Post: status == "Solved"
+Update: Write(status)
+
+------
+
+FirstLevelSupport:
+Variables: STR problem, ProblemType pid, STR status, STR solution, SupportAgent aid
+Input: problem, pid
+Return: solution
+Open: status == "ProblemReceived" && solution == ""
+Close: solution != "" && status == "Solved"
+
+Services:
+
+FindAgent:
+Pre: True
+Post: SupportAgent(aid, "No", 1, pid) && status == "Handling"
+Update: Write(aid, status)
+
+HandleProblem1:
+Pre: status == "Handling"
+Post: (solution != "" && status == "Solved") || (solution == "" && status == "Unsolved")
+Update: Write(solution, status)
+
+------
+
+SecondLevelSupport:
+Variables: STR problem, ProblemType pid, STR status, STR solution, SupportAgent aid
+Input: problem, pid
+Return: solution
+Open: status == "Unsolved" && solution == ""
+Close: solution != "" && status == "Solved"
+
+Services:
+
+FindAgent:
+Pre: True
+Post: SupportAgent(aid, "No", 2, pid) && status == "Handling"
+Update: Write(aid, status)
+
+HandleProblem2:
+Pre: status == "Handling"
+Post: (solution != "" && status == "Solved") || (solution == "" && status == "Unsolved")
+Update: Write(solution, status)
+
+InsertIntoProductBacklog:
+Pre: solution != ""
+Post: status == "Solved"
+Update: ++Log(problem, pid, solution)
+
+RetrieveProblemSolution:
+Pre: True
+Post: solution != "" && status == "Solved"
+Update: --Log(problem, pid, solution)
+
+
+------
+
+SoftwareDeveloper:
+Variables: STR problem, ProblemType pid, STR status, STR solution, SupportAgent aid
+Input: problem, pid
+Return: solution
+Open: status == "Unsolved" && solution == ""
+Close: solution != "" && status == "Solved"
+
+Services:
+
+FindAgent:
+Pre: True
+Post: SupportAgent(aid, "Yes", _, pid) && status == "Handling"
+Update: Write(aid, status)
+
+ExamineProblem:
+Pre: status == "Handling" && pid != NULL
+Post: (solution != "" && status == "Solved")
+Update: Write(solution, status)
+
+------

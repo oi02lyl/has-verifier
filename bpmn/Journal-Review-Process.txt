@@ -1,0 +1,142 @@
+Relations:
+Author(i id, STR name, Field f1, Field f2, Field f3)
+Reviewer(i id, STR name, STR type, Field f1, Field f2, Field f3)
+Paper(i id, STR title, Reviewer author, Field f1, Field f2, Field f3)
+Field(i id, STR name)
+
+
+Hierarchy:
+JournalReview -> Submission,
+JournalReview -> InviteReviewer
+
+JournalReview:
+Variables: STR title, STR content, STR template, Author aid, Reviewer rid, Reviewer r1, Reviewer r2, Field fid, STR status, STR result1, STR result2, STR final_result, STR comment
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Initialize:
+Pre: status == ""
+Post: status == "AcceptingSubmission"
+Update: Write(status)
+
+ProceedDestReject:
+Pre: status == "Submitted"
+Post: status == "DeskRejected" || (content != "" && title != "" && status == "Checked")
+Update: Write(status)
+
+SendRejectNotificationToAuthor:
+Pre: status == "DeskRejected"
+Post: status == "Rejected"
+Update: ++SentEmail(aid, title, content, template, fid)
+
+CheckFormalIssues:
+Pre: status == "Checked" || status == "Resubmitted" || status == "Revision"
+Post: (template != "EM" && status == "FormalDeficits") || (template == "EM" && status == "NoFormalDeficits")
+Update: Write(status)
+
+SendBackToAuthor:
+Pre: status == "FormalDeficits"
+Post: status == "SentBackToAuthor"
+Update: Write(status)
+
+CorrectForalDeficits:
+Pre: status == "SentBackToAuthor"
+Post: status == "Resubmitted" && template != "" && content != ""
+Update: Write(status, template, content)
+
+AssignPaperToAEorGE:
+Pre: status == "NoFormalDeficits"
+Post: Reviewer(rid, _, "AE", _, _, _) || Reviewer(rid, _, "GE", _, _, _) && (status == "DeskRejected" || status == "AfterFirstRound")
+Update: Write(status, rid)
+
+ReviewPaper:
+Pre: r1 != NULL && r2 != NULL && status == "AtLeastTwoReviewers"
+Post: (result1 == "Accept" || result1 == "Reject") && (result2 == "Accept" || result2 == "Reject") && status == "ReviewResultReady"
+Update: Write(result1, result2, status)
+
+MakeAEGEDecision:
+Pre: status == "ReviewResultReady"
+Post: (result1 == "Accept" && result2 == "Accept" -> final_result == "Accept") && (result2 == "Reject" && result2 == "Reject" -> final_result == "Reject") && (result1 != result2 -> (final_result == "Accept" || final_result == "Reject" || final_result == "Resubmit" || final_result == "Revision")) && status == "FinalResultReady"
+Update: Write(final_result, status)
+
+AssignManuscriptToSE:
+Pre: status == "FinalResultReady"
+Post: status == "RecheckDecision" && Reviewer(rid, _, "SE", _, _, _)
+Update: Write(status, rid)
+
+ProvideComments:
+Pre: status == "RecheckDecision"
+Post: status == "CommentProvided" && comment != ""
+Update: Write(status, comment)
+
+SendDecisionToAuthor:
+Pre: status == "CommentProvided"
+Post: status == "DecisionSent"
+Update: Write(status)
+
+SendAcceptedPaperToSpringer:
+Pre: status == "DecisionSent" && final_result == "Accept"
+Post: status == "PaperPublished"
+Update: Write(status)
+
+------
+
+Submission:
+Variables: STR title, STR content, STR template, Author aid, Field fid, STR status
+Input:
+Return: title, aid, fid, status
+Open: status == "AcceptingSubmission" || status == "Resubmit"
+Close: status == "Submitted"
+
+Services:
+WriteManuscript:
+Pre: True
+Post: title != "" && aid != NULL && fid != NULL && status == "Written"
+Update: Write(title, aid, fid, status)
+
+TransferContentToTemplate:
+Pre: status == "Written"
+Post: template != "" && status == "TemplateTranferred"
+Update: Write(template, status)
+
+SubmitManuscript:
+Pre: status == "TemplateTranferred"
+Post: status == "Submitted"
+Update: Write(status)
+
+------
+
+InviteReviewer:
+Variables: Field fid, Paper pid, Reviewer rid, Reviewer r1, Reviewer r2, STR status
+Input: fid
+Return: r1, r2, status
+Open: status == "AfterFirstRound"
+Close: status == "AtLeastTwoReviewers"
+
+Services:
+
+AddCandidateReviewers:
+Pre: True
+Post: Reviewer(rid, _, _, fid, _, _) || Reviewer(rid, _, _, _, fid, _) || Reviewer(rid, _, _, _, _, fid) || Paper(pid, _, rid, fid, _, _) || Paper(pid, _, rid, _, fid, _) || Paper(pid, _, rid, _, _, fid)
+Update: Write(rid, pid), CandidateReviewers++(rid)
+
+RetrieveAvailableReviewer1:
+Pre: r1 == NULL
+Post: r1 != NULL && status == "HasOneReviewer"
+Update: CandidateReviewers--(r1), Write(status)
+
+RetrieveAvailableReviewer2:
+Pre: r1 != NULL && r2 == NULL
+Post: r2 != NULL && status == "AtLeastTwoReviewers"
+Update: CandidateReviewers--(r2), Write(status)
+
+Restart:
+Pre: True
+Post: r1 == NULL && r2 == NULL && status == "HasNoReviewer"
+Update: Write(r1, r2, status)
+
+------

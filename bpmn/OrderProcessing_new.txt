@@ -1,0 +1,48 @@
+Relations:
+Good (i id, NUM price, NUM Availability)
+Order (i id, NUM quant, i GoodID, i CustomerID)
+Customer (i id, STR name, STR paymentInfo, STR address)
+
+Hierarchy:
+ReceiveOrder-> ProcessOrder
+
+ReceiveOrder:
+Variables: Good gid, NUM Availability, Order oid, NUM quant, Order GoodID, STR status, Customer cid
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+InitializeOrder:
+Pre: True
+Post: gid != NULL && Availability >= 0 && oid != NULL && quant >= 0 && GoodID == gid && cid != NULL
+Update: Write(gid, Availability, oid, quant, GoodID, cid)
+
+CheckAvailability:
+Pre: oid!=NULL && quant >= 0 && Availability >= 0 && gid != NULL && GoodID != NULL
+Post: ((GoodID == gid) && (Availability >= quant) -> status == “valid”) && ((GoodID == gid) && (Availability < quant) -> status == “invalid”)
+Update: Write(status)
+
+------
+
+ProcessOrder:
+
+Variables: Good gid, NUM Availability, Order oid, NUM quant, Order GoodID, STR status, NUM price, NUM paymentInfo, STR address
+Input: status, paymentInfo, address
+Return: status
+Open: status == "valid"
+Close: status == "shipped"
+
+Services:
+PaymentRequest:
+Pre: status == "valid"
+Post: paymentInfo == price * quant && status == "paid"
+Update: Write(paymentInfo, status)
+
+Shipping:
+Pre: status == "paid"
+Post: address != NULL && status == "shipped"
+Update: Write(address, status)
+
+------

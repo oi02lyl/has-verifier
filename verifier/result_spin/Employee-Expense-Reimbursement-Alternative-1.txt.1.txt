@@ -1,0 +1,23 @@
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+Depth=      35 States=    1e+06 Transitions= 8.26e+06 Memory=   227.948	t=     2.57 R=   4e+05
+Depth=      35 States=    2e+06 Transitions= 1.65e+07 Memory=   327.167	t=     5.19 R=   4e+05
+Depth=      35 States=    3e+06 Transitions= 2.48e+07 Memory=   426.386	t=     7.84 R=   4e+05
+Depth=      35 States=    4e+06 Transitions= 3.31e+07 Memory=   525.605	t=     10.5 R=   4e+05
+Depth=      35 States=    5e+06 Transitions= 4.13e+07 Memory=   624.823	t=     13.2 R=   4e+05
+Depth=      35 States=    6e+06 Transitions= 4.96e+07 Memory=   724.042	t=       16 R=   4e+05
+Depth=      35 States=    7e+06 Transitions= 5.79e+07 Memory=   823.065	t=     18.8 R=   4e+05
+Depth=      35 States=    8e+06 Transitions= 6.61e+07 Memory=   922.284	t=     21.6 R=   4e+05
+Depth=      35 States=    9e+06 Transitions= 7.44e+07 Memory=  1021.503	t=     24.4 R=   4e+05
+Depth=      35 States=    1e+07 Transitions= 8.27e+07 Memory=  1120.722	t=     27.3 R=   4e+05
+Depth=      35 States=  1.1e+07 Transitions= 9.09e+07 Memory=  1219.940	t=     30.3 R=   4e+05
+Depth=      35 States=  1.2e+07 Transitions= 9.92e+07 Memory=  1319.159	t=     33.2 R=   4e+05
+Depth=      35 States=  1.3e+07 Transitions= 1.07e+08 Memory=  1418.183	t=     36.1 R=   4e+05
+Depth=      35 States=  1.4e+07 Transitions= 1.16e+08 Memory=  1517.401	t=     39.1 R=   4e+05
+Depth=      35 States=  1.5e+07 Transitions= 1.24e+08 Memory=  1616.620	t=     42.1 R=   4e+05
+Depth=      35 States=  1.6e+07 Transitions= 1.32e+08 Memory=  1715.839	t=     45.1 R=   4e+05
+Depth=      35 States=  1.7e+07 Transitions= 1.41e+08 Memory=  1815.058	t=     48.2 R=   4e+05
+Depth=      35 States=  1.8e+07 Transitions= 1.49e+08 Memory=  1914.276	t=     51.3 R=   4e+05
+Depth=      35 States=  1.9e+07 Transitions= 1.57e+08 Memory=  2013.300	t=     54.4 R=   3e+05
+Depth=      35 States=    2e+07 Transitions= 1.65e+08 Memory=  2112.519	t=     57.5 R=   3e+05
+time = 59.149745

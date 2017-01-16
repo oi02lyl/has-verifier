@@ -1,0 +1,70 @@
+Relations:
+Customer(i id, STR name, NUM income)
+BankAccount(i id, Customer cid, NUM deposit)
+Record(i id, Customer cid, STR type)
+MortageType(i id, STR name, NUM amount, NUM length, NUM interest)
+
+Hierarchy:
+MortageApproval -> Assessment
+
+MortageApproval:
+Variables: Customer cid, MortageType tid, NUM length, NUM amount, STR status, STR app_type
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+SendOutApplication:
+Pre: True 
+Post: (status == "NotInterested" || status == "SevenDays" || status == "FillApplication") && cid != NULL && (app_type == "VIP" || app_type == "Normal")
+Update: Write(status, cid, app_type)
+
+ArchiveDetails:
+Pre: status == "NotInterested"
+Post: status == "Archived"
+Update: Write(status), ++Archives(cid)
+
+CompleteApplication:
+Pre: status == "FillApplication"
+Post: length > 0 && amount > 0 && tid != NULL && status == "CompletedApplication"
+Update: Write(length, amount, status, tid)
+
+SendReminder:
+Pre: status == "SevenDays"
+Post: (status == "NotInterested" || status == "SevenDays" || status == "FillApplication")
+Update: Write(status)
+
+------
+
+Assessment:
+Variables: Customer cid, MortageType tid, NUM length, NUM amount, STR app_type, STR status, BankAccount bid, Record rid, NUM bank_amount, NUM income, NUM max_amount, NUM max_length
+Input: cid, tid, length, amount, app_type
+Return: status
+Open: status == "CompletedApplication"
+Close: status == "OfferMade" || status == "RejectSent"
+
+Services:
+
+ProvideInfo:
+Pre: True
+Post: BankAccount(bid, cid, _) && Record(rid, cid, _)
+Update: Info++(bid, rid)
+
+MakeAssessment:
+Pre: status == ""
+Post: MortageType(tid, _, max_amount, max_length, _) && (Record(rid, cid, "Good") && BankAccount(bid, cid, bank_amount) && Customer(cid, _, income) && income + bank_amount > amount && amount < max_amount && length < max_length && status == "Offer") || status == "Reject"
+Update: Write(status, bid, rid, max_amount, max_length, income, bank_amount), --Info(bid, rid)
+
+OfferMorgage:
+Pre: status == "Offer"
+Post: status == "OfferMade"
+Update: Write(status)
+
+SendReject:
+Pre: status == "Reject"
+Post: status == "RejectSent"
+Update: Write(status)
+
+------

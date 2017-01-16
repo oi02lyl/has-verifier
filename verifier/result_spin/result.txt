@@ -1,0 +1,69 @@
+Commercial-Financing.txt	1.923624
+Bank-Account-Opening.txt	2.103918
+Journal-Review-Process.txt	4.812004
+Hardware_Retailer_new.txt	1.615473
+Airline-Check-In.txt	3.417455
+New-Car-Sales.txt	1.704921
+LaserProduction.txt	1.113854
+Book-Writing-and-Publishing.txt	1.683734
+Credit-Review-and-Approval.txt	27.296780
+Customer-Quotation-Request.txt	1.547039
+OrderProcessing_new.txt
+Acquisition-following-RFQ.txt	1.817536
+Incident-Management-as-Detailed-Collaboration.txt	1.522035
+Insurance-Claim-Processing.txt	1.666962
+Morgage-Approval.txt	1.601153
+Travel-Booking.txt	3.395341
+Pizza-Co.-Delivery-Process.txt	1.931736
+Employee-Expense-Reimbursement-Alternative-1.txt	17.631573
+BPI-Web-Registration-with-Moderator.txt	7.379986
+Amazon-Fulfillment.txt	2.012496
+Patient-Treatment-Collaboration.txt	2.263783
+OrderFulfillment_new.txt	1.256710
+OrderProcessingWithCreditCard_new.txt
+Commercial-Financing.txt	3.754674
+Bank-Account-Opening.txt	14.246641
+Journal-Review-Process.txt	6.301948
+Hardware_Retailer_new.txt	141.581679
+Airline-Check-In.txt	3.627978
+New-Car-Sales.txt	3.581200
+LaserProduction.txt	1.161280
+Book-Writing-and-Publishing.txt	601.379844
+Credit-Review-and-Approval.txt	602.189050
+Customer-Quotation-Request.txt	6.119375
+OrderProcessing_new.txt
+Acquisition-following-RFQ.txt	602.078517
+Incident-Management-as-Detailed-Collaboration.txt	1.647062
+Insurance-Claim-Processing.txt	350.432321
+Morgage-Approval.txt	1.737826
+Travel-Booking.txt	131.362007
+Pizza-Co.-Delivery-Process.txt	601.986462
+Employee-Expense-Reimbursement-Alternative-1.txt	59.149745
+BPI-Web-Registration-with-Moderator.txt	601.972032
+Amazon-Fulfillment.txt	2.256870
+Patient-Treatment-Collaboration.txt	88.249114
+OrderFulfillment_new.txt	1.655543
+OrderProcessingWithCreditCard_new.txt
+Commercial-Financing.txt	2.030450
+Bank-Account-Opening.txt	2.236441
+Journal-Review-Process.txt	5.268361
+Hardware_Retailer_new.txt	2.121296
+Airline-Check-In.txt	3.928298
+New-Car-Sales.txt	1.694542
+LaserProduction.txt	1.136883
+Book-Writing-and-Publishing.txt	1.666038
+Credit-Review-and-Approval.txt	35.609269
+Customer-Quotation-Request.txt	1.585899
+OrderProcessing_new.txt
+Acquisition-following-RFQ.txt	1.954974
+Incident-Management-as-Detailed-Collaboration.txt	1.601433
+Insurance-Claim-Processing.txt	1.744692
+Morgage-Approval.txt	1.639542
+Travel-Booking.txt	3.833043
+Pizza-Co.-Delivery-Process.txt	2.441971
+Employee-Expense-Reimbursement-Alternative-1.txt	20.536559
+BPI-Web-Registration-with-Moderator.txt	8.887037
+Amazon-Fulfillment.txt	2.354088
+Patient-Treatment-Collaboration.txt	2.355421
+OrderFulfillment_new.txt	1.227813
+OrderProcessingWithCreditCard_new.txt

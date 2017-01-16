@@ -1,0 +1,97 @@
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+
+(Spin Version 6.4.5 -- 1 January 2016)
+	+ Partial Order Reduction
+	+ Compression
+
+Full statespace search for:
+	never claim         	+ (never_0)
+	assertion violations	+ (if within scope of claim)
+	acceptance   cycles 	+ (fairness disabled)
+	invalid end states	- (disabled by never claim)
+
+State-vector 68 byte, depth reached 23, errors: 0
+       48 states, stored
+       98 states, matched
+      146 transitions (= stored+matched)
+      193 atomic steps
+hash conflicts:         0 (resolved)
+
+Stats on memory usage (in Megabytes):
+    0.005	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.554	actual memory usage for states
+  128.000	memory used for hash table (-w24)
+    0.534	memory used for DFS stack (-m10000)
+  128.925	total actual memory usage
+
+
+nr of templates: [ 0:globals 1:chans 2:procs ]
+collapse counts: [ 0:44 2:7 3:1 ]
+unreached in init
+	output.pml:130, state 113, "(1)"
+	output.pml:149, state 135, "running[2] = 1"
+	output.pml:150, state 136, "T2_X0 = 0"
+	output.pml:151, state 137, "T2_X1 = T0_X2"
+	output.pml:152, state 138, "T2_X2 = 0"
+	output.pml:153, state 139, "T2_X3 = T0_X3"
+	output.pml:154, state 140, "T2_X3_1 = T0_X3_1"
+	output.pml:155, state 141, "T2_X3_2 = T0_X3_2"
+	output.pml:156, state 142, "T2_X3_3 = T0_X3_3"
+	output.pml:157, state 143, "T2_X4 = 0"
+	output.pml:158, state 144, "T2_X5 = T0_X4"
+	output.pml:159, state 145, "T2_X6 = 0"
+	output.pml:163, state 149, "running[3] = 1"
+	output.pml:164, state 150, "T3_X0 = 0"
+	output.pml:165, state 151, "T3_X1 = 0"
+	output.pml:169, state 155, "running[1] = 0"
+	output.pml:170, state 156, "T0_X1 = T1_X1"
+	output.pml:174, state 160, "running[2] = 0"
+	output.pml:175, state 161, "T0_X1 = T2_X0"
+	output.pml:179, state 165, "running[3] = 0"
+	output.pml:180, state 166, "T0_X1 = T3_X0"
+	output.pml:189, state 182, "T1_X1 = S6"
+	output.pml:189, state 182, "T1_X1 = S5"
+	output.pml:189, state 182, "T1_X1 = S4"
+	output.pml:189, state 182, "T1_X1 = S1"
+	output.pml:189, state 182, "T1_X1 = S0"
+	output.pml:189, state 182, "T1_X1 = S2"
+	output.pml:189, state 182, "T1_X1 = S7"
+	output.pml:189, state 182, "T1_X1 = S3"
+	output.pml:192, state 185, "(1)"
+	output.pml:192, state 186, "((((T1_X1==S2)&&(T1_X2!=CONST_NULL))&&(T1_X3!=CONST_NULL)))"
+	output.pml:198, state 194, "ready[1] = 1"
+	output.pml:207, state 208, "T2_X2 = S6"
+	output.pml:207, state 208, "T2_X2 = S7"
+	output.pml:207, state 208, "T2_X2 = S3"
+	output.pml:207, state 208, "T2_X2 = CONST_NULL"
+	output.pml:207, state 208, "T2_X2 = 11"
+	output.pml:207, state 208, "T2_X2 = 12"
+	output.pml:208, state 212, "T2_X4 = CONST_NULL"
+	output.pml:208, state 212, "T2_X4 = N0"
+	output.pml:209, state 215, "T2_X6 = N0"
+	output.pml:212, state 218, "(1)"
+	output.pml:212, state 219, "(((((((T2_X2!=T2_X5)||(T2_X3==CONST_NULL))||((T2_X4==T2_X1)&&((T2_X4==CONST_NULL)||((T2_X4!=CONST_NULL)&&(T2_X1!=CONST_NULL)))))||(T2_X0==S3))&&((((T2_X2!=T2_X5)||(T2_X3==CONST_NULL))||((T2_X4==T2_X1)&&((T2_X4==CONST_NULL)||((T2_X4!=CONST_NULL)&&(T2_X1!=CONST_NULL)))))||(T2_X0==S4)))&&((T2_X0!=S5)||((T2_X4==T2_X1)&&((T2_X4==CONST_NULL)||((T2_X4!=CONST_NULL)&&(T2_X1!=CONST_NULL)))))))"
+	output.pml:205, state 222, "(((T2_X0==S0)||(T2_X0==S2)))"
+	output.pml:218, state 227, "ready[2] = 1"
+	output.pml:227, state 243, "T3_X0 = S6"
+	output.pml:227, state 243, "T3_X0 = S5"
+	output.pml:227, state 243, "T3_X0 = S4"
+	output.pml:227, state 243, "T3_X0 = S1"
+	output.pml:227, state 243, "T3_X0 = S0"
+	output.pml:227, state 243, "T3_X0 = S2"
+	output.pml:227, state 243, "T3_X0 = S7"
+	output.pml:227, state 243, "T3_X0 = S3"
+	output.pml:228, state 246, "T3_X1 = S7"
+	output.pml:231, state 249, "(1)"
+	output.pml:231, state 250, "((T3_X0==S6))"
+	output.pml:225, state 253, "(((T3_X0==S3)&&(T3_X1!=S7)))"
+	output.pml:237, state 258, "ready[3] = 1"
+	output.pml:242, state 266, "-end-"
+	(39 of 266 states)
+unreached in claim never_0
+	output.pml:254, state 13, "-end-"
+	(1 of 13 states)
+
+pan: elapsed time 0 seconds
+time = 1.196526

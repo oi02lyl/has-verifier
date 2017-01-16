@@ -1,0 +1,93 @@
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+
+(Spin Version 6.4.5 -- 1 January 2016)
+	+ Partial Order Reduction
+	+ Compression
+
+Full statespace search for:
+	never claim         	+ (never_0)
+	assertion violations	+ (if within scope of claim)
+	acceptance   cycles 	+ (fairness disabled)
+	invalid end states	- (disabled by never claim)
+
+State-vector 52 byte, depth reached 29, errors: 0
+       59 states, stored
+      109 states, matched
+      168 transitions (= stored+matched)
+     1056 atomic steps
+hash conflicts:         0 (resolved)
+
+Stats on memory usage (in Megabytes):
+    0.005	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.545	actual memory usage for states
+  128.000	memory used for hash table (-w24)
+    0.534	memory used for DFS stack (-m10000)
+  128.925	total actual memory usage
+
+
+nr of templates: [ 0:globals 1:chans 2:procs ]
+collapse counts: [ 0:57 2:7 3:1 ]
+unreached in init
+	output.pml:104, state 98, "(1)"
+	output.pml:121, state 135, "(1)"
+	output.pml:147, state 206, "(1)"
+	output.pml:152, state 213, "T0_X3 = CONST_NULL"
+	output.pml:153, state 216, "T0_X3_1 = 6"
+	output.pml:154, state 221, "T0_X6 = S0"
+	output.pml:154, state 221, "T0_X6 = S2"
+	output.pml:154, state 221, "T0_X6 = S1"
+	output.pml:155, state 224, "T0_X7 = S0"
+	output.pml:156, state 227, "T0_X8 = S0"
+	output.pml:157, state 230, "T0_X9 = CONST_NULL"
+	output.pml:158, state 233, "T0_X9_1 = 6"
+	output.pml:159, state 236, "T0_X9_2 = 6"
+	output.pml:160, state 239, "T0_X9_2_1 = 6"
+	output.pml:161, state 242, "T0_X10 = CONST_NULL"
+	output.pml:162, state 245, "T0_X10_1 = 6"
+	output.pml:165, state 248, "(1)"
+	output.pml:165, state 249, "(((T0_X6==S2)&&((T0_X3!=CONST_NULL)||((T0_X2_2==T0_X3)&&(((T0_X2_2!=CONST_NULL)&&(T0_X3!=CONST_NULL))&&((T0_X2_2_1==T0_X3_1)&&((T0_X2_2_1!=CONST_NULL)&&(T0_X3_1!=CONST_NULL))))))))"
+	output.pml:171, state 257, "running[1] = 1"
+	output.pml:172, state 258, "T1_X0 = T0_X0"
+	output.pml:173, state 259, "T1_X1 = 0"
+	output.pml:174, state 260, "T1_X2 = 0"
+	output.pml:178, state 264, "running[2] = 1"
+	output.pml:179, state 265, "T2_X0 = T0_X0"
+	output.pml:180, state 266, "T2_X1 = 0"
+	output.pml:181, state 267, "T2_X2 = 0"
+	output.pml:182, state 268, "T2_X3 = 0"
+	output.pml:186, state 272, "running[1] = 0"
+	output.pml:187, state 273, "T0_X1 = T1_X1"
+	output.pml:188, state 274, "T0_X5 = T1_X2"
+	output.pml:192, state 278, "running[2] = 0"
+	output.pml:193, state 279, "T0_X1 = T2_X1"
+	output.pml:194, state 280, "T0_X4 = T2_X2"
+	output.pml:203, state 289, "T1_X1 = S0"
+	output.pml:204, state 294, "T1_X2 = S2"
+	output.pml:204, state 294, "T1_X2 = S1"
+	output.pml:204, state 294, "T1_X2 = S0"
+	output.pml:207, state 297, "(1)"
+	output.pml:207, state 298, "(((T1_X1!=S0)&&(T1_X2==S2)))"
+	output.pml:201, state 301, "((T1_X1==S0))"
+	output.pml:213, state 306, "ready[1] = 1"
+	output.pml:222, state 315, "T2_X1 = S0"
+	output.pml:223, state 318, "T2_X3 = S0"
+	output.pml:226, state 321, "(1)"
+	output.pml:226, state 322, "((((T2_X3!=S0)||(T2_X3==S0))&&(T2_X1!=S0)))"
+	output.pml:231, state 328, "T2_X1 = S0"
+	output.pml:232, state 333, "T2_X2 = S2"
+	output.pml:232, state 333, "T2_X2 = S1"
+	output.pml:232, state 333, "T2_X2 = S0"
+	output.pml:235, state 336, "(1)"
+	output.pml:235, state 337, "(((T2_X1!=S0)&&(T2_X2==S2)))"
+	output.pml:220, state 340, "((T2_X3==S0))"
+	output.pml:220, state 340, "((T2_X3!=S0))"
+	output.pml:241, state 345, "ready[2] = 1"
+	output.pml:246, state 353, "-end-"
+	(48 of 353 states)
+unreached in claim never_0
+	output.pml:258, state 13, "-end-"
+	(1 of 13 states)
+
+pan: elapsed time 0 seconds
+time = 1.230107

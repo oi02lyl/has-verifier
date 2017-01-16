@@ -1,0 +1,71 @@
+Relations:
+Customer(i id, STR name)
+Item(i id, STR name, NUM price)
+
+Hierarchy:
+OrderMgmt -> QuoteMgmt
+
+OrderMgmt:
+Variables: STR status, Customer cid, Item iid, NUM unit, STR quote_states
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+CreateQuotation:
+Pre: cid == NULL
+Post: cid != NULL && iid != NULL && unit > 0 && status == "QuoteCreated" && quote_states == "New"
+Update: Write(cid, iid, unit, status, quote_states)
+
+InsertCandidateQuote:
+Pre: cid != NULL
+Post: cid == NULL && status == "QuoteCreated"
+Update: ++CandidateQuote(cid, iid, unit, quote_states), Write(cid, iid, unit, status, quote_states)
+
+ModifyQuote:
+Pre: cid == NULL && status == "AdjustmentsRequired"
+Post: cid != NULL && quote_states == "New"
+Update: --CandidateQuote(cid, iid, unit, quote_states)
+
+ModifyQuote2:
+Pre: status == "AdjustmentsRequired" && cid != NULL
+Post: iid != NULL && unit > 0 && quote_states == "Modified"
+Update: CandidateQuote++(cid, iid, unit, quote_states), Write(iid, unit, quote_states)
+
+ApproveQuotation:
+Pre: status == "QuoteCreated"
+Post: (status == "QuoteApproved" && quote_states == "Approved") ||
+(status == "AdjustmentsRequired" && quote_states == "New") ||
+(status == "Refusal" && quote_states == "Refused")
+Update: Write(status, quote_states)
+
+
+------
+
+QuoteMgmt:
+Variables: STR status, STR quote_states, Customer cid, Item iid, NUM unit, NUM days_passed
+Input: cid, iid, unit, quote_states
+Return: status
+Open: status == "QuoteApproved"
+Close: status == "Notified" || status == "ProceedAdjust"
+
+Services:
+
+SendToCustomer:
+Pre: status == ""
+Post: (status == "ProceedAdjust" || status == "Proceed" || status == "NotProceed") && (days_passed >= 0)
+Update: Write(status, days_passed)
+
+CancelQuote:
+Pre: status == "NotProceed" || days_passed >= 5
+Post: status == "QuoteCanceled"
+Update: Write(status)
+
+NotifyCustomer:
+Pre: status == "Proceed" || status == "QuoteCanceled"
+Post: status == "Notified"
+Update: ++Nofication(cid, iid, unit, quote_states, status), Write(status)
+
+------

@@ -1,0 +1,74 @@
+Relations:
+Supplier(i id, STR name, Good g1, Good g2, Good g3, NUM p1, NUM p2, NUM p3)
+Good(i id, STR name)
+Customer(i id, STR name, STR record)
+
+Hierarchy:
+Acquisition -> SelectSuppliers
+
+
+Acquisition:
+Variables: Customer cid, Good g1, Good g2, Good g3, Supplier sid, STR status, STR has_supplier, STR supplierResponse
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+ReceiveRequest:
+Pre: True 
+Post: status == "AnalyzeRequest" && cid != NULL && (g1 != NULL || g2 != NULL || g3 != NULL) && sid == NULL && has_supplier == ""
+Update: Write(status, cid, g1, g2, g3, sid, has_supplier)
+
+AnalyzeAcquisitionRequest:
+Pre: status == "AnalyzeRequest" && Customer(cid, _, "Good")
+Post: status == "SelectingSupplier"
+Update: Write(status)
+
+SendNoSuppliersNotice:
+Pre: (status == "SupplierSelected" && sid == NULL) || supplierResponse == "No"
+Post: status == "NoticeSent"
+Update: ++Log(cid, g1, g2, g3, status)
+
+SubmitResultToSupplier:
+Pre: status == "SupplierSelected" && sid != NULL
+Post: status == "ResultSent" && (supplierResponse == "Yes" || supplierResponse == "No")
+Update: Write(status, supplierResponse)
+
+AcquireDeliverGood:
+Pre: supplierResponse == "Yes"
+Post: status == "Acquired"
+Update: Write(status)
+
+------
+
+SelectSuppliers:
+Variables: Good g1, Good g2, Good g3, Supplier sid, STR status
+Input: g1, g2, g3
+Return: sid, status
+Open: status == "SelectingSupplier"
+Close: status == "SupplierSelected"
+
+Services:
+
+AddSupplier:
+Pre: True
+Post: Supplier(sid, _, _, _, _, _, _, _)
+Update: Candidates++(sid), Write(sid)
+
+ChooseSupplier:
+Pre: True
+Post: (g1 != NULL -> (Supplier(sid, _, g1, _, _, _, _, _) || Supplier(sid, _, _, g1, _, _, _, _) || Supplier(sid, _, _, _, g1, _, _, _))) && (g2 != NULL -> (Supplier(sid, _, g2, _, _, _, _, _) || Supplier(sid, _, _, g2, _, _, _, _) || Supplier(sid, _, _, _, g2, _, _, _))) && (g3 != NULL -> (Supplier(sid, _, g3, _, _, _, _, _) || Supplier(sid, _, _, g3, _, _, _, _) || Supplier(sid, _, _, _, g3, _, _, _)))
+Update: --Candidates(sid)
+
+ChooseOptimalSupplier:
+Pre: sid != NULL && status == ""
+Post: status == "SupplierSelected"
+Update: Write(status)
+
+ChooseNoSupplier:
+Pre: sid == NULL && status == ""
+Post: status == "SupplierSelected"
+Update: Write(status)
+
+------

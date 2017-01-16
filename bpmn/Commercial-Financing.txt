@@ -1,0 +1,120 @@
+Relations:
+Requester(i id, STR name)
+CreditHistory(i id, Requester rid, STR flag)
+
+
+Hierarchy:
+Financing -> Finish
+
+Financing:
+Variables: STR status, STR request_qualified, STR detailed_request_qualified, Requester rid, NUM request_amount, NUM interest, NUM length, NUM proposed_amount, NUM proposed_interest, NUM proposed_length, STR changesAcceptable, STR client_decision, CreditHistory h1, CreditHistory h2, CreditHistory h3
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+CommercialFinancingRequest:
+Pre: True
+Post: status = "ConsolidateAndDigitalizeData" && Requester(rid, _) && request_amount >= 0 && interest >= 0 && length > 0
+Update: Write(status, rid, request_amount, interest, length)
+
+AnalyzeFinancialData:
+Pre: status = "ConsolidateAndDigitalizeData"
+Post: status = "AnalyzeFinancialData"
+Update: Write(status)
+
+CheckRequest:
+Pre: status = "AnalyzeFinancialData"
+Post: ((request_amount <= 1000000 && length <= 30 && interest >= 0.04 &&
+request_qualified = "Yes") || request_qualified = "No")
+Update: Write(request_qualified)
+
+VerifyCreditRecord:
+Pre: status = "AnalyzeFinancialData" && request_qualified == "Yes"
+Post: status = "PrepareDetailedAnalysis"
+Update: Write(status)
+
+DetailedAnalysis:
+Pre: status = "PrepareDetailedAnalysis"
+Post: status = "FinishDetailedAnalysis" && ((CreditHistory(h1, rid, "bad") && CreditHistory(h2, rid, "bad") && CreditHistory(h3, rid, "bad") && h1 != h2 && h1 != h3 && h2 != h3 && detailed_request_qualified = "No") || detailed_request_qualified = "Yes")
+Update: Write(status, detailed_request_qualified, h1, h2, h3)
+
+PrepareTransmitRefusalLetter:
+Pre: request_qualified == "No" || detailed_request_qualified == "No" || client_decision == "No"
+Post: status == "refused"
+Update: Write(status)
+
+ProposeCommercialFinancing:
+Pre: detailed_request_qualified == "Yes" && status = "FinishDetailedAnalysis"
+Post: status == "ProposedCommercialFinancing"
+Update: Write(status, proposed_amount, proposed_interest, proposed_length)
+
+SubmitCommercialFinancing:
+Pre: status == "ProposedCommercialFinancing"
+Post: status == "ProposalRefused" || status == "ProposalChangesProposed" || status == "After20Days" || status == "ProposalAccepted"
+Update: Write(status)
+
+AnalyzeProposedChanges:
+Pre: status == "ProposalChangesProposed"
+Post: ((proposed_amount <= 1000000 && proposed_length <= 30 && proposed_interest >= 0.04 && changesAcceptable = "Yes" && status == "ProposedCommercialFinancing") || changesAcceptable = "No")
+Update: Write(proposed_amount, proposed_length, proposed_interest, changesAcceptable, status)
+
+PrepareAndTransmitProposalCancellationLetter:
+Pre: status == "ProposalRefused" || status == "After20Days" || changesAcceptable == "No"
+Post: status == "CancellationLetterSent"
+Update: Write(status)
+
+PrepareAndSubmitAcceptanceLetter:
+Pre: status == "ProposalAccepted"
+Post: True && status == "ProposalAccepted"
+Update: Write(status)
+
+RequestDetailedFinancialOffering:
+Pre: status == "ProposalAccepted"
+Post: status == "BuildClientGuranties"
+Update: Write(status)
+
+BuildClientGuranties:
+Pre: status == "BuildClientGuranties"
+Post: status == "PrepareSubmissionForApprovalByCredit"
+Update: Write(status)
+
+PrepareSubmissionForApprovalByCredit:
+Pre: status == "PrepareSubmissionForApprovalByCredit"
+Post: status == "AuthorizeCommercialLoan"
+Update: Write(status)
+
+AuthorizeCommercialLoan:
+Pre: status == "AuthorizeCommercialLoan"
+Post: status == "AnalyzeCreditAuthorizationAndSupportiveDocuments"
+Update: Write(status)
+
+AnalyzeCreditAuthorizationAndSupportiveDocuments:
+Pre: status == "AnalyzeCreditAuthorizationAndSupportiveDocuments"
+Post: status == "CommunicateDecisionWithClient"
+Update: Write(status)
+
+CommunicateDecisionWithClient:
+Pre: status == "CommunicateDecisionWithClient"
+Post: status == "ReceivedClientAcceptance" && (client_decision == "Yes" || client_decision == "No")
+Update: Write(status, client_decision)
+
+------
+
+Finish:
+Variables: STR status, NUM amount, NUM interest, NUM length
+Input: proposed_amount as amount, proposed_interest as interest, proposed_length as length
+Return: status
+Open: client_decision == "Yes"
+Close: status == "finished"
+
+Services:
+
+Finish:
+Pre: True
+Post: status == "finished"
+Update: Write(status)
+
+------
