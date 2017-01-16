@@ -20,7 +20,7 @@ public:
 
 	string generate_hltlfo();
 
-    void generate_atm(vector<Automaton>& atms);
+    void generate_atms(vector<Automaton>& atms);
 
 	Artifact& art;
 	int task_id;

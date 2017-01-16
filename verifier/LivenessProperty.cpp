@@ -27,7 +27,8 @@ void LivenessProperty::generate_atms(vector<Automaton>& atms) {
     states[1].name = "S1";
     states[1].accept = true;
 
-    vector<vector<pair<vector<AProp*>, int> > > transition(2, vector<pair<vector<AProp*>, int> > >());
+    // vector<vector<pair<vector<AProp*>, int> > > transition(2, vector<pair<vector<AProp*>, int> > >());
+    // TODO
     // transition 1
     
     // transition 2
@@ -39,7 +40,7 @@ void LivenessProperty::generate_atms(vector<Automaton>& atms) {
 
     atm.num_states = 2;
     atm.states = states;
-    atm.transition = transition;
+    // atm.transition = transition;
 }
 
 }
