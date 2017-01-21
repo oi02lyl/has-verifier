@@ -53,9 +53,7 @@ public:
 		timer = clock();
 	}
 
-	bool satisfy(int taskid, Formula* dest);
-
-	bool satisfy(int taskid, Formula* dest, bool entire_space);
+    bool satisfy();
 
 	void reachable_root(vector<tuple<State, State, vector<int> > >& results);
 

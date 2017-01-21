@@ -30,4 +30,4 @@ lex.yy.c: has.l
 ltl3ba:
 	    $(MAKE) -C ltl3ba-1.1.3/ 
 clean:
-	    rm lex* has.tab.* *.o has
+	    rm lex* has.tab.* *.o has_real has_synthetic

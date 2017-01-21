@@ -42,6 +42,7 @@ public:
 	virtual bool is_relation();
 	virtual bool is_cmp();
 	virtual bool is_const();
+    virtual Formula* copy() = 0;
 
 	Formula();
 	virtual ~Formula();
@@ -55,6 +56,7 @@ public:
 	Parameter p2;
 
 	bool is_cmp();
+    Formula* copy();
 	string to_string();
 
 };
@@ -67,6 +69,7 @@ public:
 	vector<Parameter> paras;
 
 	bool is_relation();
+    Formula* copy();
 	string to_string();
 
 	RelationTerm() : rel_id(-1), negated(false) { };
@@ -77,6 +80,7 @@ public:
 	bool value;
 
 	bool is_const();
+    Formula* copy();
 	string to_string();
 
 	ConstTerm(bool v) : value(v) { }
@@ -89,7 +93,7 @@ public:
 	vector<Formula*> paras;
 
 	bool is_internal();
-
+    Formula* copy();
 	string to_string();
 
 	// default constructor

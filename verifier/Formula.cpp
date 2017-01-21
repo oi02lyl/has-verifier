@@ -156,6 +156,35 @@ void pushdown_neg(Formula*& form, bool negated) {
 	}
 }
 
+Formula* CmpTerm::copy() {
+    CmpTerm* res = new CmpTerm();
+    res->equal = equal;
+    res->p1 = p1;
+    res->p2 = p2;
+    return res;
+}
+
+
+Formula* RelationTerm::copy() {
+    RelationTerm* res = new RelationTerm();
+    res->rel_id = rel_id;
+    res->negated = negated;
+    res->paras = paras;
+
+    return res;
+}
+
+Formula* ConstTerm::copy() {
+    return new ConstTerm(value);
+}
+
+Formula* Internal::copy() {
+    Internal* res = new Internal(op);
+    res->paras = paras;
+    for (int i = 0; i < (int) paras.size(); i++)
+        res->paras[i] = paras[i]->copy();
+    return res;
+}
 
 string rand_op() {
 	if (rand() % 5 == 0)

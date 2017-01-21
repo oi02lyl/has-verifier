@@ -29,21 +29,23 @@ string SpinVerifier::promela_translate_eq(int expr1, int expr2) {
 			exit(0);
 		}
 
-		string tmp = "(" + expr_name[expr1] + " != CONST_NULL && " + expr_name[expr2] + " != CONST_NULL)";
-		int sz = ch1.size();
-		for (int i = 0; i < sz; i++) {
-			int c1 = ch1[i];
-			int c2 = ch2[i];
-   			tmp += " && ";
-            tmp += promela_translate_eq(c1, c2);
-		}
+        if (!ch1.empty() && !ch2.empty()) {
+            string tmp = "(" + expr_name[expr1] + " != CONST_NULL && " + expr_name[expr2] + " != CONST_NULL)";
+            int sz = ch1.size();
+            for (int i = 0; i < sz; i++) {
+                int c1 = ch1[i];
+                int c2 = ch2[i];
+                tmp += " && ";
+                tmp += promela_translate_eq(c1, c2);
+            }
 
-		// handle NULL
-        if (tmp != "") {
-            if (is_var(expr1) && is_var(expr2))
-	    		res = "(" + res + " && ( (" + expr_name[expr1] + " == CONST_NULL) || (" + tmp + ")))";
-    		else
-		    	res = "(" + res + " && (" + tmp + "))";
+            // handle NULL
+            if (tmp != "") {
+                if (is_var(expr1) && is_var(expr2))
+                    res = "(" + res + " && ( (" + expr_name[expr1] + " == CONST_NULL) || (" + tmp + ")))";
+                else
+                    res = "(" + res + " && (" + tmp + "))";
+            }
         }
 	}
 	return res;
@@ -208,8 +210,10 @@ void SpinVerifier::get_type_groups() {
     vector<tuple<int, int, bool> > eql_sets;
     get_eql_sets(eql_sets);
     get_eql_sets(property.task_id, property.form1, eql_sets);
-    get_eql_sets(property.task_id, property.form2, eql_sets);
-    // TODO also add negation of form2
+
+    Internal* negated = new Internal("!");
+    negated->paras[0] = property.form2->copy();
+    get_eql_sets(property.task_id, negated, eql_sets);
 
     // bfs
     int N = expr_name.size();
@@ -229,17 +233,24 @@ void SpinVerifier::get_type_groups() {
         if (expr_group_id[expr] >= 0 || is_const(expr))
             continue;
         
-        int uneql_cnt = 0;
         unordered_set<int> const_exprs;
+        unordered_set<int> uneql_consts;
 
         queue<int> que;
         que.push(expr);
         expr_group_id[expr] = group_id;
         set<pair<int, int> > uneql_set;
+        unordered_map<int, int> rename;
+        vector<vector<int> > uneql_graph;
+        int num_node = 0;
 
         while (!que.empty()) {
             int u = que.front();
             que.pop();
+            if (rename.count(u) == 0) {
+                uneql_graph.push_back(vector<int>());
+                rename[u] = num_node++;
+            }
 
             for (auto pp : edges[u]) {
                 if (!pp.second) {
@@ -247,8 +258,13 @@ void SpinVerifier::get_type_groups() {
                     int e2 = pp.first;
                     if (e1 > e2) 
                         swap(e1, e2);
+
                     if (!is_const(e1) && !is_const(e2))
                         uneql_set.insert(pair<int, int>(e1, e2));
+                    else if (is_const(e1))
+                        uneql_consts.insert(e1);
+                    else if (is_const(e2))
+                        uneql_consts.insert(e2);
                 }
 
                 if (expr_group_id[pp.first] == -1) {
@@ -263,30 +279,20 @@ void SpinVerifier::get_type_groups() {
         }
 
         // process uneql_set to get the chromatic number
-        unordered_map<int, int> rename;
-        vector<vector<int> > uneql_graph;
-        int num_node = 0;
-
         for (auto& tp : uneql_set) {
-        	int u = tp.first;
-        	if (rename.count(u) == 0) {
-        		rename[u] = num_node++;
-        		uneql_graph.push_back(vector<int>());
-        	}
-
-        	int v = tp.second;
-        	if (rename.count(v) == 0) {
-        		rename[v] = num_node++;
-        		uneql_graph.push_back(vector<int>());
-        	}
-        	u = rename[u];
-        	v = rename[v];
+        	int u = rename[get<0>(tp)];
+        	int v = rename[get<1>(tp)];
         	uneql_graph[u].push_back(v);
         	uneql_graph[v].push_back(u);
         }
 
         // group_uneql_cnt.push_back(uneql_set.size());
-        group_uneql_cnt.push_back(chromatic_number(uneql_graph));
+        int uneql_cnt = uneql_consts.size();
+        int chromatic = chromatic_number(uneql_graph);
+        if (!const_exprs.empty() && uneql_cnt >= (int) const_exprs.size())
+            chromatic++;
+
+        group_uneql_cnt.push_back(chromatic);
         group_const_exprs.push_back(vector<int>(const_exprs.begin(), const_exprs.end()));
 
         group_id++;
@@ -301,9 +307,9 @@ void SpinVerifier::get_type_group(int expr, vector<string>& res) {
     for (int expr : const_exprs)
         res.push_back(expr_name[expr]);
 
-    int uneql_cnt = group_uneql_cnt[group_id];
-    if (uneql_cnt == 0 && res.empty())
-        uneql_cnt = 1;
+    int num_consts = const_exprs.size();
+    int uneql_cnt = group_uneql_cnt[group_id] - (int) const_exprs.size();
+
     
     int num_num = art.num_consts.size();
     int num_str = art.str_consts.size();
@@ -459,21 +465,42 @@ string SpinVerifier::generate_promela() {
     promela += "end:\n";
 	promela += "}\n";
 
-	string cond1 = promela_translate_condition(property.task_id, property.form1);
-	string cond2 = promela_translate_condition(property.task_id, property.form2);
+    string cond0 = "(current == " + to_string(property.task_id) + ")";
+	string cond1 = "(" + cond0 + " && " + promela_translate_condition(property.task_id, property.form1) + ")";
+	string cond2 = "(" + cond0 + " && " + promela_translate_condition(property.task_id, property.form2) + ")";
+    
+    promela += "never { /* (G (F r)) && !( G (p -> F q)) */\n";
+    promela += "T0_init :    /* init */\n";
+    promela += "    if\n";
+    promela += "    :: (1) -> goto T0_init\n";
+    promela += "    :: (!" + cond2 +" && " + cond1 + ") -> goto T0_S4\n";
+    promela += "                            fi;\n";
+    promela += "T0_S4 :    /* 1 */\n";
+    promela += "    if\n";
+    promela += "    :: (!" + cond2 + ") -> goto T0_S4\n";
+    promela += "    :: (" + cond0 + " && !(" + cond2 + ")) -> goto accept_S4\n";
+    promela += "    fi;\n";
+    promela += "accept_S4 :    /* 2 */\n";
+    promela += "    if\n";
+    promela += "    :: (!" + cond2 + ") -> goto T0_S4\n";
+    promela += "    :: (" + cond0 + " && !" + cond2 + ") -> goto accept_S4\n";
+    promela += "    fi;\n";
+    promela += "}\n";
 
-	promela += "never { /* !(G (p -> F q)) */\n";
-	promela += "T0_init :    /* init */\n";
+/*
+	promela += "never { \n";
+	promela += "T0_init :    \n";
 	promela += "	if\n";
 	promela += "	:: (1) -> goto T0_init\n";
-	promela += "	:: (!(" + cond2 + ")  && (" + cond1 + ") && (current == " + to_string(property.task_id) +  ")) -> goto accept_S2\n";
+	promela += "	:: (!(" + cond2 + ")  && (" + cond1 + ") && (current == " + to_string(property.task_id) + ") ) -> goto accept_S2\n";
 	promela += "	fi;\n";
-	promela += "accept_S2 :    /* 1 */\n";
+	promela += "accept_S2 :    \n";
 	promela += "	if\n";
-	promela += "	:: (!(" + cond2 + ")) -> goto accept_S2\n";
-	promela += "	:: ((" + cond2 + ") || !running[" + to_string(property.task_id) +  "]) -> goto T0_init\n";
+    promela += "    :: (current != " + to_string(property.task_id)+ ") -> goto accept_S2\n";
+	promela += "	:: (!(" + cond2 + ") && (current == " + to_string(property.task_id)+ ")) -> goto accept_S2\n";
 	promela += "	fi;\n";
 	promela += "}\n";
+    */
 //	string target_cond = promela_translate_condition(taskid, target);
 //    promela += "never { true; do :: (current == 0) && (" + target_cond + ") -> break; :: else od } ";
 
