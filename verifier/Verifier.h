@@ -30,7 +30,7 @@ class APropFO;
 
 class VASSStateStore;
 
-struct Disjunct;
+struct Conjunct;
 
 class Verifier {
 public:
@@ -77,14 +77,14 @@ public:
 	void add_rename(Node* parent_node, Node* child_node, int task_id,
 			int child_id);
 
-	// convert a formula to conjunctive normal form
+	// convert a formula to disjunctive normal form
 	// assuming that negations have been pushed down to leaves
-	void form_to_cnf(Formula* form, int task_id, vector<Disjunct>& disjuncts);
+	void form_to_dnf(Formula* form, int task_id, vector<Conjunct>& conjuncts);
 
-	// convert a formula to conjunctive normal form
+	// convert a formula to disjunctive normal form
 	// negations have not been pushed down to leaves
-	void form_to_cnf_negdown(Formula* form, int task_id,
-			vector<Disjunct>& disjuncts);
+	void form_to_dnf_negdown(Formula* form, int task_id,
+			vector<Conjunct>& conjuncts);
 
 	// add extra variables for atm states
 	void preprocess_atms();
@@ -129,13 +129,13 @@ public:
 
 	bool intersect(State& s1, State& s2, State& res);
 
-	bool intersect(State& s, vector<Disjunct>& disjuncts, vector<State>& res);
+	bool intersect(State& s, vector<Conjunct>& conjuncts, vector<State>& res);
 
-	bool intersect(State& s, Disjunct& disjunct, State& res);
+	bool intersect(State& s, Conjunct& conjunct, State& res);
 
-	void insert_state_to_eqls(State& state, Disjunct& disjunct);
+	void insert_state_to_eqls(State& state, Conjunct& conjunct);
 
-	bool convert_eqls_to_state(Disjunct& disjunct, State& state);
+	bool convert_eqls_to_state(Conjunct& conjunct, State& state);
 
 	void get_next_states(int task_id, VASSState* vstate,
 			vector<VASSState*>& results);
@@ -158,7 +158,7 @@ public:
 			vector<pair<int, int> >& prev_atm_states, int ser_id, bool is_open,
 			int child_id, vector<int>& accepted_child_atms, vector<VASSState*>& results);
 
-	void get_atm_form_disjunct(APropFO* prop, int task_id, vector<Disjunct>& result);
+	void get_atm_form_conjunct(APropFO* prop, int task_id, vector<Conjunct>& result);
 
 	void dump_state(State& state);
 
@@ -214,19 +214,19 @@ public:
 	vector<vector<int> > expr_rename_to_child;
 
 	// transformed global pre-condition
-	vector<Disjunct> global_pre_conds;
+	vector<Conjunct> global_pre_conds;
 
 	// transformed opening conditions
-	vector<vector<Disjunct> > open_conds;
+	vector<vector<Conjunct> > open_conds;
 
 	// transformed closing conditions
-	vector<vector<Disjunct> > close_conds;
+	vector<vector<Conjunct> > close_conds;
 
 	// transformed pre-conditions
-	vector<vector<vector<Disjunct> > > pre_conds;
+	vector<vector<vector<Conjunct> > > pre_conds;
 
 	// transformed post-conditions
-	vector<vector<vector<Disjunct> > > post_conds;
+	vector<vector<vector<Conjunct> > > post_conds;
 
 	// memorize the reachable results
 	vector<map<VASSState, vector<tuple<State, State, vector<int> > >*> > reach_map;
@@ -237,8 +237,8 @@ public:
 	// Trie index for empty states
 	vector<TrieNode*> empty_states_tries;
 
-	// automata formulas to vector of disjuncts
-	unordered_map<APropFO*, vector<Disjunct> > atm_form_dis_map;
+	// automata formulas to vector of conjuncts
+	unordered_map<APropFO*, vector<Conjunct> > atm_form_dis_map;
 
 	// the variable id for each atm
 	vector<int> atm_var_id;
@@ -333,17 +333,17 @@ struct NaviNode: public Node {
 	bool is_navi();
 };
 
-struct Disjunct {
+struct Conjunct {
 	vector<pair<int, int> > eqs;
 	vector<pair<int, int> > uneqs;
 
-	friend bool operator<(const Disjunct& l, const Disjunct& r) {
+	friend bool operator<(const Conjunct& l, const Conjunct& r) {
 		if (l.eqs != r.eqs)
 			return l.eqs < r.eqs;
 		return l.uneqs < r.uneqs;
 	}
 
-	friend bool operator==(const Disjunct& l, const Disjunct& r) {
+	friend bool operator==(const Conjunct& l, const Conjunct& r) {
 		return (l.eqs == r.eqs && l.uneqs == r.uneqs);
 	}
 };

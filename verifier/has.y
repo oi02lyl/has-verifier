@@ -871,7 +871,7 @@ int main(int argc, char** argv) {
     if (verifier_option == 1) {
         srand(seed);
         LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
-        printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
+        // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
         SpinVerifier sver(art, atms, prop, naive);
         // Formula* target = std::generate_safety(0, art);
         
@@ -879,7 +879,7 @@ int main(int argc, char** argv) {
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 10m ./pan -a");
+        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 30m ./pan -a");
 
         gettimeofday(&tv, NULL);
         elapsed = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
@@ -899,7 +899,7 @@ int main(int argc, char** argv) {
             // generate_atms(art, num_atms, num_atm_states, num_trans, atms);
             LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
             prop.generate_atms(atms);
-            printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
+            // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
         }
         
         int num_tasks = art.tasks.size();

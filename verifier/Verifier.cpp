@@ -108,57 +108,59 @@ void Verifier::add_rename(Node* parent_node, Node* child_node, int task_id,
 	}
 }
 
-void Verifier::form_to_cnf_negdown(Formula* form, int task_id,
-		vector<Disjunct>& disjuncts) {
+void Verifier::form_to_dnf_negdown(Formula* form, int task_id,
+		vector<Conjunct>& conjuncts) {
 	pushdown_neg(form, false);
-	vector<Disjunct> res;
-	form_to_cnf(form, task_id, res);
+	vector<Conjunct> res;
+	form_to_dnf(form, task_id, res);
 
 	// remove duplicates
-	for (Disjunct dj : res) {
+	for (Conjunct dj : res) {
 		sort(dj.eqs.begin(), dj.eqs.end());
 		sort(dj.uneqs.begin(), dj.uneqs.end());
 	}
 
 	sort(res.begin(), res.end());
 
-	disjuncts.clear();
+	conjuncts.clear();
 	int N = res.size();
 	for (int i = 0; i < N; i++) {
-		disjuncts.push_back(res[i]);
+		conjuncts.push_back(res[i]);
 		while (i + 1 < N && res[i] == res[i + 1])
 			i++;
 	}
 }
 
-void Verifier::form_to_cnf(Formula* form, int task_id, vector<Disjunct>& res) {
+void Verifier::form_to_dnf(Formula* form, int task_id, vector<Conjunct>& res) {
 	// printf("%s\n", form->to_string().c_str());
 	if (form == NULL)
 		return;
 
 	if (form->is_const()) {
 		ConstTerm* term = (ConstTerm*) form;
-		Disjunct d;
+		Conjunct d;
 		if (!term->value)
 			d.uneqs.push_back(pair<int, int>(0, 0));
 		res.push_back(d);
 	}
 	if (form->is_cmp()) {
 		CmpTerm* term = (CmpTerm*) form;
-		Disjunct d;
+		Conjunct d;
 		int expr1 = para_to_expr(term->p1, task_id);
 		int expr2 = para_to_expr(term->p2, task_id);
         
         pair<int, int> pair1(expr1, expr2);
         pair<int, int> pair2(expr2, expr1);
 
-		if (expr1 >= 0 && expr2 >= 0 && unique_sign_pairs.count(pair1) == 0 && unique_sign_pairs.count(pair2) == 0) {
-			if (term->equal)
-				d.eqs.push_back(pair<int, int>(expr1, expr2));
-			else
-				d.uneqs.push_back(pair<int, int>(expr1, expr2));
-			res.push_back(d);
-		}
+		if (expr1 >= 0 && expr2 >= 0) {
+            if (unique_sign_pairs.count(pair1) == 0 && unique_sign_pairs.count(pair2) == 0) {
+    			if (term->equal)
+	    			d.eqs.push_back(pair<int, int>(expr1, expr2));
+		    	else
+			    	d.uneqs.push_back(pair<int, int>(expr1, expr2));
+		    }
+		    res.push_back(d);
+        }
 	} else if (form->is_relation()) {
 		RelationTerm* term = (RelationTerm*) form;
 
@@ -174,17 +176,16 @@ void Verifier::form_to_cnf(Formula* form, int task_id, vector<Disjunct>& res) {
 
 		if (term->negated) {
 			for (int i = 0; i < (int) lefts.size(); i++) {
-				Disjunct d;
+				Conjunct d;
 
 				pair<int, int> p1(lefts[i], rights[i]);
 				pair<int, int> p2(rights[i], lefts[i]);
-                if (unique_sign_pairs.count(p1) == 0 && unique_sign_pairs.count(p2) == 0) {
+                if (unique_sign_pairs.count(p1) == 0 && unique_sign_pairs.count(p2) == 0)
     				d.uneqs.push_back(pair<int, int>(lefts[i], rights[i]));
-	    			res.push_back(d);
-                }
+	    		res.push_back(d);
 			}
 		} else {
-			Disjunct d;
+			Conjunct d;
 			for (int i = 0; i < (int) lefts.size(); i++) {
 				pair<int, int> p1(lefts[i], rights[i]);
 				pair<int, int> p2(rights[i], lefts[i]);
@@ -192,21 +193,20 @@ void Verifier::form_to_cnf(Formula* form, int task_id, vector<Disjunct>& res) {
 				    d.eqs.push_back(pair<int, int>(lefts[i], rights[i])); 
             }
 
-            if (!d.eqs.empty())
-    			res.push_back(d);
+    		res.push_back(d);
 		}
 	} else if (form->is_internal()) {
 		Internal* term = (Internal*) form;
 
 		if (term->op == "&&") {
-			vector<Disjunct> left, right;
+			vector<Conjunct> left, right;
 			State tmp;
 
-			form_to_cnf(term->paras[0], task_id, left);
-			form_to_cnf(term->paras[1], task_id, right);
-			for (Disjunct& dl : left)
-				for (Disjunct& dr : right) {
-					Disjunct d = dl;
+			form_to_dnf(term->paras[0], task_id, left);
+			form_to_dnf(term->paras[1], task_id, right);
+			for (Conjunct& dl : left)
+				for (Conjunct& dr : right) {
+					Conjunct d = dl;
 					d.eqs.insert(d.eqs.end(), dr.eqs.begin(), dr.eqs.end());
 					d.uneqs.insert(d.uneqs.end(), dr.uneqs.begin(),
 							dr.uneqs.end());
@@ -228,8 +228,8 @@ void Verifier::form_to_cnf(Formula* form, int task_id, vector<Disjunct>& res) {
 					}
 				}
 		} else {
-			form_to_cnf(term->paras[0], task_id, res);
-			form_to_cnf(term->paras[1], task_id, res);
+			form_to_dnf(term->paras[0], task_id, res);
+			form_to_dnf(term->paras[1], task_id, res);
 		}
 	}
 }
@@ -427,14 +427,14 @@ void Verifier::preprocess() {
     get_unique_sign_pairs();
 
 	// pre-process formulas
-	open_conds = vector<vector<Disjunct> >(num_tasks, vector<Disjunct>());
-	close_conds = vector<vector<Disjunct> >(num_tasks, vector<Disjunct>());
-	pre_conds = vector<vector<vector<Disjunct> > >(num_tasks,
-			vector<vector<Disjunct> >());
-	post_conds = vector<vector<vector<Disjunct> > >(num_tasks,
-			vector<vector<Disjunct> >());
+	open_conds = vector<vector<Conjunct> >(num_tasks, vector<Conjunct>());
+	close_conds = vector<vector<Conjunct> >(num_tasks, vector<Conjunct>());
+	pre_conds = vector<vector<vector<Conjunct> > >(num_tasks,
+			vector<vector<Conjunct> >());
+	post_conds = vector<vector<vector<Conjunct> > >(num_tasks,
+			vector<vector<Conjunct> >());
 	global_pre_conds.clear();
-	form_to_cnf_negdown(art.global_pre_cond, 0, global_pre_conds);
+	form_to_dnf_negdown(art.global_pre_cond, 0, global_pre_conds);
 
 	vector<int> parent_task(num_tasks, -1);
 	for (int task_id = 0; task_id < num_tasks; task_id++)
@@ -443,20 +443,20 @@ void Verifier::preprocess() {
 	parent_task[0] = 0;
 
 	for (int task_id = 0; task_id < num_tasks; task_id++) {
-		form_to_cnf_negdown(art.tasks[task_id].open_cond, parent_task[task_id],
+		form_to_dnf_negdown(art.tasks[task_id].open_cond, parent_task[task_id],
 				open_conds[task_id]);
-		form_to_cnf_negdown(art.tasks[task_id].close_cond, task_id,
+		form_to_dnf_negdown(art.tasks[task_id].close_cond, task_id,
 				close_conds[task_id]);
 
 		int num_sers = art.tasks[task_id].services.size();
-		pre_conds[task_id] = vector<vector<Disjunct> >(num_sers,
-				vector<Disjunct>());
-		post_conds[task_id] = vector<vector<Disjunct> >(num_sers,
-				vector<Disjunct>());
+		pre_conds[task_id] = vector<vector<Conjunct> >(num_sers,
+				vector<Conjunct>());
+		post_conds[task_id] = vector<vector<Conjunct> >(num_sers,
+				vector<Conjunct>());
 		for (int ser_id = 0; ser_id < num_sers; ser_id++) {
-			form_to_cnf_negdown(art.tasks[task_id].services[ser_id].pre_cond,
+			form_to_dnf_negdown(art.tasks[task_id].services[ser_id].pre_cond,
 					task_id, pre_conds[task_id][ser_id]);
-			form_to_cnf_negdown(art.tasks[task_id].services[ser_id].post_cond,
+			form_to_dnf_negdown(art.tasks[task_id].services[ser_id].post_cond,
 					task_id, post_conds[task_id][ser_id]);
 		}
 	}
@@ -603,9 +603,9 @@ void Verifier::project(State& state, int taskid, vector<int>& vars,
 //	}
 }
 
-void Verifier::insert_state_to_eqls(State& state, Disjunct& disjunct) {
-	vector<pair<int, int> >& eqs = disjunct.eqs;
-	vector<pair<int, int> >& uneqs = disjunct.uneqs;
+void Verifier::insert_state_to_eqls(State& state, Conjunct& conjunct) {
+	vector<pair<int, int> >& eqs = conjunct.eqs;
+	vector<pair<int, int> >& uneqs = conjunct.uneqs;
 
 	int num_expr = state.exprs.size();
 	int num_eqc = 0;
@@ -660,7 +660,7 @@ void Verifier::get_child_expr(int expr, vector<int>& res) {
 void Verifier::rename_to_set(int task_id, int set_id, vector<int>& vars,
 		State& state) {
 	vector<int>& set_vars = art.tasks[task_id].set_var_ids[set_id];
-	Disjunct dj;
+	Conjunct dj;
 	for (int i = 0; i < (int) vars.size(); i++) {
 		int svid = set_vars[i];
 		int expr1 = get_expr_id_var(task_id, vars[i]);
@@ -680,7 +680,7 @@ void Verifier::rename_to_set(int task_id, int set_id, vector<int>& vars,
 void Verifier::rename_from_set(int task_id, int set_id, vector<int>& vars,
 		State& state) {
 	vector<int>& set_vars = art.tasks[task_id].set_var_ids[set_id];
-	Disjunct dj;
+	Conjunct dj;
 	for (int i = 0; i < (int) vars.size(); i++) {
 		int svid = set_vars[i];
 		int expr1 = get_expr_id_var(task_id, vars[i]);
@@ -747,39 +747,51 @@ void Verifier::union_find_set_union(map<int, int>& parents, int expr1,
 }
 
 void Verifier::get_initial_state(int task_id, State& res) {
-	Disjunct disjunct;
+	Conjunct conjunct;
 
 	set<int> input_vars_set(input_vars[task_id].begin(),
 			input_vars[task_id].end());
 	set<int> expr_set;
 	int num_vars = art.tasks[task_id].vars.size();
+    
+    unordered_set<int> atm_state_exprs;
+    for (int atm_id : atm_task[task_id])
+        atm_state_exprs.insert(get_expr_id_var(task_id, atm_var_id[atm_id]));
+
 	for (int vid = 0; vid < num_vars; vid++)
 		if (input_vars_set.count(vid) == 0) {
 			int type = art.tasks[task_id].var_types[vid];
 			int expr = task_var_expr[task_id][vid];
 			// printf("%d %d %d\n", vid, type, expr);
 			if (type == -1) {
-				disjunct.eqs.push_back(pair<int, int>(expr, zero_id));
+				conjunct.eqs.push_back(pair<int, int>(expr, zero_id));
 				expr_set.insert(zero_id);
 			} else if (type == -2) {
-				disjunct.eqs.push_back(pair<int, int>(expr, empty_id));
-				expr_set.insert(empty_id);
+                if (atm_state_exprs.count(expr) == 0) {
+    				conjunct.eqs.push_back(pair<int, int>(expr, empty_id));
+	    			expr_set.insert(empty_id);
+                } else {
+                    // also initialize atm state
+                    int state_expr = get_expr_id_const(-2, 0);
+                    conjunct.eqs.push_back(pair<int, int>(expr, state_expr));
+                    expr_set.insert(state_expr);
+                }
 			} else {
-				disjunct.eqs.push_back(pair<int, int>(expr, null_id));
+				conjunct.eqs.push_back(pair<int, int>(expr, null_id));
 				expr_set.insert(null_id);
 			}
 			expr_set.insert(expr);
 		}
 	res.exprs = vector<int>(expr_set.begin(), expr_set.end());
-	convert_eqls_to_state(disjunct, res);
+	convert_eqls_to_state(conjunct, res);
 }
 
 // return true if eqs and uneqs can be coverted to a state
 // assuming the list of expressions are set in state
-bool Verifier::convert_eqls_to_state(Disjunct& disjunct, State& state) {
+bool Verifier::convert_eqls_to_state(Conjunct& conjunct, State& state) {
 	// printf("convert_eqls_to_state\n");
-	vector<pair<int, int> >& eqs = disjunct.eqs;
-	vector<pair<int, int> >& uneqs = disjunct.uneqs;
+	vector<pair<int, int> >& eqs = conjunct.eqs;
+	vector<pair<int, int> >& uneqs = conjunct.uneqs;
 	
 	sort(eqs.begin(), eqs.end());
 	sort(uneqs.begin(), uneqs.end());
@@ -988,7 +1000,7 @@ bool Verifier::intersect(State& s1, State& s2, State& res) {
 	expr_set.insert(s2.exprs.begin(), s2.exprs.end());
 	res.exprs = vector<int>(expr_set.begin(), expr_set.end());
 
-	Disjunct combined;
+	Conjunct combined;
 
 	insert_state_to_eqls(s1, combined);
 	insert_state_to_eqls(s2, combined);
@@ -1014,17 +1026,17 @@ bool Verifier::intersect(State& s1, State& s2, State& res) {
 	return flag;
 }
 
-bool Verifier::intersect(State& s, Disjunct& disjunct, State& res) {
+bool Verifier::intersect(State& s, Conjunct& conjunct, State& res) {
 	set<int> expr_set(s.exprs.begin(), s.exprs.end());
-	for (auto& pp : disjunct.eqs) {
+	for (auto& pp : conjunct.eqs) {
 		expr_set.insert(pp.first);
 		expr_set.insert(pp.second);
 	}
-	for (auto& pp : disjunct.uneqs) {
+	for (auto& pp : conjunct.uneqs) {
 		expr_set.insert(pp.first);
 		expr_set.insert(pp.second);
 	}
-	Disjunct combined = disjunct;
+	Conjunct combined = conjunct;
 	insert_state_to_eqls(s, combined);
 	res.exprs = vector<int>(expr_set.begin(), expr_set.end());
 
@@ -1032,11 +1044,11 @@ bool Verifier::intersect(State& s, Disjunct& disjunct, State& res) {
 	return flag;
 }
 
-bool Verifier::intersect(State& s, vector<Disjunct>& disjuncts,
+bool Verifier::intersect(State& s, vector<Conjunct>& conjuncts,
 		vector<State>& res) {
     set<State> res_set;
 
-	for (Disjunct dj : disjuncts) {
+	for (Conjunct dj : conjuncts) {
 		State state;
 		if (intersect(s, dj, state)) {
             res_set.insert(state);
@@ -1088,35 +1100,19 @@ void Verifier::dump_vass_state(VASSState& state) {
 	}
 }
 
-bool Verifier::satisfy(int taskid, Formula* dest) {
-	return satisfy(taskid, dest, false);
-}
+bool Verifier::satisfy() {
+    vector<tuple<State, State, vector<int> > > res;
+    reachable_root(res);
 
-bool Verifier::satisfy(int taskid, Formula* dest, bool entire_space) {
-	for (Disjunct& d : global_pre_conds) {
-		State start;
-
-		set<int> exprs;
-		for (auto& pp : d.eqs) {
-			exprs.insert(pp.first);
-			exprs.insert(pp.second);
-		}
-		for (auto& pp : d.uneqs) {
-			exprs.insert(pp.first);
-			exprs.insert(pp.second);
-		}
-		start.exprs = vector<int>(exprs.begin(), exprs.end());
-
-		if (convert_eqls_to_state(d, start))
-			reachable(0, start);
-	}
-
-	return false;
-
+    for (auto tp : res)
+        for (int atm_id : get<2>(tp))
+            if (atm_id == 0)
+                return true;
+    return false;
 }
 
 void Verifier::reachable_root(vector<tuple<State, State, vector<int> > >& results) {
-	for (Disjunct& d : global_pre_conds) {
+	for (Conjunct& d : global_pre_conds) {
 		State start;
 
 		set<int> exprs;
@@ -1241,12 +1237,12 @@ void Verifier::make_atm_transition(int task_id, VASSState* now,
 				bool valid = true;
 				for (AProp* prop : trans.first) {
 					if (prop->is_fo()) {
-						vector<Disjunct> disjuncts;
-						get_atm_form_disjunct((APropFO*) prop, task_id,
-								disjuncts);
+						vector<Conjunct> conjuncts;
+						get_atm_form_conjunct((APropFO*) prop, task_id,
+								conjuncts);
 						vector<VASSState*> new_next_set;
 
-						for (Disjunct& dis : disjuncts) {
+						for (Conjunct& dis : conjuncts) {
 							for (VASSState* next : next_set) {
 								State tmp;
 								if (intersect(next->state, dis, tmp)) {
@@ -1306,7 +1302,7 @@ void Verifier::make_atm_transition(int task_id, VASSState* now,
 
 				if (valid) {
 					for (VASSState* next : next_set) {
-						Disjunct dis;
+						Conjunct dis;
 						int expr1 = get_expr_id_const(-2, trans.second);
 						int expr2 = get_expr_id_var(task_id, atm_var_id[atm_id]);
 						dis.eqs.push_back(pair<int, int>(expr1, expr2));
@@ -1338,19 +1334,19 @@ void Verifier::make_atm_transition(int task_id, VASSState* now,
 	}
 }
 
-void Verifier::get_atm_form_disjunct(APropFO* prop, int task_id,
-		vector<Disjunct>& result) {
+void Verifier::get_atm_form_conjunct(APropFO* prop, int task_id,
+		vector<Conjunct>& result) {
 	if (atm_form_dis_map.count(prop) > 0)
 		result = atm_form_dis_map[prop];
 
 	if (prop->negated) {
 		Internal* new_form = new Internal();
 		new_form->op = "!";
-		new_form->paras.push_back(prop->fo);
+		new_form->paras.push_back(prop->fo->copy());
 		prop->fo = new_form;
 	}
 
-	form_to_cnf_negdown(prop->fo, task_id, result);
+	form_to_dnf_negdown(prop->fo, task_id, result);
 	atm_form_dis_map[prop] = result;
 }
 
@@ -1758,7 +1754,12 @@ vector<tuple<State, State, vector<int> > >* Verifier::reachable(int taskid,
     int que_size = que.size();
     // perform repeated reachability test
 	vector<bool> repeated;
-	repeated_reachable(taskid, que, visited, forward_edges, pruned, repeated);
+
+    // TODO: ignore repeated reachability test when there is no atm
+    if (atm_task[taskid].empty())
+        repeated = vector<bool>(que_size, false);
+    else
+    	repeated_reachable(taskid, que, visited, forward_edges, pruned, repeated);
 
 	// collect final states
 	for (int idx = que_size - 1; idx >= 0; idx--) {
@@ -1794,14 +1795,16 @@ vector<tuple<State, State, vector<int> > >* Verifier::reachable(int taskid,
                         invalid.uneqs.push_back(pair<int, int>(0, 0));
                         get<1>(out) = invalid;
                     }
-
+                    
 					vector<pair<int, int> > atm_states;
 					get_atm_states(taskid, last, atm_states);
 					for (pair<int, int>& atm_state : atm_states) {
 						int atm_id = atm_state.first;
 						int state_id = atm_state.second;
-						if (atms[atm_id].states[state_id].accept)
-							get<2>(out).push_back(atm_id);
+						if (atms[atm_id].states[state_id].accept) {
+                            if (repeated[idx] || taskid != 0 )
+    							get<2>(out).push_back(atm_id);
+                        }
 					}
 
 					output_sets[idx].insert(out);
@@ -1978,20 +1981,35 @@ void Verifier::repeated_reachable(int taskid, vector<VASSState*>& que,
 						if (v < num_nodes)
 							result[v] = true;
 				} else {
-					bool self_loop = false;
-					for (int v : forward_edges[u])
-						if (u == v) {
-							self_loop = true;
-							break;
-						}
-					if (self_loop && u < num_nodes)
-						result[u] = true;
-				}
-			}
+                    bool self_loop = false;
+                    for (int v : forward_edges[u])
+                        if (u == v) {
+                            self_loop = true;
+                            break;
+                        }
+                    if (self_loop && u < num_nodes)
+                        result[u] = true;
+                }
+            }
 		} else {
 			dfs_stk.pop();
 		}
 	}
+    
+    // mark all self-loops
+    for (int u = 0; u < num_nodes; u++) {
+        if (result[u])
+            continue;
+        bool self_loop = false;
+        for (int v : forward_edges[u])
+            if (u == v) {
+                self_loop = true;
+                break;
+            }
+        if (self_loop)
+            result[u] = true;
+    }
+
 	time_scc += clock() - start;
 }
 
@@ -2046,6 +2064,17 @@ void Verifier::get_eql_sets(vector<tuple<int, int, bool> >& eql_sets) {
 			else
 				eql_sets.push_back(tuple<int, int, bool>(expr, null_id, true));
 		}
+    }
+
+    // eqls in property
+    for (Automaton& atm : atms) {
+        for (int sid = 0; sid < atm.num_states; sid++)
+            for (auto& tran : atm.transition[sid])
+                for (AProp* prop : tran.first)
+                    if (prop->is_fo()) {
+                        APropFO* p = (APropFO*) prop;
+                        get_eql_sets(atm.taskid, p->fo, eql_sets);
+                    }
     }
 }
 
@@ -2149,19 +2178,25 @@ void Verifier::get_unique_sign_pairs() {
         set<tuple<int, int, bool> > edge_set;
         int uneql_cnt = 0;
         int eql_cnt = 0;
+        Conjunct conj;
 
         while (!que.empty()) {
             int u = que.front();
             que.pop();
 
             for (auto pp : edges[u]) {
+                if (pp.second)
+                    conj.eqs.push_back(pair<int, int>(u, pp.first));
+                else
+                    conj.uneqs.push_back(pair<int, int>(u, pp.first));
+
             	// add edge
 				int e1 = u;
 				int e2 = pp.first;
 				if (e1 > e2)
 					swap(e1, e2);
-				if (!is_const(e1) && !is_const(e2)) {
-					edge_set.insert(tuple<int, int, bool>(e1, e2, pp.second));
+				edge_set.insert(tuple<int, int, bool>(e1, e2, pp.second));
+                if (!is_const(e1) && !is_const(e2)) {                    
                     if (pp.second)
                         eql_cnt++;
                     else
@@ -2179,15 +2214,22 @@ void Verifier::get_unique_sign_pairs() {
             }
         }
 
-        if (const_exprs.size() <= 1) {
-            if (eql_cnt == 0 || uneql_cnt == 0) {
-            	for (auto& tp : edge_set)
-        		    unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
-            }
+        if ((const_exprs.size() <= 1 && uneql_cnt == 0) || eql_cnt == 0) {
+            for (auto& tp : edge_set)
+                unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
         }
+        /*
+        else {
+            State tmp;
+            if (convert_eqls_to_state(conj, tmp)) {
+                for (auto& tp : edge_set)
+                    unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
+            }
+        }*/
 
         group_id++;
     }
+    // printf("%d\n", (int) unique_sign_pairs.size());
 }
 
 void Verifier::profile_get_num_counters(vector<int>& results) {
@@ -2238,6 +2280,18 @@ int Verifier::profile_get_cyclomatic(int task_id, vector<VASSState*>& que, vecto
 
 	for (int i = 0; i < N; i++) {
 		State p;
+
+        /*
+        if (task_id == 0) {
+            printf("State %d:\n", i);
+            dump_state(que[i]->state);
+            printf("Edges: ");
+            for (int v : forward_edges[i])
+                printf("%d ", v);
+            printf("\n\n");
+        }
+        */
+
 		project(que[i]->state, task_id, nonid_vars, p);
 		if (proj_map.count(p) == 0)
 			proj_map[p] = (int) proj_map.size();

@@ -4,13 +4,15 @@ from os.path import isfile, join
 
 mypath = '../bpmn/'
 files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-naives = [0]
+verifiers = [0, 2]
+# naives = [0]
 # files = ['Book-Writing-and-Publishing.txt']
 
 for fname in files:
-    for naive in naives:
+    for veri in verifiers:
+#        for naive in naives:
         print fname
-        cmd = './has_real ../bpmn/%s %d > result_km/%s.%d.txt' % (fname, naive, fname, naive)
+        cmd = './has_real ../bpmn/%s %d > result_km/%s.%d.txt' % (fname, veri, fname, veri)
         os.system(cmd)
 
 
