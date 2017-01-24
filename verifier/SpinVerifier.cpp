@@ -198,7 +198,6 @@ int SpinVerifier::chromatic_number(vector<vector<int> >& graph) {
 }
 
 void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& edges) {
-
     int max_const = 0;
     unordered_set<int> const_set;
     int num_expr = expr_name.size();
@@ -300,12 +299,22 @@ void SpinVerifier::get_type_groups() {
     negated->paras[0] = property.form2->copy();
     get_eql_sets(property.task_id, negated, eql_sets);
 
+    // remove the ones with unique sign
+    vector<tuple<int, int, bool> > new_eql_sets;
+    for (auto tp : eql_sets) {
+        int e1 = get<0>(tp);
+        int e2 = get<1>(tp);
+        if (unique_sign_pairs.count(pair<int, int>(e1, e2)) == 0 && 
+            unique_sign_pairs.count(pair<int, int>(e2, e1)) == 0)
+            new_eql_sets.push_back(tp);
+    }
+
     // NULLS
     for (int expr = 0; expr < (int) expr_to_node.size(); expr++)
         if (expr_to_node[expr]->type >= 0)
-            eql_sets.push_back(tuple<int, int, bool>(expr, null_id, false));
+            new_eql_sets.push_back(tuple<int, int, bool>(expr, null_id, false));
 
-    get_minimal_assignment_sets(eql_sets);
+    get_minimal_assignment_sets(new_eql_sets);
 
     // bfs
     /*

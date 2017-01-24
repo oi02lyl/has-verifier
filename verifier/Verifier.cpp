@@ -2243,8 +2243,28 @@ void Verifier::get_unique_sign_pairs() {
             } else {
                 // add unequalities that does not violate any equalties
                 Conjunct eq_only;
-                eq_only.eqs = conj.eqs;
+                // eq_only.eqs = conj.eqs;
                 tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
+                vector<pair<int, int> > const_eqs;
+                for (pair<int, int> eq : conj.eqs)
+                    if (is_const(eq.first) || is_const(eq.second)) {
+                        if (eq.first > eq.second)
+                            swap(eq.first, eq.second);
+                        const_eqs.push_back(eq);
+                    } else
+                        eq_only.eqs.push_back(eq);
+
+                sort(const_eqs.begin(), const_eqs.end());
+                int num_const_eqs = const_eqs.size();
+                for (int i = 0; i < num_const_eqs; i++) {
+                    vector<int> exprs(1, const_eqs[i].second);
+                    while (i + 1 < num_const_eqs && const_eqs[i + 1].first == const_eqs[i].first) {
+                        i++;
+                        exprs.push_back(const_eqs[i].first);
+                    }
+                    for (int j = 0; j + 1 < (int) exprs.size(); j++)
+                        eq_only.eqs.push_back(pair<int, int>(exprs[j], exprs[j + 1]));
+                }
 
                 if (convert_eqls_to_state(eq_only, tmp)) {
                     map<int, int> eqc;
@@ -2258,14 +2278,19 @@ void Verifier::get_unique_sign_pairs() {
                     }
                 }
 
-                /*
                 // add equalities that does not violate any unequalities
                 Conjunct uneq_only;
                 uneq_only.uneqs = conj.uneqs;
+                set<int> const_set;
                 for (pair<int, int>& pp : conj.eqs)
-                    if (is_const(pp.first) || is_const(pp.second))
+                    if (is_const(pp.first) || is_const(pp.second)) {
                         uneq_only.eqs.push_back(pp);
-                if (convert_eqls_to_state(uneq_only, tmp)) {
+                        if (is_const(pp.first))
+                            const_set.insert(pp.first);
+                        if (is_const(pp.second))
+                            const_set.insert(pp.second);
+                    }
+                if (const_set.size() <= 1 && convert_eqls_to_state(uneq_only, tmp)) {
                     map<int, int> eqc;
                     for (int idx = 0; idx < (int) tmp.exprs.size(); idx++)
                         eqc[tmp.exprs[idx]] = tmp.eq_classes[idx];
@@ -2288,7 +2313,6 @@ void Verifier::get_unique_sign_pairs() {
                         }
                     }
                 }
-                */
 
                 tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
             }
