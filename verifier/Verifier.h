@@ -302,6 +302,7 @@ public:
 
 struct Node {
 	int expr_id;
+    int type;
 
 	virtual bool is_const();
 	virtual bool is_navi();
@@ -312,7 +313,6 @@ struct Node {
 };
 
 struct ConstNode: public Node {
-	int type;
 	int id;
 
 	bool is_const();

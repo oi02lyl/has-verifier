@@ -39,6 +39,8 @@ public:
 	string promela_all_child_inactive(int task_id);
 
 	int chromatic_number(vector<vector<int> >& graph);
+	
+    void get_minimal_assignment_sets(vector<tuple<int, int, bool> >& edges);
 
     void get_type_groups();
 
@@ -56,9 +58,14 @@ public:
     vector<int> expr_types;
 
     // new
+    /*
     vector<int> expr_group_id;
     vector<vector<int> > group_const_exprs;
     vector<int> group_uneql_cnt;
+    */
+    vector<vector<string> > assignment_sets;
+
+
 
     int naive;
 };

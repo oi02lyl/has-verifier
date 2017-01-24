@@ -30,51 +30,17 @@ string SpinVerifier::promela_translate_eq(int expr1, int expr2) {
 		}
 
         if (!ch1.empty() && !ch2.empty()) {
-            string tmp = "(" + expr_name[expr1] + " != CONST_NULL && " + expr_name[expr2] + " != CONST_NULL)";
             int sz = ch1.size();
             for (int i = 0; i < sz; i++) {
                 int c1 = ch1[i];
                 int c2 = ch2[i];
-                tmp += " && ";
-                tmp += promela_translate_eq(c1, c2);
-            }
-
-            // handle NULL
-            if (tmp != "") {
-                if (is_var(expr1) && is_var(expr2))
-                    res = "(" + res + " && ( (" + expr_name[expr1] + " == CONST_NULL) || (" + tmp + ")))";
-                else
-                    res = "(" + res + " && (" + tmp + "))";
+                res += " && ";
+                res += promela_translate_eq(c1, c2);
             }
         }
 	}
-	return res;
+	return "(" + res + ")";
 }
-
-int SpinVerifier::chromatic_number(vector<vector<int> >& graph) {
-	int N = graph.size(), chromatic = 0;
-	vector<int> colors(N, -1);
-
-	for (int u = 0; u < N; u++) {
-		unordered_set<int> used;
-		for (int v : graph[u])
-			if (colors[v] >= 0)
-				used.insert(colors[v]);
-		bool found = false;
-		for (int c = 0; c < chromatic; c++)
-			if (used.count(c) == 0) {
-				found = true;
-				colors[u] = c;
-				break;
-			}
-		if (!found) {
-			colors[u] = chromatic++;
-		}
-	}
-
-	return chromatic;
-}
-
 
 
 string SpinVerifier::promela_translate_condition(int task_id, Formula* form) {
@@ -115,10 +81,10 @@ string SpinVerifier::promela_translate_condition(int task_id, Formula* form) {
 			}
 		}
 
-		string res = "";
+        int root_id = get_expr_id_var(task_id, term->paras[0].id);
+		string res = "(" + expr_name[root_id] + " != CONST_NULL)";
 		for (int i = 0; i < (int) lefts.size(); i++) {
-			if (i > 0)
-				res += " && ";
+			res += " && ";
 
             pair<int, int> p1(lefts[i], rights[i]);
             pair<int, int> p2(rights[i], lefts[i]);
@@ -206,6 +172,125 @@ string SpinVerifier::promela_all_child_inactive(int task_id) {
 	return res;
 }
 
+
+int SpinVerifier::chromatic_number(vector<vector<int> >& graph) {
+	int N = graph.size(), chromatic = 0;
+	vector<int> colors(N, -1);
+
+	for (int u = 0; u < N; u++) {
+		unordered_set<int> used;
+		for (int v : graph[u])
+			if (colors[v] >= 0)
+				used.insert(colors[v]);
+		bool found = false;
+		for (int c = 0; c < chromatic; c++)
+			if (used.count(c) == 0) {
+				found = true;
+				colors[u] = c;
+				break;
+			}
+		if (!found) {
+			colors[u] = chromatic++;
+		}
+	}
+
+	return chromatic;
+}
+
+void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& edges) {
+
+    int max_const = 0;
+    unordered_set<int> const_set;
+    int num_expr = expr_name.size();
+    vector<set<int> > values = vector<set<int> >(num_expr, set<int>());
+
+    // initialize set of consts
+    for (int expr = 0; expr < num_expr; expr++)
+        if (is_const(expr)) {
+            max_const = max(max_const, expr);
+            const_set.insert(expr);
+        }
+
+    // build uneql graph
+    vector<vector<int> > graph(num_expr, vector<int>());
+    for (auto tp : edges) {
+        if (!get<2>(tp)) {
+            int u = get<0>(tp);
+            int v = get<1>(tp);
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+    }
+
+    // greedy algorithm to compute chromatic numbers
+	int chromatic = max_const + 1;
+	vector<int> colors(num_expr, -1);
+    for (int expr : const_set)
+        colors[expr] = expr;
+
+	for (int u = 0; u < num_expr; u++) {
+        if (colors[u] >= 0)
+            continue;
+		unordered_set<int> used;
+		for (int v : graph[u])
+			if (colors[v] >= 0)
+				used.insert(colors[v]);
+		bool found = false;
+		for (int c = 0; c < chromatic; c++)
+			if (used.count(c) == 0) {
+				found = true;
+				colors[u] = c;
+				break;
+			}
+		if (!found) {
+			colors[u] = chromatic++;
+		}
+	}
+    
+    for (int expr = 0; expr < num_expr; expr++)
+        values[expr].insert(colors[expr]);
+
+    // propagate
+    bool found = true;
+    while (found) {
+        found = false;
+
+        for (auto tp : edges) {
+            int u = get<0>(tp);
+            int v = get<1>(tp);
+            if (!get<2>(tp) || (is_const(u) && is_const(v)))
+                continue;
+
+            if (is_const(u) && values[v].count(u) == 0) {
+                found = true;
+                values[v].insert(u);
+            } else if (is_const(v) && values[u].count(v) == 0) {
+                found = true;
+                values[u].insert(v);
+            } else if (!is_const(u) && !is_const(v) && values[u] != values[v]) {
+                found = true;
+                values[u].insert(values[v].begin(), values[v].end());
+                values[v] = values[u];
+            }
+        }
+    }
+
+    // return
+    assignment_sets = vector<vector<string> >(num_expr, vector<string>());
+    for (int expr = 0; expr < num_expr; expr++)
+        for (int val : values[expr]) {
+            if (val == null_id && expr_to_node[expr]->type >= 0 && is_navi(expr))
+                continue;
+
+            if (val <= max_const)
+                assignment_sets[expr].push_back(expr_name[val]);
+            else
+                assignment_sets[expr].push_back(to_string(val));
+        }
+}
+
+
+
 void SpinVerifier::get_type_groups() {
     vector<tuple<int, int, bool> > eql_sets;
     get_eql_sets(eql_sets);
@@ -215,7 +300,15 @@ void SpinVerifier::get_type_groups() {
     negated->paras[0] = property.form2->copy();
     get_eql_sets(property.task_id, negated, eql_sets);
 
+    // NULLS
+    for (int expr = 0; expr < (int) expr_to_node.size(); expr++)
+        if (expr_to_node[expr]->type >= 0)
+            eql_sets.push_back(tuple<int, int, bool>(expr, null_id, false));
+
+    get_minimal_assignment_sets(eql_sets);
+
     // bfs
+    /*
     int N = expr_name.size();
     vector<vector<pair<int, bool> > > edges(N, vector<pair<int, bool> >());
     for (auto& tp : eql_sets) {
@@ -297,9 +390,13 @@ void SpinVerifier::get_type_groups() {
 
         group_id++;
     }
+    */
 }
 
 void SpinVerifier::get_type_group(int expr, vector<string>& res) {
+    res = assignment_sets[expr];
+
+    /*
     res.clear();
     
     int group_id = expr_group_id[expr];
@@ -316,12 +413,12 @@ void SpinVerifier::get_type_group(int expr, vector<string>& res) {
     
     for (int i = 0; i < uneql_cnt; i++)
         res.push_back(to_string(num_num + num_str + i + 2));
+        */
 }
 
 string SpinVerifier::generate_promela() {
 	// pre-processing
 	preprocess();
-    get_type_groups();
 	// rename_expressions
 	for (string& name : expr_name) {
         if (name == "NULL")
@@ -331,6 +428,7 @@ string SpinVerifier::generate_promela() {
 			if (name[i] == '.')
 				name[i] = '_';
 	}
+    get_type_groups();
 
 	int num_tasks = art.tasks.size();
 	vector<int> parent_task(num_tasks, -1);
@@ -363,23 +461,8 @@ string SpinVerifier::generate_promela() {
 	}
 	promela += "\n";
 	for (int expr = 0; expr < (int) expr_name.size(); expr++) {
-		if (is_const(expr)) {
-			if (is_null(expr))
-				promela += "    " + expr_name[expr] + " = 0;\n";
-			else {
-				ConstNode* node = (ConstNode*) expr_to_node[expr];
-				int value = 0;
-
-				if ((node->type == -1 && art.num_consts[node->id] == 0) ||
-					(node->type == -2 && art.str_consts[node->id] == "\"\""))
-					value = 0;
-				else
-					value = node->id + 1;
-
-				promela += "    " + expr_name[expr] + " = " + to_string(value) + ";\n";
-			}
-		} else
-			promela += "    " + expr_name[expr] + " = 0;\n";
+		if (is_const(expr))
+            promela += "    " + expr_name[expr] + " = " + to_string(expr) + ";\n";
 	}
 	promela += "    } \n";
 	promela += "  current = 0; \n\n\n";
@@ -388,7 +471,7 @@ string SpinVerifier::generate_promela() {
 	for (int task_id = 0; task_id < num_tasks; task_id++) {
 		Task& task = art.tasks[task_id];
 
-		promela += "  :: " + promela_is_active(task_id) + " ->\n";
+		promela += "  :: " + promela_is_current(task_id) + " ->\n";
 		promela += "  if\n";
 		// services
 		promela += "  :: atomic { " + promela_all_child_inactive(task_id) + " -> \n";
@@ -407,14 +490,6 @@ string SpinVerifier::generate_promela() {
             
             promela += "      current = " + to_string(task_id) + "; \n";
 		}
-
-        // padding for infinite loops
-        /* 
-		if (task_id == 0)
-			promela += "    :: do :: current == 0 -> skip od\n";
-        */
-
-        // promela += "    :: else -> skip; \n";
 		promela += "  fi } \n";
 
 		// opening child tasks
@@ -428,8 +503,17 @@ string SpinVerifier::generate_promela() {
 
 			for (int vid = 0; vid < child_task.num_var; vid++) {
 				if (input_var_set.count(vid) == 0) {
-					for (int expr : task_var_expr_ids[child][vid])
-						promela += "    " + expr_name[expr] + " = 0;\n";
+					for (int expr : task_var_expr_ids[child][vid]) {
+                        string init_value;
+                        int type = expr_to_node[expr]->type;
+                        if (type == -1)
+                            init_value = expr_name[zero_id];
+                        else if (type == -2)
+                            init_value = expr_name[empty_id];
+                        else
+                            init_value = expr_name[null_id];
+  						promela += "    " + expr_name[expr] + " = " + init_value + ";\n";
+                    }
 				} else {
 					for (int expr : task_var_expr_ids[child][vid])
 						promela += "    " + expr_name[expr] + " = " + expr_name[expr_rename_to_parent[expr]] + ";\n";
@@ -486,23 +570,6 @@ string SpinVerifier::generate_promela() {
     promela += "    :: (" + cond0 + " && !" + cond2 + ") -> goto accept_S4\n";
     promela += "    fi;\n";
     promela += "}\n";
-
-/*
-	promela += "never { \n";
-	promela += "T0_init :    \n";
-	promela += "	if\n";
-	promela += "	:: (1) -> goto T0_init\n";
-	promela += "	:: (!(" + cond2 + ")  && (" + cond1 + ") && (current == " + to_string(property.task_id) + ") ) -> goto accept_S2\n";
-	promela += "	fi;\n";
-	promela += "accept_S2 :    \n";
-	promela += "	if\n";
-    promela += "    :: (current != " + to_string(property.task_id)+ ") -> goto accept_S2\n";
-	promela += "	:: (!(" + cond2 + ") && (current == " + to_string(property.task_id)+ ")) -> goto accept_S2\n";
-	promela += "	fi;\n";
-	promela += "}\n";
-    */
-//	string target_cond = promela_translate_condition(taskid, target);
-//    promela += "never { true; do :: (current == 0) && (" + target_cond + ") -> break; :: else od } ";
 
 	return promela;
 }

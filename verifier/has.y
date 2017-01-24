@@ -839,7 +839,7 @@ int main(int argc, char** argv) {
 
     if (argc >= 3) {
         verifier_option = atoi(argv[2]);
-        if (verifier_option == 2)
+        if (verifier_option == 2 || verifier_option == 1)
             without_set = true;
         else
             without_set = false;
@@ -879,7 +879,7 @@ int main(int argc, char** argv) {
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 30m ./pan -a");
+        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 10m ./pan -a");
 
         gettimeofday(&tv, NULL);
         elapsed = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;

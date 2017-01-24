@@ -56,6 +56,7 @@ void Verifier::build_tree(Node*& res, int taskid, int varid, int par_expr_id,
 	NaviNode* node = new NaviNode();
 	res = node;
 	node->expr_id = num_expr++;
+    node->type = type;
 	node->par_expr_id = par_expr_id;
 	expr_name.push_back(prefix);
 
@@ -369,6 +370,7 @@ void Verifier::preprocess() {
 			VarNode* node = new VarNode();
 
 			node->id = task.vars[idx];
+            node->type = task.var_types[idx];
 			node->taskid = taskid;
 			node->expr_id = num_expr++;
 
@@ -2185,18 +2187,18 @@ void Verifier::get_unique_sign_pairs() {
             que.pop();
 
             for (auto pp : edges[u]) {
-                if (pp.second)
-                    conj.eqs.push_back(pair<int, int>(u, pp.first));
-                else
-                    conj.uneqs.push_back(pair<int, int>(u, pp.first));
-
             	// add edge
 				int e1 = u;
 				int e2 = pp.first;
 				if (e1 > e2)
 					swap(e1, e2);
+                if (pp.second)
+                    conj.eqs.push_back(pair<int, int>(e1, e2));
+                else
+                    conj.uneqs.push_back(pair<int, int>(e1, e2));
+
 				edge_set.insert(tuple<int, int, bool>(e1, e2, pp.second));
-                if (!is_const(e1) && !is_const(e2)) {                    
+                if (!is_const(e1) || !is_const(e2)) {                    
                     if (pp.second)
                         eql_cnt++;
                     else
@@ -2217,18 +2219,98 @@ void Verifier::get_unique_sign_pairs() {
         if ((const_exprs.size() <= 1 && uneql_cnt == 0) || eql_cnt == 0) {
             for (auto& tp : edge_set)
                 unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
-        }
-        /*
-        else {
+        } else {
+            set<pair<int, int> > eqs_set(conj.eqs.begin(), conj.eqs.end());
+            conj.eqs = vector<pair<int, int> >(eqs_set.begin(), eqs_set.end());
+            set<pair<int, int> > uneqs_set(conj.uneqs.begin(), conj.uneqs.end());
+            conj.uneqs = vector<pair<int, int> >(uneqs_set.begin(), uneqs_set.end());
+            
+            set<int> expr_set;
+            for (pair<int, int> pp : conj.eqs) {
+                expr_set.insert(pp.first);
+                expr_set.insert(pp.second);
+            }
+            for (pair<int, int> pp : conj.uneqs) {
+                expr_set.insert(pp.first);
+                expr_set.insert(pp.second);
+            }
+
             State tmp;
+            tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
             if (convert_eqls_to_state(conj, tmp)) {
                 for (auto& tp : edge_set)
                     unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
-            }
-        }*/
+            } else {
+                // add unequalities that does not violate any equalties
+                Conjunct eq_only;
+                eq_only.eqs = conj.eqs;
+                tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
 
+                if (convert_eqls_to_state(eq_only, tmp)) {
+                    map<int, int> eqc;
+                    for (int idx = 0; idx < (int) tmp.exprs.size(); idx++)
+                        eqc[tmp.exprs[idx]] = tmp.eq_classes[idx];
+                    for (auto& tp : edge_set) {
+                        int e1 = get<0>(tp);
+                        int e2 = get<1>(tp);
+                        if (!get<2>(tp) && !(eqc.count(e1) > 0 && eqc.count(e2) > 0 && eqc[e1] != eqc[e2]))
+                            unique_sign_pairs.insert(pair<int, int>(e1, e2));
+                    }
+                }
+
+                /*
+                // add equalities that does not violate any unequalities
+                Conjunct uneq_only;
+                uneq_only.uneqs = conj.uneqs;
+                for (pair<int, int>& pp : conj.eqs)
+                    if (is_const(pp.first) || is_const(pp.second))
+                        uneq_only.eqs.push_back(pp);
+                if (convert_eqls_to_state(uneq_only, tmp)) {
+                    map<int, int> eqc;
+                    for (int idx = 0; idx < (int) tmp.exprs.size(); idx++)
+                        eqc[tmp.exprs[idx]] = tmp.eq_classes[idx];
+                    set<pair<int, int> > uneql_set(tmp.uneqs.begin(), tmp.uneqs.end());
+
+                    for (auto& tp : edge_set) {
+                        if (get<2>(tp)) {
+                            int e1 = get<0>(tp);
+                            int e2 = get<1>(tp);
+                            if (eqc.count(e1) == 0 || eqc.count(e2) == 0)
+                                unique_sign_pairs.insert(pair<int, int>(e1, e2));
+                            else {
+                                int eqc1 = eqc[e1];
+                                int eqc2 = eqc[e2];
+                                if (eqc1 > eqc2)
+                                    swap(eqc1, eqc2);
+                                if (uneql_set.count(pair<int, int>(eqc1, eqc2)) == 0)
+                                    unique_sign_pairs.insert(pair<int, int>(e1, e2));
+                            }
+                        }
+                    }
+                }
+                */
+
+                tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
+            }
+        }
         group_id++;
     }
+    
+    // printf("%d\n", (int) unique_sign_pairs.size());
+    // node with degree 1
+    for (int expr = 0; expr < N; expr++) {
+        set<pair<int, bool> > edge_set(edges[expr].begin(), edges[expr].end());
+        if (edge_set.size() == 1) {
+            int e1 = expr;
+            int e2 = edges[expr][0].first;
+            if (e1 > e2)
+                swap(e1, e2);
+
+            if (!edges[expr][0].second || (!is_const(e1) && !is_const(e2)))
+                unique_sign_pairs.insert(pair<int, int>(e1, e2));
+        }
+    }
+    
     // printf("%d\n", (int) unique_sign_pairs.size());
 }
 
