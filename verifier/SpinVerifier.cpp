@@ -117,11 +117,11 @@ string SpinVerifier::promela_get_assignment(int task_id, vector<int>& prop_vars)
 	for (int vid = 0; vid < art.tasks[task_id].num_var; vid++)
 		if (unchanged.count(vid) == 0) {
 			for (int expr : task_var_expr_ids[task_id][vid]) {
-                vector<string> group;
-                get_type_group(expr, group);
+                vector<string> domain;
+                get_expr_domain(expr, domain);
                 res += " if ";
                 
-                for (string& e : group) {
+                for (string& e : domain) {
                     if (is_navi(expr) && e == "0")
                         continue;
                     res += ":: " + expr_name[expr] + " = " + e + "; ";
@@ -172,30 +172,6 @@ string SpinVerifier::promela_all_child_inactive(int task_id) {
 	return res;
 }
 
-
-int SpinVerifier::chromatic_number(vector<vector<int> >& graph) {
-	int N = graph.size(), chromatic = 0;
-	vector<int> colors(N, -1);
-
-	for (int u = 0; u < N; u++) {
-		unordered_set<int> used;
-		for (int v : graph[u])
-			if (colors[v] >= 0)
-				used.insert(colors[v]);
-		bool found = false;
-		for (int c = 0; c < chromatic; c++)
-			if (used.count(c) == 0) {
-				found = true;
-				colors[u] = c;
-				break;
-			}
-		if (!found) {
-			colors[u] = chromatic++;
-		}
-	}
-
-	return chromatic;
-}
 
 void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& edges) {
     int max_const = 0;
@@ -290,7 +266,7 @@ void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& e
 
 
 
-void SpinVerifier::get_type_groups() {
+void SpinVerifier::compute_expr_domains() {
     vector<tuple<int, int, bool> > eql_sets;
     get_eql_sets(eql_sets);
     get_eql_sets(property.task_id, property.form1, eql_sets);
@@ -315,114 +291,10 @@ void SpinVerifier::get_type_groups() {
             new_eql_sets.push_back(tuple<int, int, bool>(expr, null_id, false));
 
     get_minimal_assignment_sets(new_eql_sets);
-
-    // bfs
-    /*
-    int N = expr_name.size();
-    vector<vector<pair<int, bool> > > edges(N, vector<pair<int, bool> >());
-    for (auto& tp : eql_sets) {
-        int u = get<0>(tp);
-        int v = get<1>(tp);
-        bool flag = get<2>(tp);
-        edges[u].push_back(pair<int, bool>(v, flag));
-        edges[v].push_back(pair<int, bool>(u, flag));
-    }
-
-    expr_group_id = vector<int>(N, -1);
-    int group_id = 0;
-
-    for (int expr = 0; expr < N; expr++) {
-        if (expr_group_id[expr] >= 0 || is_const(expr))
-            continue;
-        
-        unordered_set<int> const_exprs;
-        unordered_set<int> uneql_consts;
-
-        queue<int> que;
-        que.push(expr);
-        expr_group_id[expr] = group_id;
-        set<pair<int, int> > uneql_set;
-        unordered_map<int, int> rename;
-        vector<vector<int> > uneql_graph;
-        int num_node = 0;
-
-        while (!que.empty()) {
-            int u = que.front();
-            que.pop();
-            if (rename.count(u) == 0) {
-                uneql_graph.push_back(vector<int>());
-                rename[u] = num_node++;
-            }
-
-            for (auto pp : edges[u]) {
-                if (!pp.second) {
-                    int e1 = u;
-                    int e2 = pp.first;
-                    if (e1 > e2) 
-                        swap(e1, e2);
-
-                    if (!is_const(e1) && !is_const(e2))
-                        uneql_set.insert(pair<int, int>(e1, e2));
-                    else if (is_const(e1))
-                        uneql_consts.insert(e1);
-                    else if (is_const(e2))
-                        uneql_consts.insert(e2);
-                }
-
-                if (expr_group_id[pp.first] == -1) {
-                    if (is_const(pp.first))
-                        const_exprs.insert(pp.first);
-                    else {
-						expr_group_id[pp.first] = group_id;
-						que.push(pp.first);
-                    }
-                }
-            }
-        }
-
-        // process uneql_set to get the chromatic number
-        for (auto& tp : uneql_set) {
-        	int u = rename[get<0>(tp)];
-        	int v = rename[get<1>(tp)];
-        	uneql_graph[u].push_back(v);
-        	uneql_graph[v].push_back(u);
-        }
-
-        // group_uneql_cnt.push_back(uneql_set.size());
-        int uneql_cnt = uneql_consts.size();
-        int chromatic = chromatic_number(uneql_graph);
-        if (!const_exprs.empty() && uneql_cnt >= (int) const_exprs.size())
-            chromatic++;
-
-        group_uneql_cnt.push_back(chromatic);
-        group_const_exprs.push_back(vector<int>(const_exprs.begin(), const_exprs.end()));
-
-        group_id++;
-    }
-    */
 }
 
-void SpinVerifier::get_type_group(int expr, vector<string>& res) {
+void SpinVerifier::get_expr_domain(int expr, vector<string>& res) {
     res = assignment_sets[expr];
-
-    /*
-    res.clear();
-    
-    int group_id = expr_group_id[expr];
-    vector<int>& const_exprs = group_const_exprs[group_id];
-    for (int expr : const_exprs)
-        res.push_back(expr_name[expr]);
-
-    int num_consts = const_exprs.size();
-    int uneql_cnt = group_uneql_cnt[group_id] - (int) const_exprs.size();
-
-    
-    int num_num = art.num_consts.size();
-    int num_str = art.str_consts.size();
-    
-    for (int i = 0; i < uneql_cnt; i++)
-        res.push_back(to_string(num_num + num_str + i + 2));
-        */
 }
 
 string SpinVerifier::generate_promela() {
@@ -437,7 +309,7 @@ string SpinVerifier::generate_promela() {
 			if (name[i] == '.')
 				name[i] = '_';
 	}
-    get_type_groups();
+    compute_expr_domains();
 
 	int num_tasks = art.tasks.size();
 	vector<int> parent_task(num_tasks, -1);

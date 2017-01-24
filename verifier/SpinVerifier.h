@@ -15,7 +15,7 @@ namespace std {
 
 class SpinVerifier : public Verifier {
 public:
-	SpinVerifier(Artifact& a, vector<Automaton>& _atms, LivenessProperty& p, int _naive = 0) : Verifier(a, _atms, false, false), property(p), max_type_count(0), naive(_naive) { }
+	SpinVerifier(Artifact& a, vector<Automaton>& _atms, LivenessProperty& p, int _naive = 0) : Verifier(a, _atms, false, false), property(p), naive(_naive) { }
 
 	// generate the promela code to verifier the target safety property
 	string generate_promela();
@@ -38,35 +38,18 @@ public:
 
 	string promela_all_child_inactive(int task_id);
 
-	int chromatic_number(vector<vector<int> >& graph);
-	
     void get_minimal_assignment_sets(vector<tuple<int, int, bool> >& edges);
 
-    void get_type_groups();
+    void compute_expr_domains();
 
-    void get_type_group(int expr, vector<string>& result);
+    void get_expr_domain(int expr, vector<string>& result);
 
 	virtual ~SpinVerifier();
 
-	LivenessProperty& property;
-
-    map<int, int> type_count;
-    int max_type_count;
-
-    map<int, vector<int> > type_groups;
-
-    vector<int> expr_types;
-
-    // new
-    /*
-    vector<int> expr_group_id;
-    vector<vector<int> > group_const_exprs;
-    vector<int> group_uneql_cnt;
-    */
     vector<vector<string> > assignment_sets;
 
-
-
+	LivenessProperty& property;
+    
     int naive;
 };
 
