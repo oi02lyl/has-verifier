@@ -7,6 +7,7 @@
 
 #include <queue>
 #include <unordered_set>
+#include <iostream>
 #include "SpinVerifier.h"
 
 namespace std {
@@ -196,6 +197,29 @@ void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& e
             graph[v].push_back(u);
         }
     }
+    
+    // propagate constants
+    bool found = true;
+    while (found) {
+        found = false;
+        for (auto tp : edges) {
+            int u = get<0>(tp);
+            int v = get<1>(tp);
+            if (!get<2>(tp) || (is_const(u) && is_const(v)))
+                continue;
+            if (is_const(u) && values[v].count(u) == 0) {
+                found = true;
+                values[v].insert(u);
+            } else if (is_const(v) && values[u].count(v) == 0) {
+                found = true;
+                values[u].insert(v);
+            } else if (!is_const(u) && !is_const(v) && values[u] != values[v]) {
+                found = true;
+                values[u].insert(values[v].begin(), values[v].end());
+                values[v] = values[u];
+            }
+        }
+    }
 
     // greedy algorithm to compute chromatic numbers
 	int chromatic = max_const + 1;
@@ -211,22 +235,32 @@ void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& e
 			if (colors[v] >= 0)
 				used.insert(colors[v]);
 		bool found = false;
-		for (int c = 0; c < chromatic; c++)
-			if (used.count(c) == 0) {
-				found = true;
-				colors[u] = c;
-				break;
-			}
+
+        for (int c : values[u])
+            if (used.count(c) == 0) {
+                found = true;
+                colors[u] = c;
+                break;
+            }
+        if (!found) {
+	    	for (int c = 0; c < chromatic; c++)
+    			if (used.count(c) == 0) {
+			    	found = true;
+		    		colors[u] = c;
+	    			break;
+    			}
+        }
 		if (!found) {
 			colors[u] = chromatic++;
 		}
 	}
+    // cerr << chromatic - max_const - 1 << endl;
     
     for (int expr = 0; expr < num_expr; expr++)
         values[expr].insert(colors[expr]);
 
     // propagate
-    bool found = true;
+    found = true;
     while (found) {
         found = false;
 
@@ -294,7 +328,18 @@ void SpinVerifier::compute_expr_domains() {
 }
 
 void SpinVerifier::get_expr_domain(int expr, vector<string>& res) {
-    res = assignment_sets[expr];
+    if (naive == 0)
+        res = assignment_sets[expr];
+    else {
+        res.clear();
+        int N = expr_name.size();
+        for (int i = 0; i < N; i++)
+            if (expr_to_node[i]->type == expr_to_node[expr]->type) {
+                res.push_back(expr_name[i]);
+                if (res.size() >= 3)
+                    break;
+            }
+    }
 }
 
 string SpinVerifier::generate_promela() {

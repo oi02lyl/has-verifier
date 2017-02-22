@@ -34,7 +34,7 @@ struct Conjunct;
 
 class Verifier {
 public:
-	Verifier(Artifact& a, vector<Automaton>& _atms, int _naive = false, bool _debug = false) :
+	Verifier(Artifact& a, vector<Automaton>& _atms, int _naive = 0, bool _debug = false) :
 			art(a), atms(_atms), naive(_naive), debug(_debug) {
 		time_superstate = 0;
 		time_substate = 0;
@@ -173,8 +173,11 @@ public:
 	vector<Automaton> atms;
 
 	// whether use naive pruning
-	// 0 - with all prunings, 1 - without MaxFlow pruning for counters
-	// 2 - without substates pruning
+    // 0: all optimization
+    // 1: without repeated reachability
+    // 2: prune with <=
+    // 3: without static analysis
+    // 4: without data structure support
 	int naive;
 
 	// whether use debug mode

@@ -60,7 +60,7 @@ int get_rand_const_type(int type, Artifact& art);
 
 
 // generate a random artifact
-void generate_artifact(int num_tasks, int num_const, int num_vars_per_task, int num_services_per_task, int form_size, DBSchema& d, Artifact& res);
+void generate_artifact(int num_tasks, int num_const, int num_vars_per_task, int num_services_per_task, int form_size, DBSchema& d, bool without_set, Artifact& res);
 
 } /* namespace std */
 

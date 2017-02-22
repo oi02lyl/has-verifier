@@ -149,7 +149,9 @@ public:
 
 	TrieNode* trie;
 
-	// use naive substate or not
+    // 2: use naive substate
+    // 4: wihtout data structure supports (trie nor inverted lists)
+    // otherwise the optimal
 	int naive;
 
 	// left_expr, right_expr, eq/uneq

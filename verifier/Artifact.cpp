@@ -140,7 +140,8 @@ int get_rand_const_type(int type, Artifact& art) {
 }
 
 void generate_artifact(int num_tasks, int num_const, int num_vars_per_task,
-		               int num_services_per_task, int form_size, DBSchema& db, Artifact& res) {
+		               int num_services_per_task, int form_size, DBSchema& db, bool without_set,
+                       Artifact& res) {
 	res.db = db;
 	int num_rels = db.num_rels;
 
@@ -265,7 +266,8 @@ void generate_artifact(int num_tasks, int num_const, int num_vars_per_task,
 				su.setid = 0;
                 su.type = InsertBefore;
 				su.vars = set_vars;
-				ser.set_update.push_back(su);
+                if (!without_set)
+    				ser.set_update.push_back(su);
 			} else {
 				// retrieve
 				ser.var_prop = input_vars;
@@ -273,7 +275,8 @@ void generate_artifact(int num_tasks, int num_const, int num_vars_per_task,
 				su.setid = 0;
 				su.type = Retrieve;
 				su.vars = set_vars;
-				ser.set_update.push_back(su);
+                if (!without_set)
+    				ser.set_update.push_back(su);
 			}
 		}
 	}

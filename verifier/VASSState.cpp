@@ -585,8 +585,10 @@ VASSStateStore::~VASSStateStore() {
 void VASSStateStore::insert(int vstate_idx) {
 	VASSState* vstate = states[vstate_idx];
 	counter_tries.resize(states.size(), NULL);
-
 	counter_tries[vstate_idx] = vstate->get_counter_trie();
+
+    if (naive == 4)
+        return;
 
 	// state
 	vector<term_t> state_dj;
@@ -631,63 +633,70 @@ void VASSStateStore::insert(int vstate_idx) {
 }
 
 void VASSStateStore::substates(VASSState* vstate, vector<int>& results) {
-	vector<vector<int>*> lists;
+    vector<int> cands;
+    if (naive == 4) {
+        for (int i = 0; i < (int) states.size(); i++)
+            cands.push_back(i);
+    } else {
+        vector<vector<int>*> lists;
 
-	// state
-	vector<term_t> state_dj;
-	vstate->state.get_disjunct(state_dj);
-	for (auto& tp : state_dj) {
-		if (state_index.count(tp) == 0)
-			return;
-		lists.push_back(state_index[tp]);
-	}
+        // state
+        vector<term_t> state_dj;
+        vstate->state.get_disjunct(state_dj);
+        for (auto& tp : state_dj) {
+            if (state_index.count(tp) == 0)
+                return;
+            lists.push_back(state_index[tp]);
+        }
 
-	// return
-	for (auto& ret : vstate->returns) {
-		vector<term_t> dj;
-		ret.second.get_disjunct(dj);
-		for (auto& tp : dj) {
-			child_term_t new_tp = child_term_t(ret.first, get<0>(tp),
-					get<1>(tp), get<2>(tp));
-			if (return_index.count(new_tp) == 0)
-				return;
-			lists.push_back(return_index[new_tp]);
-		}
-	}
+        // return
+        for (auto& ret : vstate->returns) {
+            vector<term_t> dj;
+            ret.second.get_disjunct(dj);
+            for (auto& tp : dj) {
+                child_term_t new_tp = child_term_t(ret.first, get<0>(tp),
+                        get<1>(tp), get<2>(tp));
+                if (return_index.count(new_tp) == 0)
+                    return;
+                lists.push_back(return_index[new_tp]);
+            }
+        }
 
-	// counters
-	term_set_t terms;
-	for (pair<State, int>& ct : vstate->counters) {
-		vector<term_t> dj;
-		ct.first.get_disjunct(dj);
-		terms.insert(dj.begin(), dj.end());
-	}
+        // counters
+        term_set_t terms;
+        for (pair<State, int>& ct : vstate->counters) {
+            vector<term_t> dj;
+            ct.first.get_disjunct(dj);
+            terms.insert(dj.begin(), dj.end());
+        }
 
-	for (auto& tp : terms) {
-		if (counter_index.count(tp) == 0)
-			return;
-		lists.push_back(counter_index[tp]);
-	}
+        for (auto& tp : terms) {
+            if (counter_index.count(tp) == 0)
+                return;
+            lists.push_back(counter_index[tp]);
+        }
 
-	if (lists.empty())
-		return;
+        if (lists.empty())
+            return;
 
-	// intersect lists
-	sort(lists.begin(), lists.end(), list_length_cmp);
-	vector<int> cands(lists[0]->begin(), lists[0]->end());
-	for (int i = 1; i < (int) lists.size(); i++) {
-		auto it = set_intersection(cands.begin(), cands.end(),
-				lists[i]->begin(), lists[i]->end(), cands.begin());
-		cands.resize(it - cands.begin());
-	}
+        // intersect lists
+        sort(lists.begin(), lists.end(), list_length_cmp);
+        cands = vector<int>(lists[0]->begin(), lists[0]->end());
+
+        for (int i = 1; i < (int) lists.size(); i++) {
+            auto it = set_intersection(cands.begin(), cands.end(),
+                    lists[i]->begin(), lists[i]->end(), cands.begin());
+            cands.resize(it - cands.begin());
+        }
+    }
 
 	// verify each candidate
 	TrieNode* counter_trie = vstate->get_counter_trie();
 	results.clear();
 	for (int idx : cands) {
 		bool tmp = false;
-		if ((!naive && states[idx]->is_substate_of(*vstate, counter_trie, false, tmp)) ||
-			(naive && states[idx]->is_substate_of_naive(*vstate, false, tmp, naive))	)
+		if ((naive != 2 && states[idx]->is_substate_of(*vstate, counter_trie, false, tmp)) ||
+			(naive == 2 && states[idx]->is_substate_of_naive(*vstate, false, tmp, naive))	)
 			results.push_back(idx);
 	}
 	delete counter_trie;
@@ -698,7 +707,11 @@ bool VASSStateStore::superstate(VASSState* vstate, vector<bool>& ignored, int& e
 	vector<pair<int, term_set_t> > term_sets;
 	vstate->get_term_sets(term_sets);
 	vector<int> results;
-	trie->query(term_sets, -1, results);
+    if (naive == 4) {
+        for (int idx = 0; idx < states.size(); idx++)
+            results.push_back(idx);
+    } else
+    	trie->query(term_sets, -1, results);
 	bool exists = false;
 	bool tmp = false;
 
@@ -710,8 +723,8 @@ bool VASSStateStore::superstate(VASSState* vstate, vector<bool>& ignored, int& e
 		if (*vstate == *cand) {
 			equal_vstate_id = idx;
 			return true;
-		} else if ((!naive && vstate->is_substate_of(*cand, counter_trie, false, tmp)) ||
-				   (naive && vstate->is_substate_of_naive(*cand, false, tmp, naive)))
+		} else if ((naive != 2 && vstate->is_substate_of(*cand, counter_trie, false, tmp)) ||
+				   (naive == 2 && vstate->is_substate_of_naive(*cand, false, tmp, naive)))
 			exists = true;
 	}
 	return exists;
@@ -722,7 +735,11 @@ bool VASSStateStore::superstate(VASSState* vstate, int& equal_vstate_id) {
 	vector<pair<int, term_set_t> > term_sets;
 	vstate->get_term_sets(term_sets);
 	vector<int> results;
-	trie->query(term_sets, -1, results);
+    if (naive == 4) {
+        for (int idx = 0; idx < states.size(); idx++)
+            results.push_back(idx);
+    } else
+    	trie->query(term_sets, -1, results);
 	bool exists = false;
 	bool tmp = false;
 
@@ -732,8 +749,8 @@ bool VASSStateStore::superstate(VASSState* vstate, int& equal_vstate_id) {
 		if (*vstate == *cand) {
 			equal_vstate_id = idx;
 			return true;
-		} else if ((!naive && vstate->is_substate_of(*cand, counter_trie, false, tmp)) ||
-				   (naive && vstate->is_substate_of_naive(*cand, false, tmp, naive)))
+		} else if ((naive != 2 && vstate->is_substate_of(*cand, counter_trie, false, tmp)) ||
+				   (naive == 2 && vstate->is_substate_of_naive(*cand, false, tmp, naive)))
 			exists = true;
 	}
 	return exists;
@@ -745,7 +762,11 @@ bool VASSStateStore::superstate_strict(VASSState* vstate, int& equal_vstate_id) 
 	vector<pair<int, term_set_t> > term_sets;
 	vstate->get_term_sets(term_sets);
 	vector<int> results;
-	trie->query(term_sets, -1, results);
+    if (naive == 4) {
+        for (int idx = 0; idx < states.size(); idx++)
+            results.push_back(idx);
+    } else
+    	trie->query(term_sets, -1, results);
 	bool exists = false;
 
 	for (int idx : results) {
@@ -753,8 +774,8 @@ bool VASSStateStore::superstate_strict(VASSState* vstate, int& equal_vstate_id) 
 		TrieNode* counter_trie = counter_tries[idx];
 		if (*vstate == *cand) {
 			equal_vstate_id = idx;
-		} else if ((!naive && vstate->is_substate_of_strict(*cand, counter_trie)) ||
-				   (naive && vstate->is_substate_of_naive(*cand, naive)))
+		} else if ((naive != 2 && vstate->is_substate_of_strict(*cand, counter_trie)) ||
+				   (naive == 2 && vstate->is_substate_of_naive(*cand, naive)))
 			exists = true;
 	}
 	return exists;

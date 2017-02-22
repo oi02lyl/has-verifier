@@ -1593,7 +1593,7 @@ vector<tuple<State, State, vector<int> > >* Verifier::reachable(int taskid,
 
 	int ptr_idx = 0;
 	while (ptr_idx < (int) que.size()) {
-		if ((float) (clock() - timer) / CLOCKS_PER_SEC >= 1800)
+		if ((float) (clock() - timer) / CLOCKS_PER_SEC >= 600)
 			break;
 
 		global_counter++;
@@ -1619,10 +1619,8 @@ vector<tuple<State, State, vector<int> > >* Verifier::reachable(int taskid,
 		empty_states_tries[taskid]->query(*now, cand_ids);
 		bool has_empty_superstate = false;
 		for (int idx : cand_ids) {
-			if ((!naive && now->is_substate_of(empty_states[taskid][idx]))
-					|| (naive
-							&& now->is_substate_of_naive(
-									empty_states[taskid][idx], naive))) {
+			if ((naive != 2 && now->is_substate_of(empty_states[taskid][idx])) || 
+                (naive == 2 && now->is_substate_of_naive(empty_states[taskid][idx], naive))) {
 				has_empty_superstate = true;
 				break;
 			}
@@ -1687,21 +1685,19 @@ vector<tuple<State, State, vector<int> > >* Verifier::reachable(int taskid,
 			while (changed) {
 				changed = false;
 				for (int anc_idx : ancestors) {
-					//			if (!pruned[anc_idx]) {
-					if (!naive)
+					if (naive != 2)
 						que[anc_idx]->is_substate_of(*next, counter_trie, true,
 								changed);
 					else {
 						que[anc_idx]->is_substate_of_naive(*next, true, changed,
 								naive);
 					}
-					//			}
 				}
 			}
 			delete counter_trie;
 
 			// remove counters that are substate of an omega counter
-			if (!naive) {
+			if (naive != 2) {
 				vector<pair<State, int> > new_counters;
 				for (pair<State, int>& cnt : next->counters) {
 					bool found = false;
@@ -1758,7 +1754,7 @@ vector<tuple<State, State, vector<int> > >* Verifier::reachable(int taskid,
 	vector<bool> repeated;
 
     // TODO: ignore repeated reachability test when there is no atm
-    if (atm_task[taskid].empty())
+    if (atm_task[taskid].empty() || naive == 1 || naive == 2)
         repeated = vector<bool>(que_size, false);
     else
     	repeated_reachable(taskid, que, visited, forward_edges, pruned, repeated);
@@ -1889,7 +1885,7 @@ void Verifier::repeated_reachable(int taskid, vector<VASSState*>& que,
 	//visited_new.insert(0);
 	// int cnt = 0;
 	while (!dfs_stk.empty()) {
-		if ((float) (clock() - timer) / CLOCKS_PER_SEC >= 1800)
+		if ((float) (clock() - timer) / CLOCKS_PER_SEC >= 600)
 			break;
 
 		int u = dfs_stk.top();
@@ -2149,7 +2145,7 @@ void Verifier::get_eql_sets(int task_id, Formula* form, vector<tuple<int, int, b
 }
 
 void Verifier::get_unique_sign_pairs() {
-	if (!unique_sign_pairs.empty())
+	if (naive == 3 || !unique_sign_pairs.empty())
 		return;
 
     vector<tuple<int, int, bool> > eql_sets;
