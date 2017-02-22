@@ -1,0 +1,74 @@
+Relations:
+Order(i id, Item iid, NUM amount, Customer cid)
+Item(i id, NUM price, STR available)
+Customer(i id, STR name, STR record, STR payment_method)
+
+Hierarchy:
+ReceiveOrder -> ProcessOrder
+
+ReceiveOrder:
+Variables: Order oid, Item iid, NUM amount, Customer cid, STR status
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Receive:
+Pre: True
+Post: Order(oid, iid, amount, cid) && (((Item(iid, _, "True") && Customer(cid, _, "Good", _)) -> status = "Accepted") || ((Item(iid, _, "False") || Customer(cid, _, "Bad", _)) -> status = "Rejected"))
+Update: Write(oid, iid, amount, cid)
+
+AddCandidateOrder:
+Pre: True
+Post: True
+Update: ++Candidate(oid)
+
+RetrieveCandidateOrder:
+Pre: True
+Post: Order(oid, iid, amount, cid) && (((Item(iid, _, "True") && Customer(cid, _, "Good", _)) -> status = "Accepted") || ((Item(iid, _, "False") || Customer(cid, _, "Bad", _)) -> status = "Rejected"))
+Update: --Candidate(oid)
+
+CloseOrder:
+Pre: status == "Rejected" || status == "Shipped"
+Post: True
+Update: ++Record(oid, status)
+
+------
+
+ProcessOrder:
+Variables: Order oid, Item iid, NUM amount, NUM price, Customer cid, STR name, STR payment_method, STR status, NUM total
+Input: oid
+Return: status
+Open: status == "Accepted"
+Close: status == "Shipped"
+
+Services:
+
+FillOrder:
+Pre: oid != NULL
+Post: status == "OrderFilled" && Order(oid, iid, amount, cid) && Customer(cid, name, _, payment_method) && Item(iid, price, _) && total = amount * price
+Update: Write(iid, amount, cid, name, payment_method, price, total, status)
+
+SendInvoice:
+Pre: total != 0
+Post: status == "InvoiceSent"
+Update: ++Invoice(name, payment_method, total), Write(status)
+
+ShipOrder:
+Pre: total != 0 && status == "PaymentAccepted"
+Post: status == "Shipped"
+Update: ++Shipment(name, iid, amount)
+
+MakePayment:
+Pre: status == "InvoiceSent"
+Post: status == "Paid"
+Update: --Invoice(name, payment_method, total)
+
+AcceptPayment:
+Pre: status == "Paid"
+Post: status == "PaymentAccepted"
+Update: write(status)
+
+------

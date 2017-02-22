@@ -1,0 +1,175 @@
+Relations:
+Customer(i id, STR name)
+Hotel(i id, STR name, STR city, NUM price)
+Flight(i id, STR name, STR city_from, STR city_to, NUM price)
+CreditCard(i id, STR number, Customer cid)
+
+Hierarchy:
+ReceiveRequest -> Search,
+ReceiveRequest -> Booking,
+Booking -> Payment,
+Booking -> HandleError
+
+ReceiveRequest:
+Variables: Customer cid, STR city_from, STR city_to, Hotel hid, Flight fid, CreditCard card_id, STR status
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+GetRequest:
+Pre: True
+Post: Customer(cid, _) && city_from != "" && city_to != "" && status = "Requested"
+Update: Write(cid, city_from, city_to, status)
+
+CustomerReview:
+Pre: status = "Chosen"
+Post: status = "Alternative" || status = "CandidateToCustomer"
+Update: Write(status)
+
+PresentCandToCustomer:
+Pre: status == "CandidateToCustomer"
+Post: status == "Approved" || status == "24Hours" || status == "Cancel"
+Update: Write(status), CandidateForCustomer++(fid, hid)
+
+RequestCreditCardInfo:
+Pre: status == "Approved"
+Post: (card_id != NULL && status == "StartBooking") || (card_id == NULL && status == "24Hours")
+Update: Write(card_id, status)
+
+NotifyToStartOver:
+Pre: status == "24Hours"
+Post: status == ""
+Update: Write(status)
+
+UpdateRecord:
+Pre: status == "Cancel"
+Post: status == "Cancelled"
+Update: Write(status)
+
+------
+
+Search:
+Variables: STR city_from, STR city_to, Hotel hid, Flight fid, STR status
+Input: city_from, city_to
+Return: hid, fid, status
+Open: status = "Requested" || status = "Alternative"
+Close: status = "Chosen"
+
+Services:
+
+SearchFlight:
+Pre: fid == NULL
+Post: Flight(fid, _, city_from, city_to, _)
+Update: Write(fid)
+
+SearchHotel:
+Pre: hid == NULL
+Post: Hotel(hid, _, city_to, _)
+Update: Write(hid)
+
+AddCandidate:
+Pre: True
+Post: fid == NULL && hid == NULL
+Update: Candidate++(fid, hid)
+
+RetriveCandidate:
+Pre: True
+Post: ((fid != NULL && hid != NULL) -> status == "Chosen") && ((fid == NULL || hid == NULL) -> status == "")
+Update: --Candidate(fid, hid)
+
+------
+
+Booking:
+Variables: Customer cid, CreditCard card_id, Hotel hid, Flight fid, STR status, NUM amount_paid
+Input: cid, card_id, hid, fid, status
+Return: status
+Open: status == "StartBooking"
+Close: status == "Booked"
+
+Services:
+
+VerifyCard:
+Pre: True
+Post: (CreditCard(card_id, _, cid) -> status == "CardVerified") && (!CreditCard(card_id, _, cid) -> status == "CardNotVerified")
+Update: Write(status)
+
+PaymentFail:
+Pre: status == "PaymentFailed"
+Post: status == "30Sec" || status == "InvestigateFailed" || status == "ManualBooking"
+Update: Write(status)
+
+ManualBook:
+Pre: status == "ManualBooking" || status == "InvestigateFailed"
+Post: status == "Failed" || status == "Paid"
+Update: Write(status)
+
+UpdateRecord:
+Pre: status == "Failed" || status == "ChargeNotApproved"
+Post: status == "Recorded"
+Update: Record++(cid, card_id, fid, hid, status), Write(status)
+
+ChargeCustomer:
+Pre: status == "Paid"
+Post: status == "ChargeApproved" || status == "ChargeNotApproved"
+Update: Write(status)
+
+SendItinerary:
+Pre: status == "ChargeApproved"
+Post: status == "ItinerarySent"
+Update: ++Itinerary(cid, fid, hid)
+
+------
+
+Payment:
+Variables: CreditCard input_card_id, CreditCard card_id, Hotel hid, Flight fid, STR hotel_status, STR flight_status, STR status, NUM amount_paid, NUM hotel_price, NUM flight_price
+Input: card_id as input_card_id, hid, fid
+Return: status, amount_paid
+Open: status == "CardVerified" || status == "30Sec"
+Close: status == "Paid" || status == "PaymentFailed"
+
+Services:
+
+UpdateCreditCard:
+Pre: card_id == NULL
+Post: card_id = input_card_id || card_id != NULL
+Update: Write(card_id)
+
+PayHotel:
+Pre: card_id != NULL && (hotel_status == "" || hotel_status == "HotelFailed")
+Post: (hotel_status == "HotelFailed" || hotel_status == "HotelSucceeded") && Hotel(hid, _, _, hotel_price)
+Update: Write(hotel_status, hotel_price), Transaction++(card_id, hotel_price)
+
+PayFlight:
+Pre: card_id != NULL && (flight_status == "" || flight_status == "HotelFailed")
+Post: (flight_status == "FlightFailed" || flight_status == "FlightSucceeded") && Flight(fid, _, _, _, flight_price)
+Update: Write(flight_status, flight_price), Transaction++(card_id, flight_price)
+
+FinishPayment:
+Pre: card_id != NULL && (flight_status != "" || hotel_status != "")
+Post: ((flight_status == "FlightSucceeded" && hotel_status == "HotelSucceeded") -> status == "Paid" && amount_paid == hotel_price + flight_price) && (!(flight_status == "FlightSucceeded" && hotel_status == "HotelSucceeded") -> status == "PaymentFailed")
+Update: Write(status, amount_paid)
+
+------
+HandleError:
+Variables: Hotel hid, Flight fid, Customer cid, STR status
+Input: hid, fid, cid
+Return:
+Open: True
+Close: status == "ErrorHandled"
+
+Services:
+HandleFlight:
+Pre: status == ""
+Post: status == "FlightHandled" || status == ""
+Update: Write(status)
+
+HandleHotel:
+Pre: status == "FlightHandled"
+Post: status == "ErrorHandled" || status == ""
+Update: Write(status)
+
+------
+

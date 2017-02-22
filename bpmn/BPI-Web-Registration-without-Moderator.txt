@@ -1,0 +1,104 @@
+Relations:
+ValidAccountID(i id, STR user_name)
+EmailAddress(i id, STR email_address)
+BPIService(i id, STR service_name, STR authorized)
+Subscription(i id, STR name)
+EmailTemplate(i id, STR type, STR content)
+
+Hierarchy:
+Registration -> CompleteRegistration,
+Registration -> ConfirmEmailAddress,
+Registration -> LogInBPI
+
+Registration:
+Variables: ValidAccountID aid, STR user_name, STR password, EmailAddress eid, STR status, EmailTemplate template_id, STR email_content, STR subscribe, STR access_status, STR activation_link, STR received_link
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Initialize:
+Pre: status == "" 
+Post: status == "FillingForm" && aid == NULL && user_name == "" && password == "" && eid == NULL && subscribe == ""
+Update: Write(status, aid, user_name, password, eid, subscribe)
+
+CreateMemberProfile:
+Pre: status == "FormFilled"
+Post: status == "ProfileCreated"
+Update: Write(status)
+
+IssueEmailConfirmation:
+Pre: status == "ProfileCreated" && (subscribe == "Yes" || subscribe == "No")
+Post: status == "EmailConfirmationEmailSent" && ((subscribe == "No" && EmailTemplate(template_id, "EmailConfirmation", email_content)) ||
+(subscribe == "Yes" && EmailTemplate(template_id, "EmailConfirmationWithSubscription", email_content)))
+Update: Write(status), SentEmails++(eid, user_name, template_id, email_content, status)
+
+AuthorizeAccess:
+Pre: status == "ActivationLinkReceived"
+Post: status == "Authorized" && access_status == "Authorized"
+Update: Write(status, access_status)
+
+
+
+IssueRegistrationRefusalEmail:
+Pre: status == "Refused"
+Post: EmailTemplate(template_id, "Refusal", email_content) && status == "RefusalEmailSent"
+Update: Write(status, template_id, email_content), SentEmails++(eid, user_name, template_id, email_content, status)
+
+IssueWelcomeEmail:
+Pre: status == "Authorized"
+Post: EmailTemplate(template_id, "Welcome", email_content) && status == "WelcomeEmailSent"
+Update: Write(status, template_id, email_content), SentEmails++(eid, user_name, template_id, email_content, status)
+
+
+
+------
+
+CompleteRegistration:
+Variables: ValidAccountID aid, STR user_name, STR password, EmailAddress eid, STR subscribe, STR status, STR email_address
+Input: 
+Return: aid, user_name, password, eid, subscribe
+Open: status == "FillingForm"
+Close: status == "FormFilled"
+
+Services:
+
+FillForm:
+Pre: True
+Post: status == "FormFilled" && (ValidAccountID(aid, user_name) && password != "" && password != user_name && EmailAddress(eid, email_address) && (subscribe == "Yes" || subscribe == "No"))
+Update: Write(aid, user_name, password, eid, email_address, subscribe, status)
+
+------
+
+ConfirmEmailAddress:
+Variables: STR activation_link, STR received_link
+Input: activation_link
+Return: received_link
+Open: activation_link != "" && status == "EmailConfirmationEmailSent"
+Close: received_link != ""
+
+Services:
+
+SendLinkBack:
+Pre: True
+Post: received_link == activation_link || activation_link == ""
+Update: Write(activation_link)
+
+------
+
+LogInBPI:
+Variables: STR user_name, STR password, STR entered_user_name, STR entered_password, STR status
+Input: user_name, password
+Return:
+Open: access_status == "Authorized"
+Close: status == "Logined"
+
+Services:
+LogIn:
+Pre: True
+Post: ((user_name == entered_user_name && password == entered_password) -> status == "Logined") || ((user_name != entered_user_name || password != entered_password) -> status == "LoginFailed")
+Update: Write(entered_password, entered_user_name, status)
+
+------

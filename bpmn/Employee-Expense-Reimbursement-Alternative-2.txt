@@ -1,0 +1,69 @@
+Relations:
+Employee(i id, STR name, NUM age, NUM level)
+BankAccount(i id, STR acct_number, Employee eid)
+RequestType(i id, STR name, NUM upper_limit)
+
+Hierarchy:
+ReceiveRequest -> ProcessRequest
+
+ReceiveRequest:
+Variables: STR name, NUM age, NUM level, RequestType rid, NUM amount, STR status, Employee eid, NUM days_passed, STR notified_in_progress
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+Receive:
+Pre: status == ""
+Post: name != "" && age > 0 && level >= 0 && rid != NULL && amount > 0 && status == "RequestReceived" && eid == NULL && days_passed = 0 && notified_in_progress = "No"
+Update: Write(name, age, level, rid, amount, status, eid, days_passed, notified_in_progress)
+
+ValidateAccountExist:
+Pre: status == "RequestReceived"
+Post: (Employee(eid, name, age, level) && status == "AccountExist") || (eid == NULL && status == "AcountNotExist")
+Update: Write(status, eid)
+
+CreateAccount:
+Pre: status == "AccountNotExist"
+Post: status == "AccountCreated"
+Update: NewAccount++(name, age, level), Write(status)
+
+SendEmail1:
+Pre: days_passed < 7 
+Post: days_passed = 7 && notified_in_progress = "Yes"
+Update: Write(days_passed, notified_in_progress)
+
+SendEmail12:
+Pre: days_passed < 23
+Post: days_passed = 23 && status == "NeedToResubmit"
+Update: Write(days_passed, status)
+
+------
+
+ProcessRequest:
+Variables: STR name, NUM age, NUM level, RequestType rid, NUM limit, NUM amount, STR status, Employee eid
+Input: name, age, level, rid, amount, eid
+Return: status
+Open: status == "AccountCreated" || status == "AccountExist"
+Close: status == "Advised" || status == "MoneyTransferred"
+
+Services:
+
+TransferMoney: 
+Pre: amount < 200 || status == "Approved"
+Post: status == "MoneyTransferred"
+Update: Write(status)
+
+ReviewRequest:
+Pre: amount >= 200 || status == ""
+Post: (RequestType(rid, _, limit) && amount <= limit && status == "Approved") || status == "Rejected"
+Update: Write(limit, status)
+
+AdviseEmployeeReject:
+Pre: status == "Rejected"
+Post: status == "Advised"
+Update: Write(status)
+
+------

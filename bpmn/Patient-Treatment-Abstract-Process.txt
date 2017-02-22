@@ -1,0 +1,119 @@
+Relations:
+Patient(i id, STR name, STR address)
+Doctor(i id, STR name, Sympton s1, Sympton s2, Sympton s3)
+Sympton(i id, STR name)
+Medicine(i id, Sympton g1, Sympton g2, Sympton g3, Sympton b1, Sympton b2, Sympton b3)
+
+
+Hierarchy:
+MakeAppointment -> SeeDoctor,
+SeeDoctor -> TakeMedicine
+
+
+MakeAppointment:
+Variables: Patient pid, Doctor did, STR status
+Input:
+Return:
+Open: True
+Close: False
+
+Services:
+
+EnterPatientInfo:
+Pre: True
+Post: pid != NULL 
+Update: Write(pid)
+
+AddRequest:
+Pre: True 
+Post: pid == NULL
+Update: ++Request(pid)
+
+RetrieveRequest:
+Pre: True
+Post: True
+Update: --Request(pid)
+
+EnterDoctorInfo:
+Pre: True
+Post: did != NULL 
+Update: Write(did)
+
+AddDoctor:
+Pre: did != NULL 
+Post: did == NULL
+Update: ++AvailableDoctor(did)
+
+RetrieveDoctor:
+Pre: True
+Post: True
+Update: --AvailableDoctor(did)
+
+------
+
+SeeDoctor:
+Variables: Patient pid, Doctor did, Sympton s1, Sympton s2, Sympton s3, STR status
+Input: pid, did
+Return: 
+Open: pid != NULL && did != NULL
+Close: status == "No" || status == "Paid"
+
+Services:
+
+AddSympton:
+Pre: Sympton(s1, _) || Sympton(s2, _) || Sympton(s3, _) 
+Post: status == "Init"
+Update: ++Symptons(s1, s2, s3)
+
+CheckSympton:
+Pre: status == "Init"
+Post: status == "Yes" || status == "No" 
+Update: --Symptons(s1, s2, s3), Write(status)
+
+------
+
+TakeMedicine:
+
+Variables: Sympton s1, Sympton s2, Sympton s3, Medicine mid, STR status, STR med_status, NUM has_good, NUM has_bad
+Input: s1, s2, s3
+Return: status
+Open: status == "Yes"
+Close: status == "Paid"
+
+Services:
+
+StartPrescription:
+Pre: True
+Post: status == "WritingPrescription" && med_status == "empty"
+Update: Write(status)
+
+AddMedicine:
+Pre: Medicine(mid, _, _, _, _, _, _)
+Post: Medicine(mid, _, _, _, _, _, _) && status == "WritingPrescription" && med_status == "nonempty"
+Update: ++Prescription(mid)
+
+FinishPrescription:
+Pre: status == "WritingPrescription" && med_status == "nonempty"
+Post: status == "TakingMedicine" && has_good == 0 && has_bad == 0
+Update: Write(status)
+
+Checkout:
+Pre: status == "TakingMedicine"
+Post: status == "TakingMedicine"
+Update: --Prescription(mid)
+
+UpdateCheckoutStatus1:
+Pre: has_good == 0 && status == "TakingMedicine"
+Post: ((Medicine(mid, s1, _, _, _, _, _) || Medicine(mid, s2, _, _, _, _, _) || Medicine(mid, s3, _, _, _, _, _) || Medicine(mid, _, s1, _, _, _, _) || Medicine(mid, _, s2, _, _, _, _) || Medicine(mid, _, s3, _, _, _, _) || Medicine(mid, _, _, s1, _, _, _) || Medicine(mid, _, _, s2, _, _, _) || Medicine(mid, _, _, s3, _, _, _)) -> has_good == 1) || has_good == 0
+Update: Write(has_good)
+
+UpdateCheckoutStatus2:
+Pre: has_bad == 0 && status == "TakingMedicine"
+Post: ((Medicine(mid, _, _, _, s1, _, _) || Medicine(mid, _, _, _, s2, _, _) || Medicine(mid, _, _, _, s3, _, _) || Medicine(mid, _, _, _, _, s1, _) || Medicine(mid, _, _, _, _, s2, _) || Medicine(mid, _, _, _, _, s3, _) || Medicine(mid, _, _, _, _, _, s1) || Medicine(mid, _, _, _, _, _, s2) || Medicine(mid, _, _, _, _, _, s3)) -> has_bad == 1) || has_bad == 0
+Update: Write(has_bad)
+
+UpdateCheckoutStatus3:
+Pre: has_good == 1 && has_bad == 0 && status == "TakingMedicine"
+Post: status == "Paid"
+Update: Write(status)
+------
