@@ -1,0 +1,93 @@
+Relations:
+Case(i id, Customer cid, STR case_type, NUM estimate, NUM deductible)
+Customer(i id, STR name, STR address, STR injury)
+Claim(i id, NUM amount, STR statement, Case case_id)
+
+Hierarchy:
+Main -> ExccedDeductible,
+Main -> NotExccedDeductible
+
+Main:
+Variables: Case case_id, STR status
+Input: 
+Return:
+Open: True
+Close: False
+
+Services: 
+
+Init:
+Pre: status = ""
+Post: status = "NewCase" && case_id != NULL
+Update: Write(status, case_id)
+
+StoreCase:
+Pre: status != ""
+Post: status == ""
+Update: Cases++(case_id, status)
+
+RetrieveCase:
+Pre: status == ""
+Post: status != "" && status != "CaseEnded"
+Update: Cases--(case_id, status)
+
+
+------
+
+NotExccedDeductible:
+Variables: Case case_id, STR status, STR repair_loc
+Input: case_id
+Return: status
+Open: status == "NewCase" && Case(case_id, _, "NotExccedDeductible", _, _)
+Close: status == "CaseEnded"
+
+Services:
+
+SuggestRepairLocations:
+Pre: status == ""
+Post: repair_loc != ""
+Update: Write(repair_loc)
+
+RepairerNotify:
+Pre: status == "" && repair_loc != ""
+Post: status == "CaseEnded"
+Update: Write(status)
+
+PerfromRepair:
+Pre: status == "" && repair_loc != ""
+Post: status == "CaseEnded"
+Update: Write(status)
+
+------
+ExccedDeductible:
+
+Variables: Case case_id, STR status
+Input: case_id
+Return: status
+Open: status == "NewCase" && Case(case_id, _, "ExccedDeductible", _, _)
+Close: status == "CaseEnded"
+
+Services:
+
+Unrecoverable:
+Pre: status == ""
+Post: status == "CaseEnded"
+Update: Write(status)
+
+CustomerPays:
+Pre: status == "RepairPerformed"
+Post: status == "Paid"
+Update: Write(status)
+
+AdjusterApproves:
+Pre: status == "Paid"
+Post: status == "Approved"
+Update: Write(status)
+
+RepairComplete:
+Pre: status == "Approved"
+Post: status == "CaseEnded"
+Update: Write(status)
+
+------
+

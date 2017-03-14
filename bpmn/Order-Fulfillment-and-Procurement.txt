@@ -1,0 +1,116 @@
+Relations:
+Customer(i id, STR name, STR phone_num, STR address, CreditCard card)
+CreditRecord(i id, STR status, NUM score, Customer cid)
+CreditCard(i id, STR status)
+Item(i id, STR name, STR available, NUM price, STR method1, STR method2)
+Supplier(i id, Item iid, STR deliverable)
+
+Hierarchy:
+Main ->  Procurement,
+Main -> FinancialSettlement
+
+Main:
+Variables: Customer cid, Item iid, STR status
+Input: 
+Return:
+Open: True
+Close: False
+
+Services: 
+
+TakeOrder:
+Pre: status = ""
+Post: cid != NULL && iid != NULL &&
+(Item(iid, _, "Yes", _, _) -> status == "ArticleAvailable") &&
+(!(Item(iid, _, "Yes", _, _)) -> status == "ArticleNotAvailable")
+Update: Write(status, cid, iid)
+
+RetrieveOrder:
+Pre: status == ""
+Post: status != "PaymentReceived" && status != "CustomerInformed" && status != "ArticleRemoved"
+Update: Orders--(cid, iid, status)
+
+InsertOrder:
+Pre: status != ""
+Post: status = ""
+Update: Orders++(cid, iid, status)
+
+ShipArticle:
+Pre: status = "ArticleAvailable"
+Post: status = "ToSettleFinance"
+Update: Write(status)
+
+InformCustomer:
+Pre: status = "LateDelivery"
+Post: status = "CustomerInformed"
+Update: Write(status)
+
+RemoveArticle:
+Pre: status = "Undeliverable"
+Post: status = "ArticleRemoved"
+Update: Write(status)
+
+------
+
+Procurement:
+Variables: Item iid, Supplier sid, STR status
+Input: iid
+Return: status
+Open: status == "ArticleNotAvailable"
+Close: status == "Undeliverable" || status == "ArticleAvailable" || status == "LateDelivery"
+
+Services:
+
+CheckWithSupplier:
+Pre: status == ""
+Post: Supplier(sid, iid, status) || status = ""
+Update: Write(sid, status)
+
+LateDelivery:
+Pre: status == "MoreThanTwoDays"
+Post: status == "LateDelivery"
+Update: Write(status)
+
+OrderFromSupplier:
+Pre: status == "InTwoDays"
+Post: status == "ArticleAvailable"
+Update: Write(status)
+
+------
+
+FinancialSettlement:
+Variables: Item iid, Customer cid, STR status, STR method, CreditRecord record
+Input: cid, iid
+Return: status
+Open: status == "ToSettleFinance"
+Close: status == "PaymentReceived"
+
+Services:
+
+GetCreditScore:
+Pre: status == ""
+Post: status == "HadCreditScore" && CreditRecord(record, _, _, cid)
+Update: Write(status, record)
+
+Approve:
+Pre: CreditRecord(record, "Good", _, cid)
+Post: status == "GoodCredit"
+Update: Write(status)
+
+Reject:
+Pre: CreditRecord(record, "Low", _, cid)
+Post: status == "BadCredit"
+Update: Write(status)
+
+Review:
+Pre: CreditRecord(record, "Medium", _, cid)
+Post: status == "GoodCredit" || status == "BadCredit"
+Update: Write(status)
+
+PayAndPickStock:
+Pre: status == "GoodCredit"
+Post: status == "PaymentReceived" && (Item(iid, _, _, _, method, _) || Item(iid, _, _, _, _, method))
+Update: Write(status, method)
+
+------
+

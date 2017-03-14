@@ -1,0 +1,125 @@
+Relations:
+Customer(i id, STR name, STR phone_num, STR address, CreditCard card)
+CreditRecord(i id, STR status, NUM score, Customer cid)
+CreditCard(i id, STR status)
+Item(i id, STR name, STR available, NUM price, STR method1, STR method2)
+
+Hierarchy:
+Main ->  TakeOrder,
+Main -> CheckCredit,
+Main -> PackageOrder
+
+Main:
+Variables: Customer cid, Item iid, NUM amount, STR status, STR address
+Input: 
+Return:
+Open: True
+Close: False
+
+Services: 
+
+Init:
+Pre: status = ""
+Post: status = "TakingOrder"
+Update: Write(status)
+
+UpdateAccountInfo:
+Pre: status = "OrderTaken"
+Post: cid != NULL
+Update: Write(cid)
+
+RejectOrder:
+Pre: status == "BadCredit"
+Post: status = "OrderRejected"
+Update: Write(status), Log++(cid, iid, amount, status)
+
+ShipOrder:
+Pre: status == "OrderPacked"
+Post: status == "OrderShipped"
+Update: Write(status), Shipment++(iid, amount, address)
+
+CancelOrder:
+Pre: status == "OrderFailed" || status == "Canceled"
+Post: status == "Canceled"
+Update: Write(status), Log++(cid, iid, amount, status)
+
+------
+
+TakeOrder:
+Variables: Customer cid, Item iid, NUM amount, STR address, STR status
+Input: 
+Return: cid, iid, amount
+Open: True
+Close: status == "OrderTaken"
+
+Services:
+
+EnterItem:
+Pre: status == ""
+Post: status = "ItemTaken" && iid != NULL && amount != 0
+Update: Write(iid, amount, status)
+
+EnterBiling:
+Pre: status == "ItemTaken"
+Post: status = "BillingTaken" && cid != NULL
+Update: Write(cid, status)
+
+CustomerIssues:
+Pre: status == "BillingTaken"
+Post: status == "" || status == "OrderTaken"
+Update: Write(status)
+
+------
+
+CheckCredit:
+Variables: Customer cid, CreditRecord record, STR status
+Input: cid
+Return: status
+Open: status == "OrderTaken"
+Close: status == "BadCredit" || status == "GoodCredit"
+
+Services:
+
+GetCreditScore:
+Pre: status == ""
+Post: status == "HadCreditScore" && CreditRecord(record, _, _, cid)
+Update: Write(status, record)
+
+Approve:
+Pre: CreditRecord(record, "Good", _, cid)
+Post: status == "GoodCredit"
+Update: Write(status)
+
+Reject:
+Pre: CreditRecord(record, "Low", _, cid)
+Post: status == "BadCredit"
+Update: Write(status)
+
+Review:
+Pre: CreditRecord(record, "Medium", _, cid)
+Post: status == "GoodCredit" || status == "BadCredit"
+Update: Write(status)
+
+------
+
+PackageOrder:
+Variables: Item iid, NUM amount, STR status, STR method
+Input: iid, amount
+Return: status
+Open: status == "GoodCredit"
+Close: status != ""
+
+Services:
+
+CheckStock:
+Pre: status == ""
+Post: (Item(iid, _, "True", _, _, _) && status == "InStock") || (Item(iid, _, "False", _, _, _) && status == "OutOfStock")
+Update: Write(status)
+
+PickStock:
+Pre: status == "InStock"
+Post: status == "OrderPacked" && (Item(iid, _, _, _, method, _) || Item(iid, _, _, _, _, method))
+Update: Write(status, method)
+
+------
+

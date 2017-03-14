@@ -19,7 +19,7 @@ Services:
 InitializeOrder:
 Pre: True
 Post: oid != NULL && (c1 != NULL -> Component (c1, c1price)) && (c2 != NULL -> Component (c2, c2price)) && ((c3!=NULL) -> Component (c3, c3price)) && totalPrice == (c1price+c2price + c3price) && install != NULL && status == "orderInitialized" && cid != NULL 
-Update: Write(oid, totalPrice, install, cid)
+Update: Write(oid, totalPrice, install, cid, c1, c2, c3, c1price, c2price, c3price, status)
 
 ------
 
