@@ -2162,174 +2162,194 @@ void Verifier::get_unique_sign_pairs() {
         edges[v].push_back(pair<int, bool>(u, flag));
     }
 
-    vector<int> expr_group_id = vector<int>(N, -1);
-    int group_id = 0;
-
+    // unequality edges
+    vector<int> eql_cc(N, -1);
+    int num_cc = 0;
     for (int expr = 0; expr < N; expr++) {
-        if (expr_group_id[expr] >= 0 || is_const(expr))
+        if (eql_cc[expr] >= 0)
             continue;
-
-        unordered_set<int> const_exprs;
         queue<int> que;
         que.push(expr);
-        expr_group_id[expr] = group_id;
-        set<tuple<int, int, bool> > edge_set;
-        int uneql_cnt = 0;
-        int eql_cnt = 0;
+        eql_cc[expr] = num_cc++;
+        while (!que.empty()) {
+            int u = que.front();
+            que.pop();
+            
+            for (auto pp : edges[u])
+                if (pp.second) {
+                    if (eql_cc[pp.first] < 0) {
+                        eql_cc[pp.first] = eql_cc[expr];
+                        que.push(pp.first);
+                    }
+                }
+        }
+    }
+
+    // remove duplicate edges
+    for (auto edge : eql_sets)
+        if (get<2>(edge) == false) {
+            int u = get<0>(edge);
+            int v = get<1>(edge);
+            if (eql_cc[u] != eql_cc[v])
+                unique_sign_pairs.insert(pair<int, int>(u, v));
+        }
+
+    // find connected components of all edges
+    eql_cc = vector<int>(N, -1);
+    num_cc = 0;
+    
+    for (int expr = 0; expr < N; expr++) {
+        if (eql_cc[expr] >= 0)
+            continue;
+        queue<int> que;
+        que.push(expr);
+        eql_cc[expr] = num_cc++;
         Conjunct conj;
+        set<int> exprs;
 
         while (!que.empty()) {
             int u = que.front();
             que.pop();
-
-            for (auto pp : edges[u]) {
-            	// add edge
-				int e1 = u;
-				int e2 = pp.first;
-				if (e1 > e2)
-					swap(e1, e2);
-                if (pp.second)
-                    conj.eqs.push_back(pair<int, int>(e1, e2));
-                else
-                    conj.uneqs.push_back(pair<int, int>(e1, e2));
-
-				edge_set.insert(tuple<int, int, bool>(e1, e2, pp.second));
-                if (!is_const(e1) || !is_const(e2)) {                    
-                    if (pp.second)
-                        eql_cnt++;
-                    else
-                        uneql_cnt++;
-                }
-
-                if (expr_group_id[pp.first] == -1) {
-                    if (is_const(pp.first))
-                        const_exprs.insert(pp.first);
-                    else {
-                    	expr_group_id[pp.first] = group_id;
-                    	que.push(pp.first);
-                    }
-                }
-            }
-        }
-
-        if ((const_exprs.size() <= 1 && uneql_cnt == 0) || eql_cnt == 0) {
-            for (auto& tp : edge_set)
-                unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
-        } else {
-            set<pair<int, int> > eqs_set(conj.eqs.begin(), conj.eqs.end());
-            conj.eqs = vector<pair<int, int> >(eqs_set.begin(), eqs_set.end());
-            set<pair<int, int> > uneqs_set(conj.uneqs.begin(), conj.uneqs.end());
-            conj.uneqs = vector<pair<int, int> >(uneqs_set.begin(), uneqs_set.end());
             
-            set<int> expr_set;
-            for (pair<int, int> pp : conj.eqs) {
-                expr_set.insert(pp.first);
-                expr_set.insert(pp.second);
-            }
-            for (pair<int, int> pp : conj.uneqs) {
-                expr_set.insert(pp.first);
-                expr_set.insert(pp.second);
-            }
+            exprs.insert(u);
 
-            State tmp;
-            tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
-            if (convert_eqls_to_state(conj, tmp)) {
-                for (auto& tp : edge_set)
-                    unique_sign_pairs.insert(pair<int, int>(get<0>(tp), get<1>(tp)));
-            } else {
-                // add unequalities that does not violate any equalties
-                Conjunct eq_only;
-                // eq_only.eqs = conj.eqs;
-                tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
-                vector<pair<int, int> > const_eqs;
-                for (pair<int, int> eq : conj.eqs)
-                    if (is_const(eq.first) || is_const(eq.second)) {
-                        if (eq.first > eq.second)
-                            swap(eq.first, eq.second);
-                        const_eqs.push_back(eq);
-                    } else
-                        eq_only.eqs.push_back(eq);
-
-                sort(const_eqs.begin(), const_eqs.end());
-                int num_const_eqs = const_eqs.size();
-                for (int i = 0; i < num_const_eqs; i++) {
-                    vector<int> exprs(1, const_eqs[i].second);
-                    while (i + 1 < num_const_eqs && const_eqs[i + 1].first == const_eqs[i].first) {
-                        i++;
-                        exprs.push_back(const_eqs[i].first);
-                    }
-                    for (int j = 0; j + 1 < (int) exprs.size(); j++)
-                        eq_only.eqs.push_back(pair<int, int>(exprs[j], exprs[j + 1]));
+            if (is_const(u))
+                continue;
+            
+            for (auto pp : edges[u]) {
+                if (eql_cc[pp.first] < 0) {
+                    eql_cc[pp.first] = eql_cc[expr];
+                    que.push(pp.first);
                 }
 
-                if (convert_eqls_to_state(eq_only, tmp)) {
-                    map<int, int> eqc;
-                    for (int idx = 0; idx < (int) tmp.exprs.size(); idx++)
-                        eqc[tmp.exprs[idx]] = tmp.eq_classes[idx];
-                    for (auto& tp : edge_set) {
-                        int e1 = get<0>(tp);
-                        int e2 = get<1>(tp);
-                        if (!get<2>(tp) && !(eqc.count(e1) > 0 && eqc.count(e2) > 0 && eqc[e1] != eqc[e2]))
-                            unique_sign_pairs.insert(pair<int, int>(e1, e2));
-                    }
-                }
-
-                // add equalities that does not violate any unequalities
-                Conjunct uneq_only;
-                uneq_only.uneqs = conj.uneqs;
-                set<int> const_set;
-                for (pair<int, int>& pp : conj.eqs)
-                    if (is_const(pp.first) || is_const(pp.second)) {
-                        uneq_only.eqs.push_back(pp);
-                        if (is_const(pp.first))
-                            const_set.insert(pp.first);
-                        if (is_const(pp.second))
-                            const_set.insert(pp.second);
-                    }
-                if (const_set.size() <= 1 && convert_eqls_to_state(uneq_only, tmp)) {
-                    map<int, int> eqc;
-                    for (int idx = 0; idx < (int) tmp.exprs.size(); idx++)
-                        eqc[tmp.exprs[idx]] = tmp.eq_classes[idx];
-                    set<pair<int, int> > uneql_set(tmp.uneqs.begin(), tmp.uneqs.end());
-
-                    for (auto& tp : edge_set) {
-                        if (get<2>(tp)) {
-                            int e1 = get<0>(tp);
-                            int e2 = get<1>(tp);
-                            if (eqc.count(e1) == 0 || eqc.count(e2) == 0)
-                                unique_sign_pairs.insert(pair<int, int>(e1, e2));
-                            else {
-                                int eqc1 = eqc[e1];
-                                int eqc2 = eqc[e2];
-                                if (eqc1 > eqc2)
-                                    swap(eqc1, eqc2);
-                                if (uneql_set.count(pair<int, int>(eqc1, eqc2)) == 0)
-                                    unique_sign_pairs.insert(pair<int, int>(e1, e2));
-                            }
-                        }
-                    }
-                }
-
-                tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
+                if (pp.second)
+                    conj.eqs.push_back(pair<int, int>(u, pp.first));
+                else
+                    conj.uneqs.push_back(pair<int, int>(u, pp.first));
             }
         }
-        group_id++;
+
+        State tmp;
+        set<int> expr_set;
+        for (pair<int, int> pp : conj.eqs) {
+            expr_set.insert(pp.first);
+            expr_set.insert(pp.second);
+        }
+        for (pair<int, int> pp : conj.uneqs) {
+            expr_set.insert(pp.first);
+            expr_set.insert(pp.second);
+        }
+        tmp.exprs = vector<int>(expr_set.begin(), expr_set.end());
+
+        if (convert_eqls_to_state(conj, tmp)) {
+            for (pair<int, int> pp : conj.eqs)
+                unique_sign_pairs.insert(pp);
+        }
     }
+
+
     
-    // printf("%d\n", (int) unique_sign_pairs.size());
-    // node with degree 1
-    for (int expr = 0; expr < N; expr++) {
-        set<pair<int, bool> > edge_set(edges[expr].begin(), edges[expr].end());
-        if (edge_set.size() == 1) {
-            int e1 = expr;
-            int e2 = edges[expr][0].first;
-            if (e1 > e2)
-                swap(e1, e2);
+    // equality edges
+    /*
+    set<pair<int, int> > added;
+    BCCGraph bcc(N);
+    for (auto edge : eql_sets)
+        if (get<2>(edge)) {
+            int u = get<0>(edge);
+            int v = get<1>(edge);
 
-            if (!edges[expr][0].second || (!is_const(e1) && !is_const(e2)))
-                unique_sign_pairs.insert(pair<int, int>(e1, e2));
+            if (is_const(u) || is_const(v))
+                continue;
+
+            if (u > v) swap(u, v);
+            if (added.count(pair<int, int>(u, v)) > 0)
+                continue;
+            added.insert(pair<int, int>(u, v));
+
+            bcc.addEdge(u, v);
+            bcc.addEdge(v, u);
+        }
+
+    unordered_set<int> to_traverse;
+    vector<vector<pair<int, int> > > decomp;
+    bcc.BCC(decomp);
+    for (auto edge : eql_sets) {
+        if (get<2>(edge))
+            continue;
+
+        to_traverse.insert(get<0>(edge));
+        to_traverse.insert(get<1>(edge));
+    }
+
+    set<pair<int, int> > marked_edge;
+    set<pair<int, int> > uneql_set;
+    for (auto edge : eql_sets)
+        if (!get<2>(edge)) {
+            uneql_set.insert(pair<int, int>(get<0>(edge), get<1>(edge)));
+            uneql_set.insert(pair<int, int>(get<1>(edge), get<0>(edge)));
+        }
+
+    for (int start = 0; start < N; start++) {
+        if (to_traverse.count(start) > 0 || is_const(start)) {
+            queue<int> que;
+            que.push(start);
+            vector<int> from(N, -1);
+            from[start] = start;
+            vector<int> visited;
+
+            while (!que.empty()) {
+                int u = que.front();
+                visited.push_back(u);
+                que.pop();
+
+                for (auto pp : edges[u])
+                    if (pp.second && from[pp.first] == -1) {
+                        from[pp.first] = u;
+
+                        if (!is_const(pp.first))
+                            que.push(pp.first);
+                        else
+                            visited.push_back(pp.first);
+                    }
+            }
+            
+            for (int end : visited)
+                if ((is_const(start) && is_const(end) && start != end) ||
+                    uneql_set.count(pair<int, int>(start, end)) > 0) {
+                    int u = end;
+                    while (u != start) {
+                        int v = from[u];
+                        marked_edge.insert(pair<int, int>(v, u));
+                        marked_edge.insert(pair<int, int>(u, v));
+                        u = v;
+                    }
+                }
         }
     }
+
+    for (auto bc : decomp) {
+        bool found = false;
+        for (auto pp : bc)
+            if (marked_edge.count(pp) > 0)
+                found = true;
+        if (found) {
+            for (auto pp : bc) {
+                marked_edge.insert(pp);
+                swap(pp.first, pp.second);
+                marked_edge.insert(pp);
+            }
+        }
+    }
+    for (auto edge : eql_sets) 
+        if (get<2>(edge)) {
+            int u = get<0>(edge);
+            int v = get<1>(edge);
+            if (marked_edge.count(pair<int, int>(u, v)) == 0) { 
+                unique_sign_pairs.insert(pair<int, int>(u, v));
+                // printf("%s %s\n", expr_name[u].c_str(), expr_name[v].c_str());
+            }
+        }
+    */
     
     // printf("%d\n", (int) unique_sign_pairs.size());
 }
@@ -2370,48 +2390,163 @@ int Verifier::profile_get_max_active_counters() {
 
 int Verifier::profile_get_cyclomatic(int task_id, vector<VASSState*>& que, vector<vector<int> >& forward_edges) {
 	int N = que.size();
-	vector<int> projected;
-	map<State, int> proj_map;
-	vector<int> nonid_vars;
 	Task& task = art.tasks[task_id];
+    int max_cyc = 0;
 
 	for (int vid = 0; vid < task.num_var; vid++) {
-		if (task.var_types[vid] < 0)
-			nonid_vars.push_back(vid);
-	}
+		if (task.var_types[vid] >= 0)
+			continue;
 
-	for (int i = 0; i < N; i++) {
-		State p;
+        vector<int> projected;
+        map<State, int> proj_map;
+        vector<int> nonid_vars(1, vid);
+        for (int i = 0; i < N; i++) {
+            State p;
 
-        /*
-        if (task_id == 0) {
-            printf("State %d:\n", i);
-            dump_state(que[i]->state);
-            printf("Edges: ");
-            for (int v : forward_edges[i])
-                printf("%d ", v);
-            printf("\n\n");
+            project(que[i]->state, task_id, nonid_vars, p);
+            if (proj_map.count(p) == 0)
+                proj_map[p] = (int) proj_map.size();
+            projected.push_back(proj_map[p]);
         }
-        */
 
-		project(que[i]->state, task_id, nonid_vars, p);
-		if (proj_map.count(p) == 0)
-			proj_map[p] = (int) proj_map.size();
-		projected.push_back(proj_map[p]);
-	}
+        set<pair<int, int> > edge_set;
+        for (int u = 0; u < N; u++) {
+            int new_u = projected[u];
 
-	set<pair<int, int> > edge_set;
-	for (int u = 0; u < N; u++) {
-		int new_u = projected[u];
+            for (int v : forward_edges[u]) {
+                int new_v = projected[v];
+                edge_set.insert(pair<int, int>(new_u, new_v));
+            }
+        }
 
-		for (int v : forward_edges[u]) {
-			int new_v = projected[v];
-			edge_set.insert(pair<int, int>(new_u, new_v));
-		}
-	}
-
-	return (int) edge_set.size() - (int) proj_map.size() + 2;
+        // TODO
+        // print out debug info when cyc > 100
+        max_cyc = max(max_cyc, (int) edge_set.size() - (int) proj_map.size() + 2);
+    }
+    return max_cyc;
 }
 
+
+//
+// biconnected components
+//
+
+BCCGraph::BCCGraph(int _V)
+{
+    V = _V;
+    E = 0;
+    adj = vector<list<int> >(V, list<int>());
+}
+  
+void BCCGraph::addEdge(int v, int w)
+{
+    adj[v].push_back(w);
+    E++;
+}
+  
+// A recursive function that finds and prints strongly connected
+// components using DFS traversal
+// u --> The vertex to be visited next
+// disc[] --> Stores discovery times of visited vertices
+// low[] -- >> earliest visited vertex (the vertex with minimum
+//             discovery time) that can be reached from subtree
+//             rooted with current vertex
+// *st -- >> To store visited edges
+void BCCGraph::BCCUtil(int u, int disc[], int low[], list<Edge> *st,
+                    int parent[])
+{
+    // A static variable is used for simplicity, we can avoid use
+    // of static variable by passing a pointer.
+    static int time = 0;
+  
+    // Initialize discovery time and low value
+    disc[u] = low[u] = ++time;
+    int children = 0;
+  
+    // Go through all vertices adjacent to this
+    list<int>::iterator i;
+    for (i = adj[u].begin(); i != adj[u].end(); ++i)
+    {
+        int v = *i;  // v is current adjacent of 'u'
+  
+        // If v is not visited yet, then recur for it
+        if (disc[v] == -1)
+        {
+            children++;
+            parent[v] = u;
+            //store the edge in stack
+            st->push_back(Edge(u,v));
+            BCCUtil(v, disc, low, st, parent);
+  
+            // Check if the subtree rooted with 'v' has a
+            // connection to one of the ancestors of 'u'
+            // Case 1 -- per Strongly Connected Components Article
+            low[u]  = min(low[u], low[v]);
+ 
+            //If u is an articulation point,
+            //pop all edges from stack till u -- v
+            if( (disc[u] == 1 && children > 1) ||
+                (disc[u] > 1 && low[v] >= disc[u]) )
+            {
+                while(st->back().u != u || st->back().v != v)
+                {
+					result.back().push_back(pair<int, int>(st->back().u, st->back().v));
+                    st->pop_back();
+                }
+				
+				result.back().push_back(pair<int, int>(st->back().u, st->back().v));
+                st->pop_back();
+				result.push_back(vector<pair<int, int> >());
+            }
+        }
+  
+        // Update low value of 'u' only of 'v' is still in stack
+        // (i.e. it's a back edge, not cross edge).
+        // Case 2 -- per Strongly Connected Components Article
+        else if(v != parent[u] && disc[v] < low[u])
+        {
+            low[u]  = min(low[u], disc[v]);
+            st->push_back(Edge(u,v));
+        }
+    }
+}
+  
+// The function to do DFS traversal. It uses BCCUtil()
+void BCCGraph::BCC(vector<vector<pair<int, int> > >& res)
+{
+	result.push_back(vector<pair<int, int> >());
+    int *disc = new int[V];
+    int *low = new int[V];
+    int *parent = new int[V];
+    list<Edge> *st = new list<Edge>[E];
+  
+    // Initialize disc and low, and parent arrays
+    for (int i = 0; i < V; i++)
+    {
+        disc[i] = -1;
+        low[i] = -1;
+        parent[i] = -1;
+    }
+  
+    for (int i = 0; i < V; i++)
+    {
+        if (disc[i] == -1)
+            BCCUtil(i, disc, low, st, parent);
+         
+        int j = 0;
+        //If stack is not empty, pop all edges from stack
+        while(st->size() > 0) {
+            j = 1;
+			result.back().push_back(pair<int, int>(st->back().u, st->back().v));
+            st->pop_back();
+        }
+        if(j == 1)
+			result.push_back(vector<pair<int, int> >());
+    }
+	
+	if (result.back().empty())
+		result.pop_back();
+	res = result;
+}
 
 }

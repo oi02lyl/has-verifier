@@ -14,6 +14,7 @@
 #include <map>
 #include <unordered_set>
 #include <unordered_map>
+#include <list>
 #include <ctime>
 #include "Artifact.h"
 #include "VASSState.h"
@@ -351,6 +352,36 @@ struct Conjunct {
 	}
 };
 
-}
 
+
+// Biconnected components
+class Edge {
+public:
+    int u;
+    int v;
+    Edge(int _u, int _v): u(_u), v(_v) { }
+};
+
+ 
+// A class that represents an directed graph
+class BCCGraph {
+public:
+    int V;    // No. of vertices
+    int E;    // No. of edges
+    vector<list<int> > adj;
+  
+    // A Recursive DFS based function used by BCC()
+    void BCCUtil(int u, int disc[], int low[],
+                 list<Edge> *st, int parent[]);
+
+	BCCGraph(int V);   // Constructor
+
+    void addEdge(int v, int w);   // function to add an edge to graph
+
+    void BCC(vector<vector<pair<int, int> > >& res);
+	
+	vector<vector<pair<int, int> > > result;
+};
+
+}
 #endif /* VERIFIER_H_ */

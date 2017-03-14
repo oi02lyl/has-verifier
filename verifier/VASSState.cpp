@@ -636,7 +636,8 @@ void VASSStateStore::substates(VASSState* vstate, vector<int>& results) {
     vector<int> cands;
     if (naive == 4) {
         for (int i = 0; i < (int) states.size(); i++)
-            cands.push_back(i);
+            if (i < counter_tries.size() && counter_tries[i] != NULL)
+                cands.push_back(i);
     } else {
         vector<vector<int>*> lists;
 
@@ -662,6 +663,7 @@ void VASSStateStore::substates(VASSState* vstate, vector<int>& results) {
             }
         }
 
+        /* TODO: this needs to be fixed
         // counters
         term_set_t terms;
         for (pair<State, int>& ct : vstate->counters) {
@@ -675,6 +677,7 @@ void VASSStateStore::substates(VASSState* vstate, vector<int>& results) {
                 return;
             lists.push_back(counter_index[tp]);
         }
+        */
 
         if (lists.empty())
             return;
@@ -689,7 +692,7 @@ void VASSStateStore::substates(VASSState* vstate, vector<int>& results) {
             cands.resize(it - cands.begin());
         }
     }
-
+    
 	// verify each candidate
 	TrieNode* counter_trie = vstate->get_counter_trie();
 	results.clear();
@@ -699,7 +702,24 @@ void VASSStateStore::substates(VASSState* vstate, vector<int>& results) {
 			(naive == 2 && states[idx]->is_substate_of_naive(*vstate, false, tmp, naive))	)
 			results.push_back(idx);
 	}
-	delete counter_trie;
+    
+    /*
+    // testing code
+    unordered_set<int> cand_set(cands.begin(), cands.end());
+    for (int i = 0; i < (int) states.size(); i++)
+        if (i < counter_tries.size() && counter_tries[i] != NULL) {
+            int idx = i;
+            bool tmp = false;
+            if ((naive != 2 && states[idx]->is_substate_of(*vstate, counter_trie, false, tmp)) ||
+                (naive == 2 && states[idx]->is_substate_of_naive(*vstate, false, tmp, naive))) {
+                if (cand_set.count(idx) == 0)
+                    printf("error substate!\n");
+        }
+    }
+    // end of testing code
+    */
+	
+    delete counter_trie;
 }
 
 bool VASSStateStore::superstate(VASSState* vstate, vector<bool>& ignored, int& equal_vstate_id) {
@@ -709,7 +729,8 @@ bool VASSStateStore::superstate(VASSState* vstate, vector<bool>& ignored, int& e
 	vector<int> results;
     if (naive == 4) {
         for (int idx = 0; idx < states.size(); idx++)
-            results.push_back(idx);
+            if (idx < counter_tries.size() && counter_tries[idx] != NULL)
+                results.push_back(idx);
     } else
     	trie->query(term_sets, -1, results);
 	bool exists = false;
@@ -737,7 +758,8 @@ bool VASSStateStore::superstate(VASSState* vstate, int& equal_vstate_id) {
 	vector<int> results;
     if (naive == 4) {
         for (int idx = 0; idx < states.size(); idx++)
-            results.push_back(idx);
+            if (idx < (int) counter_tries.size() && counter_tries[idx] != NULL)
+                results.push_back(idx);
     } else
     	trie->query(term_sets, -1, results);
 	bool exists = false;
@@ -764,7 +786,8 @@ bool VASSStateStore::superstate_strict(VASSState* vstate, int& equal_vstate_id) 
 	vector<int> results;
     if (naive == 4) {
         for (int idx = 0; idx < states.size(); idx++)
-            results.push_back(idx);
+            if (idx < (int) counter_tries.size() && counter_tries[idx] != NULL)
+                results.push_back(idx);
     } else
     	trie->query(term_sets, -1, results);
 	bool exists = false;
