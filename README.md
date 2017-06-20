@@ -1,7 +1,7 @@
 # has-verifier
 Implementation of two Verifiers for Hierarchical Artifact Systems
-1. Spin-based
-2. Karp-Miller-based
+1. Spin-based [link](https://arxiv.org/abs/1705.09427)
+2. Karp-Miller-based (VERIFAS) [link](https://arxiv.org/abs/1705.10007)
 
 ## Prerequisite
 * Boost
@@ -22,6 +22,3 @@ The verifier generates and verifier a simple liveness property
 ## How to run batch experiment
 * Spin-based: `python run_spin.py`
 * Karp-Miller-based: `python run_km.py`
-
-## TODO
-* Full support of HLTL-FO
