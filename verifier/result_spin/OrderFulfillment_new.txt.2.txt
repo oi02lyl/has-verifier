@@ -1,99 +1,39 @@
 warning: for p.o. reduction to be valid the never claim must be stutter-invariant
 (never claims generated from LTL formulae are stutter-invariant)
+pan:1: acceptance cycle (at depth 75)
+pan: wrote output.pml.trail
 
 (Spin Version 6.4.5 -- 1 January 2016)
+Warning: Search not completed
 	+ Partial Order Reduction
 	+ Compression
 
 Full statespace search for:
 	never claim         	+ (never_0)
 	assertion violations	+ (if within scope of claim)
-	acceptance   cycles 	- (not selected)
+	acceptance   cycles 	+ (fairness disabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 84 byte, depth reached 33, errors: 0
-     2875 states, stored
-      731 states, matched
-     3606 transitions (= stored+matched)
-     3290 atomic steps
+State-vector 364 byte, depth reached 189, errors: 1
+      904 states, stored (905 visited)
+      295 states, matched
+     1200 transitions (= visited+matched)
+     1482 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.329	equivalent memory usage for states (stored*(State-vector + overhead))
-    0.743	actual memory usage for states
+    0.345	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.535	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
-  129.120	total actual memory usage
+  128.925	total actual memory usage
 
 
 nr of templates: [ 0:globals 1:chans 2:procs ]
-collapse counts: [ 0:2159 2:6 3:3 4:2 ]
-unreached in proctype exec
-	output.pml:76, state 72, "(1)"
-	output.pml:93, state 91, "running[2] = 1"
-	output.pml:94, state 92, "T2_X0 = 0"
-	output.pml:95, state 93, "T2_X1 = T0_X2"
-	output.pml:96, state 94, "T2_X2 = 0"
-	output.pml:97, state 95, "T2_X3 = T0_X3"
-	output.pml:98, state 96, "T2_X3_1 = T0_X3_1"
-	output.pml:99, state 97, "T2_X3_2 = T0_X3_2"
-	output.pml:100, state 98, "T2_X3_3 = T0_X3_3"
-	output.pml:101, state 99, "T2_X4 = 0"
-	output.pml:102, state 100, "T2_X5 = T0_X4"
-	output.pml:103, state 101, "T2_X6 = 0"
-	output.pml:107, state 105, "running[3] = 1"
-	output.pml:108, state 106, "T3_X0 = 0"
-	output.pml:109, state 107, "T3_X1 = 0"
-	output.pml:113, state 111, "running[1] = 0"
-	output.pml:114, state 112, "T0_X1 = T1_X1"
-	output.pml:118, state 116, "running[2] = 0"
-	output.pml:119, state 117, "T0_X1 = T2_X0"
-	output.pml:123, state 121, "running[3] = 0"
-	output.pml:124, state 122, "T0_X1 = T3_X0"
-	output.pml:133, state 139, "T1_X1 = S0"
-	output.pml:133, state 139, "T1_X1 = S2"
-	output.pml:133, state 139, "T1_X1 = S3"
-	output.pml:133, state 139, "T1_X1 = S1"
-	output.pml:133, state 139, "T1_X1 = S4"
-	output.pml:133, state 139, "T1_X1 = S5"
-	output.pml:133, state 139, "T1_X1 = S6"
-	output.pml:133, state 139, "T1_X1 = 0"
-	output.pml:133, state 139, "T1_X1 = 11"
-	output.pml:144, state 159, "ready[1] = 1"
-	output.pml:153, state 170, "T2_X2 = 0"
-	output.pml:153, state 170, "T2_X2 = 11"
-	output.pml:153, state 170, "T2_X2 = 12"
-	output.pml:154, state 175, "T2_X4 = 0"
-	output.pml:154, state 175, "T2_X4 = 11"
-	output.pml:154, state 175, "T2_X4 = 12"
-	output.pml:155, state 179, "T2_X6 = 0"
-	output.pml:155, state 179, "T2_X6 = 11"
-	output.pml:162, state 193, "(1)"
-	output.pml:151, state 194, "(((T2_X0==S0)||(T2_X0==S2)))"
-	output.pml:151, state 194, "else"
-	output.pml:166, state 199, "ready[2] = 1"
-	output.pml:175, state 216, "T3_X0 = S0"
-	output.pml:175, state 216, "T3_X0 = S2"
-	output.pml:175, state 216, "T3_X0 = S3"
-	output.pml:175, state 216, "T3_X0 = S1"
-	output.pml:175, state 216, "T3_X0 = S4"
-	output.pml:175, state 216, "T3_X0 = S5"
-	output.pml:175, state 216, "T3_X0 = S6"
-	output.pml:175, state 216, "T3_X0 = 0"
-	output.pml:175, state 216, "T3_X0 = 11"
-	output.pml:176, state 221, "T3_X1 = S7"
-	output.pml:176, state 221, "T3_X1 = 0"
-	output.pml:176, state 221, "T3_X1 = 11"
-	output.pml:183, state 235, "(1)"
-	output.pml:173, state 236, "(((T3_X0==S3)&&(T3_X1!=S7)))"
-	output.pml:173, state 236, "else"
-	output.pml:187, state 241, "ready[3] = 1"
-	(34 of 249 states)
-unreached in init
-	(0 of 58 states)
-unreached in claim never_0
-	output.pml:252, state 8, "-end-"
-	(1 of 8 states)
+collapse counts: [ 0:125 2:3 3:3 4:3 5:3 6:3 7:1 8:1 9:1 10:1 11:1 12:1 13:1 14:1 15:1 16:1 17:1 18:1 19:16 20:3 ]
 
-pan: elapsed time 0 seconds
-time = 1.227813
+pan: elapsed time 0.02 seconds
+pan: rate     45250 states/second
+avg_as_size = 2.090909
+avg_as_naive = 20.333333
+time = 0.021812,1.865939,0.069915

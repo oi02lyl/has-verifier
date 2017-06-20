@@ -1,12 +1,11 @@
 warning: for p.o. reduction to be valid the never claim must be stutter-invariant
 (never claims generated from LTL formulae are stutter-invariant)
 error: max search depth too small
-Depth=    9999 States=    1e+06 Transitions= 3.88e+07 Memory=   231.464	t=     15.4 R=   7e+04
-Depth=    9999 States=    2e+06 Transitions=  9.3e+07 Memory=   326.776	t=       39 R=   5e+04
-Depth=    9999 States=    3e+06 Transitions= 1.46e+08 Memory=   415.253	t=       77 R=   4e+04
-Depth=    9999 States=    4e+06 Transitions= 1.96e+08 Memory=   508.222	t=     99.8 R=   4e+04
+pan:1: acceptance cycle (at depth 9948)
+pan: wrote output.pml.trail
 
 (Spin Version 6.4.5 -- 1 January 2016)
+Warning: Search not completed
 	+ Partial Order Reduction
 	+ Compression
 
@@ -16,247 +15,27 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness disabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 108 byte, depth reached 9999, errors: 0
-  4400555 states, stored
-2.1966682e+08 states, matched
-2.2406738e+08 transitions (= stored+matched)
-1.7028256e+09 atomic steps
-hash conflicts:  17649347 (resolved)
+State-vector 580 byte, depth reached 9999, errors: 1
+    29670 states, stored (29884 visited)
+    31103 states, matched
+    60987 transitions (= visited+matched)
+    17969 atomic steps
+hash conflicts:         8 (resolved)
 
 Stats on memory usage (in Megabytes):
-  604.324	equivalent memory usage for states (stored*(State-vector + overhead))
-  414.347	actual memory usage for states (compression: 68.56%)
-         	state-vector as stored = 63 byte + 36 byte overhead
+   17.430	equivalent memory usage for states (stored*(State-vector + overhead))
+    4.406	actual memory usage for states (compression: 25.28%)
+         	state-vector as stored = 120 byte + 36 byte overhead
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
-  542.792	total actual memory usage
+  132.831	total actual memory usage
 
 
 nr of templates: [ 0:globals 1:chans 2:procs ]
-collapse counts: [ 0:1749205 2:15 3:1 ]
-unreached in init
-	output.pml:505, state 632, "running[2] = 0"
-	output.pml:506, state 633, "T0_X6 = T2_X4"
-	output.pml:647, state 1010, "(1)"
-	output.pml:652, state 1017, "T2_X6 = CONST_NULL"
-	output.pml:653, state 1020, "T2_X6_1 = 30"
-	output.pml:654, state 1023, "T2_X7 = CONST_NULL"
-	output.pml:655, state 1026, "T2_X7_1 = 30"
-	output.pml:656, state 1029, "T2_X7_2 = 30"
-	output.pml:657, state 1032, "T2_X7_2_1 = 30"
-	output.pml:658, state 1035, "T2_X8 = CONST_NULL"
-	output.pml:659, state 1038, "T2_X8_1 = 30"
-	output.pml:660, state 1041, "T2_X8_2 = 30"
-	output.pml:661, state 1044, "T2_X8_3 = 30"
-	output.pml:662, state 1047, "T2_X8_4 = 30"
-	output.pml:663, state 1050, "T2_X9 = CONST_NULL"
-	output.pml:664, state 1053, "T2_X9_1 = 30"
-	output.pml:665, state 1056, "T2_X9_2 = 30"
-	output.pml:666, state 1059, "T2_X9_3 = 30"
-	output.pml:667, state 1062, "T2_X10 = S0"
-	output.pml:668, state 1065, "T2_X11 = CONST_NULL"
-	output.pml:669, state 1068, "T2_X11_1 = 30"
-	output.pml:670, state 1071, "T2_X12 = CONST_NULL"
-	output.pml:671, state 1074, "T2_X12_1 = 30"
-	output.pml:672, state 1077, "T2_X12_2 = 30"
-	output.pml:673, state 1080, "T2_X12_3 = 30"
-	output.pml:674, state 1083, "T2_X12_4 = 30"
-	output.pml:675, state 1086, "T2_X13 = CONST_NULL"
-	output.pml:676, state 1089, "T2_X13_1 = 30"
-	output.pml:677, state 1092, "T2_X13_2 = 30"
-	output.pml:678, state 1095, "T2_X13_3 = 30"
-	output.pml:681, state 1098, "(1)"
-	output.pml:681, state 1099, "((((T2_X4==S14)||(T2_X4==S15))||(T2_X4==S16)))"
-	output.pml:686, state 1105, "T2_X6 = CONST_NULL"
-	output.pml:687, state 1108, "T2_X6_1 = 30"
-	output.pml:688, state 1111, "T2_X7 = CONST_NULL"
-	output.pml:689, state 1114, "T2_X7_1 = 30"
-	output.pml:690, state 1117, "T2_X7_2 = 30"
-	output.pml:691, state 1120, "T2_X7_2_1 = 30"
-	output.pml:692, state 1123, "T2_X8 = CONST_NULL"
-	output.pml:693, state 1126, "T2_X8_1 = 30"
-	output.pml:694, state 1129, "T2_X8_2 = 30"
-	output.pml:695, state 1132, "T2_X8_3 = 30"
-	output.pml:696, state 1135, "T2_X8_4 = 30"
-	output.pml:697, state 1138, "T2_X9 = CONST_NULL"
-	output.pml:698, state 1141, "T2_X9_1 = 30"
-	output.pml:699, state 1144, "T2_X9_2 = 30"
-	output.pml:700, state 1147, "T2_X9_3 = 30"
-	output.pml:701, state 1150, "T2_X10 = S0"
-	output.pml:702, state 1153, "T2_X11 = CONST_NULL"
-	output.pml:703, state 1156, "T2_X11_1 = 30"
-	output.pml:704, state 1159, "T2_X12 = CONST_NULL"
-	output.pml:705, state 1162, "T2_X12_1 = 30"
-	output.pml:706, state 1165, "T2_X12_2 = 30"
-	output.pml:707, state 1168, "T2_X12_3 = 30"
-	output.pml:708, state 1171, "T2_X12_4 = 30"
-	output.pml:709, state 1174, "T2_X13 = CONST_NULL"
-	output.pml:710, state 1177, "T2_X13_1 = 30"
-	output.pml:711, state 1180, "T2_X13_2 = 30"
-	output.pml:712, state 1183, "T2_X13_3 = 30"
-	output.pml:715, state 1186, "(1)"
-	output.pml:715, state 1187, "(((T2_X4==S17)||(T2_X4==S18)))"
-	output.pml:720, state 1193, "T2_X6 = CONST_NULL"
-	output.pml:721, state 1196, "T2_X6_1 = 30"
-	output.pml:722, state 1199, "T2_X7 = CONST_NULL"
-	output.pml:723, state 1202, "T2_X7_1 = 30"
-	output.pml:724, state 1205, "T2_X7_2 = 30"
-	output.pml:725, state 1208, "T2_X7_2_1 = 30"
-	output.pml:726, state 1211, "T2_X8 = CONST_NULL"
-	output.pml:727, state 1214, "T2_X8_1 = 30"
-	output.pml:728, state 1217, "T2_X8_2 = 30"
-	output.pml:729, state 1220, "T2_X8_3 = 30"
-	output.pml:730, state 1223, "T2_X8_4 = 30"
-	output.pml:731, state 1226, "T2_X9 = CONST_NULL"
-	output.pml:732, state 1229, "T2_X9_1 = 30"
-	output.pml:733, state 1232, "T2_X9_2 = 30"
-	output.pml:734, state 1235, "T2_X9_3 = 30"
-	output.pml:735, state 1238, "T2_X10 = S0"
-	output.pml:736, state 1241, "T2_X11 = CONST_NULL"
-	output.pml:737, state 1244, "T2_X11_1 = 30"
-	output.pml:738, state 1247, "T2_X12 = CONST_NULL"
-	output.pml:739, state 1250, "T2_X12_1 = 30"
-	output.pml:740, state 1253, "T2_X12_2 = 30"
-	output.pml:741, state 1256, "T2_X12_3 = 30"
-	output.pml:742, state 1259, "T2_X12_4 = 30"
-	output.pml:743, state 1262, "T2_X13 = CONST_NULL"
-	output.pml:744, state 1265, "T2_X13_1 = 30"
-	output.pml:745, state 1268, "T2_X13_2 = 30"
-	output.pml:746, state 1271, "T2_X13_3 = 30"
-	output.pml:749, state 1274, "(1)"
-	output.pml:749, state 1275, "((T2_X4==S20))"
-	output.pml:754, state 1281, "T2_X6 = CONST_NULL"
-	output.pml:755, state 1284, "T2_X6_1 = 30"
-	output.pml:756, state 1287, "T2_X7 = CONST_NULL"
-	output.pml:757, state 1290, "T2_X7_1 = 30"
-	output.pml:758, state 1293, "T2_X7_2 = 30"
-	output.pml:759, state 1296, "T2_X7_2_1 = 30"
-	output.pml:760, state 1299, "T2_X8 = CONST_NULL"
-	output.pml:761, state 1302, "T2_X8_1 = 30"
-	output.pml:762, state 1305, "T2_X8_2 = 30"
-	output.pml:763, state 1308, "T2_X8_3 = 30"
-	output.pml:764, state 1311, "T2_X8_4 = 30"
-	output.pml:765, state 1314, "T2_X9 = CONST_NULL"
-	output.pml:766, state 1317, "T2_X9_1 = 30"
-	output.pml:767, state 1320, "T2_X9_2 = 30"
-	output.pml:768, state 1323, "T2_X9_3 = 30"
-	output.pml:769, state 1326, "T2_X10 = S0"
-	output.pml:770, state 1329, "T2_X11 = CONST_NULL"
-	output.pml:771, state 1332, "T2_X11_1 = 30"
-	output.pml:772, state 1335, "T2_X12 = CONST_NULL"
-	output.pml:773, state 1338, "T2_X12_1 = 30"
-	output.pml:774, state 1341, "T2_X12_2 = 30"
-	output.pml:775, state 1344, "T2_X12_3 = 30"
-	output.pml:776, state 1347, "T2_X12_4 = 30"
-	output.pml:777, state 1350, "T2_X13 = CONST_NULL"
-	output.pml:778, state 1353, "T2_X13_1 = 30"
-	output.pml:779, state 1356, "T2_X13_2 = 30"
-	output.pml:780, state 1359, "T2_X13_3 = 30"
-	output.pml:783, state 1362, "(1)"
-	output.pml:783, state 1363, "(((T2_X4==S21)||(T2_X4==S19)))"
-	output.pml:788, state 1369, "T2_X5 = N0"
-	output.pml:789, state 1372, "T2_X6 = CONST_NULL"
-	output.pml:790, state 1375, "T2_X6_1 = 30"
-	output.pml:791, state 1378, "T2_X7 = CONST_NULL"
-	output.pml:792, state 1381, "T2_X7_1 = 30"
-	output.pml:793, state 1384, "T2_X7_2 = 30"
-	output.pml:794, state 1387, "T2_X7_2_1 = 30"
-	output.pml:795, state 1390, "T2_X8 = CONST_NULL"
-	output.pml:796, state 1393, "T2_X8_1 = 30"
-	output.pml:797, state 1396, "T2_X8_2 = 30"
-	output.pml:798, state 1399, "T2_X8_3 = 30"
-	output.pml:799, state 1402, "T2_X8_4 = 30"
-	output.pml:800, state 1405, "T2_X9 = CONST_NULL"
-	output.pml:801, state 1408, "T2_X9_1 = 30"
-	output.pml:802, state 1411, "T2_X9_2 = 30"
-	output.pml:803, state 1414, "T2_X9_3 = 30"
-	output.pml:804, state 1417, "T2_X10 = S0"
-	output.pml:805, state 1420, "T2_X11 = CONST_NULL"
-	output.pml:806, state 1423, "T2_X11_1 = 30"
-	output.pml:807, state 1426, "T2_X12 = CONST_NULL"
-	output.pml:808, state 1429, "T2_X12_1 = 30"
-	output.pml:809, state 1432, "T2_X12_2 = 30"
-	output.pml:810, state 1435, "T2_X12_3 = 30"
-	output.pml:811, state 1438, "T2_X12_4 = 30"
-	output.pml:812, state 1441, "T2_X13 = CONST_NULL"
-	output.pml:813, state 1444, "T2_X13_1 = 30"
-	output.pml:814, state 1447, "T2_X13_2 = 30"
-	output.pml:815, state 1450, "T2_X13_3 = 30"
-	output.pml:818, state 1453, "(1)"
-	output.pml:818, state 1454, "((T2_X4==S22))"
-	output.pml:824, state 1462, "running[3] = 1"
-	output.pml:825, state 1463, "T3_X0 = T2_X1"
-	output.pml:826, state 1464, "T3_X0_1 = T2_X1_1"
-	output.pml:827, state 1465, "T3_X0_2 = T2_X1_2"
-	output.pml:828, state 1466, "T3_X0_2_1 = T2_X1_2_1"
-	output.pml:829, state 1467, "T3_X1 = T2_X2"
-	output.pml:830, state 1468, "T3_X1_1 = T2_X2_1"
-	output.pml:831, state 1469, "T3_X1_2 = T2_X2_2"
-	output.pml:832, state 1470, "T3_X1_3 = T2_X2_3"
-	output.pml:833, state 1471, "T3_X2 = T2_X3"
-	output.pml:834, state 1472, "T3_X2_1 = T2_X3_1"
-	output.pml:835, state 1473, "T3_X2_2 = T2_X3_2"
-	output.pml:836, state 1474, "T3_X2_3 = T2_X3_3"
-	output.pml:837, state 1475, "T3_X2_4 = T2_X3_4"
-	output.pml:838, state 1476, "T3_X3 = 0"
-	output.pml:839, state 1477, "T3_X4 = 0"
-	output.pml:840, state 1478, "T3_X5 = 0"
-	output.pml:841, state 1479, "T3_X6 = 0"
-	output.pml:842, state 1480, "T3_X7 = 0"
-	output.pml:843, state 1481, "T3_X8 = 0"
-	output.pml:847, state 1485, "running[3] = 0"
-	output.pml:848, state 1486, "T2_X4 = T3_X5"
-	output.pml:849, state 1487, "T2_X5 = T3_X6"
-	output.pml:853, state 1491, "ready[2] = 1"
-	output.pml:862, state 1502, "T3_X3 = S24"
-	output.pml:862, state 1502, "T3_X3 = S23"
-	output.pml:862, state 1502, "T3_X3 = S0"
-	output.pml:863, state 1505, "T3_X7 = N0"
-	output.pml:866, state 1508, "(1)"
-	output.pml:866, state 1509, "((((T3_X3==S23)||(T3_X3==S24))&&1))"
-	output.pml:871, state 1518, "T3_X4 = S26"
-	output.pml:871, state 1518, "T3_X4 = S23"
-	output.pml:871, state 1518, "T3_X4 = S25"
-	output.pml:871, state 1518, "T3_X4 = S0"
-	output.pml:872, state 1521, "T3_X8 = N0"
-	output.pml:875, state 1524, "(1)"
-	output.pml:875, state 1525, "((((T3_X4==S25)||(T3_X4==S26))&&1))"
-	output.pml:880, state 1553, "T3_X5 = S22"
-	output.pml:880, state 1553, "T3_X5 = S9"
-	output.pml:880, state 1553, "T3_X5 = S0"
-	output.pml:880, state 1553, "T3_X5 = S7"
-	output.pml:880, state 1553, "T3_X5 = S6"
-	output.pml:880, state 1553, "T3_X5 = S5"
-	output.pml:880, state 1553, "T3_X5 = S4"
-	output.pml:880, state 1553, "T3_X5 = S1"
-	output.pml:880, state 1553, "T3_X5 = S3"
-	output.pml:880, state 1553, "T3_X5 = S8"
-	output.pml:880, state 1553, "T3_X5 = S2"
-	output.pml:880, state 1553, "T3_X5 = S10"
-	output.pml:880, state 1553, "T3_X5 = S11"
-	output.pml:880, state 1553, "T3_X5 = S14"
-	output.pml:880, state 1553, "T3_X5 = S12"
-	output.pml:880, state 1553, "T3_X5 = S13"
-	output.pml:880, state 1553, "T3_X5 = S15"
-	output.pml:880, state 1553, "T3_X5 = S16"
-	output.pml:880, state 1553, "T3_X5 = S17"
-	output.pml:880, state 1553, "T3_X5 = S18"
-	output.pml:880, state 1553, "T3_X5 = S19"
-	output.pml:880, state 1553, "T3_X5 = S20"
-	output.pml:880, state 1553, "T3_X5 = S21"
-	output.pml:881, state 1556, "T3_X6 = N0"
-	output.pml:884, state 1559, "(1)"
-	output.pml:884, state 1560, "((((((T3_X4!=S26)||(T3_X3!=S24))||(T3_X5==S18))&&1)&&(((T3_X4==S26)&&(T3_X3==S24))&&(T3_X5!=S13))))"
-	output.pml:860, state 1563, "(((T3_X3==S0)||(T3_X3==S23)))"
-	output.pml:860, state 1563, "(((T3_X4==S0)||(T3_X4==S23)))"
-	output.pml:860, state 1563, "(((T3_X4!=S0)||(T3_X3!=S0)))"
-	output.pml:890, state 1568, "ready[3] = 1"
-	output.pml:895, state 1576, "-end-"
-	(188 of 1576 states)
-unreached in claim never_0
-	output.pml:907, state 13, "-end-"
-	(1 of 13 states)
+collapse counts: [ 0:7452 2:4 3:3 4:3 5:1 6:1 7:2 8:3 9:1 10:1 11:4 12:5 13:3 14:1 15:1 16:1 17:1 18:1 19:1 20:1 21:1 22:1 23:1 24:1 25:1 26:1 27:1 28:1 29:28 30:3 ]
 
-pan: elapsed time 123 seconds
-pan: rate 35733.293 states/second
-time = 125.982067
+pan: elapsed time 0.16 seconds
+pan: rate    186775 states/second
+avg_as_size = 2.787879
+avg_as_naive = 40.787879
+time = 0.028896,2.941099,0.228550

@@ -1,2 +1,2 @@
-seed	time	cyclomatic	num_vstates	max_vstates	num_states	max_states	num_counters	max_counters	max_active_counters	time_superstate	time_substate	time_nextstate	time_omega	hit_rate_superstate	hit_rate_substate	hit_rate_reach_map	time_scc
-0	0.246889	300	803	743	210	150	2	2	2	0.040000	0.000000	0.080000	0.090000	0.715468	0.326169	0.142645	0.000000
+seed	time	output	cyclomatic	num_vstates	max_vstates	num_states	max_states	num_counters	max_counters	max_active_counters	time_superstate	time_substate	time_nextstate	time_omega	hit_rate_superstate	hit_rate_substate	hit_rate_reach_map	time_scc
+123	0.011283	FALSE	18	45	38	40	33	0	0	0	0.000000	0.000000	0.000000	0.000000	0.581818	0.543478	0.097561	0.010000

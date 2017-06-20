@@ -1,10 +1,7 @@
 warning: for p.o. reduction to be valid the never claim must be stutter-invariant
 (never claims generated from LTL formulae are stutter-invariant)
-pan:1: acceptance cycle (at depth 23)
-pan: wrote output.pml.trail
 
 (Spin Version 6.4.5 -- 1 January 2016)
-Warning: Search not completed
 	+ Partial Order Reduction
 	+ Compression
 
@@ -14,24 +11,67 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness disabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 52 byte, depth reached 25, errors: 1
-        8 states, stored (10 visited)
-        5 states, matched
-       15 transitions (= visited+matched)
-       44 atomic steps
+State-vector 44 byte, depth reached 24, errors: 0
+        6 states, stored
+        2 states, matched
+        8 transitions (= stored+matched)
+       20 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.001	equivalent memory usage for states (stored*(State-vector + overhead))
-    0.564	actual memory usage for states
+    0.000	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.566	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
   128.925	total actual memory usage
 
 
 nr of templates: [ 0:globals 1:chans 2:procs ]
-collapse counts: [ 0:4 2:5 3:2 ]
+collapse counts: [ 0:5 2:5 3:1 ]
+unreached in init
+	output.pml:90, state 64, "(1)"
+	output.pml:96, state 73, "running[1] = 1"
+	output.pml:97, state 74, "T1_X0 = S3"
+	output.pml:98, state 75, "T1_X1 = S3"
+	output.pml:99, state 76, "T1_X2 = T0_X2"
+	output.pml:103, state 80, "running[2] = 1"
+	output.pml:104, state 81, "T2_X0 = S3"
+	output.pml:105, state 82, "T2_X1 = T0_X4"
+	output.pml:106, state 83, "T2_X1_1 = T0_X4_1"
+	output.pml:107, state 84, "T2_X2 = T0_X5"
+	output.pml:108, state 85, "T2_X2_1 = T0_X5_1"
+	output.pml:109, state 86, "T2_X3 = T0_X6"
+	output.pml:110, state 87, "T2_X3_1 = T0_X6_1"
+	output.pml:114, state 91, "running[1] = 0"
+	output.pml:115, state 92, "T0_X1 = T1_X0"
+	output.pml:119, state 96, "running[2] = 0"
+	output.pml:120, state 97, "T0_X1 = T2_X0"
+	output.pml:129, state 109, "T1_X0 = S0"
+	output.pml:129, state 109, "T1_X0 = S1"
+	output.pml:129, state 109, "T1_X0 = S2"
+	output.pml:129, state 109, "T1_X0 = S3"
+	output.pml:130, state 112, "T1_X1 = S3"
+	output.pml:133, state 115, "(1)"
+	output.pml:133, state 116, "(((1&&1)&&(T1_X0==S1)))"
+	output.pml:127, state 119, "((T1_X0==S0))"
+	output.pml:139, state 124, "ready[1] = 1"
+	output.pml:148, state 136, "T2_X0 = S0"
+	output.pml:148, state 136, "T2_X0 = S1"
+	output.pml:148, state 136, "T2_X0 = S2"
+	output.pml:148, state 136, "T2_X0 = S3"
+	output.pml:151, state 139, "(1)"
+	output.pml:151, state 140, "((((1||1)||1)&&(T2_X0==S2)))"
+	output.pml:146, state 143, "((T2_X0==S1))"
+	output.pml:157, state 148, "ready[2] = 1"
+	output.pml:162, state 156, "-end-"
+	(29 of 156 states)
+unreached in claim never_0
+	output.pml:171, state 11, "(!(((current==0)&&(T0_X7==S1))))"
+	output.pml:171, state 11, "(((current==0)&&!(((current==0)&&(T0_X7==S1)))))"
+	output.pml:176, state 17, "(!(((current==0)&&(T0_X7==S1))))"
+	output.pml:176, state 17, "(((current==0)&&!(((current==0)&&(T0_X7==S1)))))"
+	output.pml:179, state 19, "-end-"
+	(3 of 19 states)
 
-pan: elapsed time 0.07 seconds
-pan: rate 142.85714 states/second
-time = 1.183674
+pan: elapsed time 0 seconds
+time = 1.078184

@@ -1,23 +1,165 @@
-Commercial-Financing.txt	0	17.570553	75179	6368	6362	4438	4432	0	0	0	0.820000	0.040000	8.880000	1.930000	0.944320	0.192462	0.319695	8.110000
-Bank-Account-Opening.txt	0	0.053779	105	319	308	47	36	0	0	0	0.010000	0.000000	0.010000	0.000000	0.442478	0.269841	0.455696	0.020000
-Journal-Review-Process.txt	0	1.041027	873	2303	2278	2186	2161	0	0	0	0.060000	0.010000	0.510000	0.200000	0.503081	0.037196	0.023751	0.320000
-Hardware_Retailer_new.txt	0	0.466069	53	977	936	361	320	0	0	0	0.010000	0.000000	0.200000	0.070000	0.724592	0.057173	0.578145	0.170000
-Airline-Check-In.txt	0	0.010715	94	83	69	65	51	0	0	0	0.000000	0.000000	0.000000	0.000000	0.652672	0.604396	0.125000	0.000000
-New-Car-Sales.txt	0	0.021518	56	212	171	92	51	0	0	0	0.000000	0.000000	0.010000	0.000000	0.524476	0.014706	0.213768	0.010000
-LaserProduction.txt	0	0.000360	1	1	1	1	1	0	0	0	0.000000	0.000000	0.000000	0.000000	-nan	-nan	0.000000	0.000000
-Book-Writing-and-Publishing.txt	0	0.002529	8	44	37	35	28	0	0	0	0.000000	0.000000	0.000000	0.000000	0.716667	0.058824	0.214286	0.000000
-Credit-Review-and-Approval.txt	0	0.006462	24	92	75	88	75	0	0	0	0.000000	0.000000	0.000000	0.000000	0.833333	0.363636	0.130435	0.000000
-Customer-Quotation-Request.txt	0	0.015652	92	129	70	109	70	0	0	0	0.000000	0.000000	0.010000	0.000000	0.684375	0.188119	0.057692	0.010000
-OrderProcessing_new.txt	Variable valid does not exist!
-Acquisition-following-RFQ.txt	0	0.239140	50	326	193	274	141	0	0	0	0.020000	0.000000	0.140000	0.000000	0.979697	0.073446	0.019481	0.100000
-Incident-Management-as-Detailed-Collaboration.txt	0	0.017220	23	60	24	50	18	0	0	0	0.000000	0.000000	0.000000	0.010000	0.633333	0.272727	0.043478	0.000000
-Insurance-Claim-Processing.txt	0	0.002143	4	14	11	12	9	0	0	0	0.000000	0.000000	0.000000	0.000000	0.818182	0.000000	0.357143	0.000000
-Morgage-Approval.txt	0	0.018533	282	64	40	58	34	0	0	0	0.000000	0.000000	0.010000	0.000000	0.845794	0.227273	0.000000	0.000000
-Travel-Booking.txt	0	0.468934	164	1752	1538	406	192	0	0	0	0.030000	0.000000	0.230000	0.030000	0.868180	0.466258	0.247486	0.260000
-Pizza-Co.-Delivery-Process.txt	0	0.146110	55	355	305	145	95	0	0	0	0.000000	0.010000	0.050000	0.030000	0.683616	0.234375	0.114943	0.060000
-Employee-Expense-Reimbursement-Alternative-1.txt	0	0.075894	300	294	234	210	150	0	0	0	0.000000	0.000000	0.040000	0.020000	0.739714	0.199313	0.105263	0.020000
-BPI-Web-Registration-with-Moderator.txt	0	0.015840	87	80	72	32	24	0	0	0	0.000000	0.000000	0.000000	0.000000	0.766393	0.070175	0.495935	0.010000
-Amazon-Fulfillment.txt	0	0.844558	167	2688	2631	137	80	0	0	0	0.010000	0.070000	0.090000	0.300000	0.516467	0.415341	0.589098	0.180000
-Patient-Treatment-Collaboration.txt	0	0.001563	2	5	4	5	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.777778	0.500000	0.142857	0.000000
-OrderFulfillment_new.txt	0	0.001711	2	7	2	7	2	0	0	0	0.000000	0.000000	0.000000	0.000000	0.500000	0.000000	0.187500	0.000000
-OrderProcessingWithCreditCard_new.txt	
+The-Pizza-Collaboration.txt	123	0.003757	TRUE	5	8	4	8	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.444444	0.000000	0.214286	0.000000
+Commercial-Financing.txt	123	0.032388	FALSE	41	306	215	117	48	18	12	2	0.000000	0.010000	0.020000	0.000000	0.592267	0.258621	0.243728	0.010000
+Property-and-Casualty-Insurance-Claim-Processing.txt	123	0.001643	FALSE	10	21	16	16	11	1	1	1	0.000000	0.000000	0.000000	0.000000	0.437500	0.333333	0.090909	0.000000
+Bank-Account-Opening.txt	123	0.031584	FALSE	9	205	185	49	29	4	2	2	0.000000	0.000000	0.030000	0.000000	0.571429	0.692810	0.483146	0.010000
+Journal-Review-Process.txt	123	0.003721	TRUE	4	13	8	12	7	1	1	1	0.000000	0.000000	0.000000	0.000000	0.266667	0.000000	0.000000	0.000000
+Airline-Check-In.txt	123	27.345403	TRUE	6	88129	88105	67386	67366	1	1	1	7.280000	14.120000	2.360000	0.160000	0.856552	0.994713	0.000000	0.000000
+LaserTec-Production-Process.txt	123	0.016818	FALSE	8	45	41	41	37	0	0	0	0.010000	0.000000	0.000000	0.000000	0.681416	0.583333	0.200000	0.000000
+New-Car-Sales.txt	123	0.003574	TRUE	6	40	21	30	13	0	0	0	0.000000	0.000000	0.000000	0.000000	0.327273	0.189189	0.173913	0.000000
+Order-Processing.txt	123	0.007011	FALSE	10	52	35	23	16	6	4	2	0.000000	0.000000	0.000000	0.000000	0.662338	0.615385	0.080000	0.000000
+Book-Writing-and-Publishing.txt	123	0.021685	FALSE	11	139	133	42	36	4	4	2	0.000000	0.010000	0.000000	0.000000	0.462366	0.300000	0.493976	0.000000
+BPI-Web-Registration-without-Moderator.txt	123	0.002079	TRUE	4	10	8	6	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.363636	0.000000	0.083333	0.000000
+Credit-Review-and-Approval.txt	123	0.008455	TRUE	7	61	35	43	35	3	2	2	0.000000	0.000000	0.000000	0.000000	0.711111	0.615385	0.151515	0.000000
+Customer-Quotation-Request.txt	123	0.032951	FALSE	21	204	148	65	33	13	8	5	0.000000	0.010000	0.010000	0.000000	0.366548	0.657303	0.078431	0.000000
+Incident-Management-as-Collaboration.txt	123	0.002109	FALSE	6	39	15	30	8	1	1	1	0.000000	0.000000	0.000000	0.000000	0.482759	0.366667	0.055556	0.000000
+Travel-Booking-with-Event-Sub-processes.txt	123	0.031589	FALSE	27	339	209	156	94	6	2	2	0.000000	0.000000	0.020000	0.000000	0.515464	0.638298	0.381944	0.000000
+Acquisition-following-RFQ.txt	123	0.195012	FALSE	17	519	483	75	53	14	13	13	0.000000	0.050000	0.030000	0.100000	0.731863	0.872679	0.163522	0.010000
+Patient-Treatment-Abstract-Process.txt	123	0.012702	FALSE	9	93	69	45	27	7	3	3	0.000000	0.000000	0.010000	0.000000	0.583333	0.545455	0.170732	0.000000
+Ship-Process-of-a-Hardware-Retailer.txt	123	0.031383	FALSE	10	124	85	113	74	0	0	0	0.000000	0.000000	0.030000	0.000000	0.690000	0.215054	0.119048	0.010000
+Incident-Management-as-Detailed-Collaboration.txt	123	0.002497	FALSE	8	41	15	31	9	1	1	1	0.000000	0.000000	0.000000	0.000000	0.536232	0.343750	0.076923	0.000000
+Employee-Expense-Reimbursement-Alternative-2.txt	123	0.014915	FALSE	13	36	29	33	26	0	0	0	0.000000	0.000000	0.010000	0.000000	0.568182	0.447368	0.027778	0.000000
+Insurance-Claim-Processing.txt	123	0.025885	FALSE	8	162	92	111	64	6	6	3	0.000000	0.000000	0.010000	0.010000	0.437008	0.517483	0.097561	0.000000
+Morgage-Approval.txt	123	0.017141	TRUE	23	48	37	34	23	2	1	1	0.000000	0.000000	0.000000	0.010000	0.824074	0.263158	0.000000	0.000000
+Travel-Booking.txt	123	0.027759	FALSE	17	279	207	146	98	5	2	2	0.000000	0.000000	0.010000	0.010000	0.523166	0.680162	0.306878	0.000000
+Pizza-Co.-Delivery-Process.txt	123	0.001390	TRUE	2	4	2	4	2	0	0	0	0.000000	0.000000	0.000000	0.000000	0.333333	0.000000	0.000000	0.000000
+Order-Fulfillment-and-Procurement.txt	123	0.006564	FALSE	9	99	67	67	35	2	2	2	0.000000	0.000000	0.000000	0.000000	0.474684	0.590361	0.117647	0.000000
+Employee-Expense-Reimbursement-Alternative-1.txt	123	0.011283	FALSE	18	45	38	40	33	0	0	0	0.000000	0.000000	0.000000	0.000000	0.581818	0.543478	0.097561	0.010000
+Patient-Treatment-Collaboration-Choreography.txt	123	0.003838	FALSE	9	66	32	38	18	7	3	2	0.000000	0.000000	0.000000	0.000000	0.639175	0.542857	0.151515	0.000000
+BPI-Web-Registration-with-Moderator.txt	123	0.002111	TRUE	4	10	8	6	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.363636	0.000000	0.083333	0.000000
+Order-Processing-with-Credit-Card-Authorization.txt	123	0.007985	FALSE	11	68	34	35	16	6	4	2	0.000000	0.000000	0.000000	0.000000	0.680412	0.548387	0.090909	0.000000
+Order-Fulfillment.txt	123	0.003828	TRUE	3	12	8	8	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.333333	0.400000	0.200000	0.000000
+Amazon-Fulfillment.txt	123	0.018129	FALSE	7	101	64	68	38	2	1	1	0.000000	0.000000	0.000000	0.000000	0.517073	0.494949	0.352941	0.000000
+Patient-Treatment-Collaboration.txt	123	0.008736	FALSE	9	66	32	38	18	7	3	2	0.000000	0.000000	0.000000	0.000000	0.639175	0.542857	0.151515	0.000000
+OrderFulfillment_new.txt	123	0.002444	FALSE	4	9	4	9	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.500000	0.000000	0.117647	0.000000
+The-Pizza-Collaboration.txt	4	4	32	13
+Commercial-Financing.txt	5	4	14	13
+Property-and-Casualty-Insurance-Claim-Processing.txt	3	3	7	10
+Bank-Account-Opening.txt	3	4	25	10
+Journal-Review-Process.txt	4	3	25	20
+Airline-Check-In.txt	2	3	33	18
+LaserTec-Production-Process.txt	3	3	19	3
+New-Car-Sales.txt	4	3	23	9
+Order-Processing.txt	3	2	14	9
+Book-Writing-and-Publishing.txt	2	3	14	7
+BPI-Web-Registration-without-Moderator.txt	5	4	25	9
+Credit-Review-and-Approval.txt	1	2	24	10
+Customer-Quotation-Request.txt	2	2	11	8
+Incident-Management-as-Collaboration.txt	3	4	20	11
+Travel-Booking-with-Event-Sub-processes.txt	4	5	32	22
+Acquisition-following-RFQ.txt	3	2	13	9
+Patient-Treatment-Abstract-Process.txt	4	3	17	15
+Ship-Process-of-a-Hardware-Retailer.txt	4	4	28	10
+Incident-Management-as-Detailed-Collaboration.txt	3	4	20	11
+Employee-Expense-Reimbursement-Alternative-2.txt	3	2	17	8
+Insurance-Claim-Processing.txt	3	3	22	8
+Morgage-Approval.txt	4	2	18	8
+Travel-Booking.txt	4	4	27	19
+Pizza-Co.-Delivery-Process.txt	4	3	30	11
+Order-Fulfillment-and-Procurement.txt	5	3	11	14
+Employee-Expense-Reimbursement-Alternative-1.txt	3	2	17	8
+Patient-Treatment-Collaboration-Choreography.txt	4	3	17	15
+BPI-Web-Registration-with-Moderator.txt	5	4	25	10
+Order-Processing-with-Credit-Card-Authorization.txt	4	3	18	9
+Order-Fulfillment.txt	4	4	17	14
+Amazon-Fulfillment.txt	5	5	28	15
+Patient-Treatment-Collaboration.txt	4	3	17	15
+OrderFulfillment_new.txt	3	4	17	4
+The-Pizza-Collaboration.txt	4	4	32	13
+Commercial-Financing.txt	5	4	14	13
+Property-and-Casualty-Insurance-Claim-Processing.txt	3	3	7	10
+Bank-Account-Opening.txt	3	4	25	10
+Journal-Review-Process.txt	4	3	25	20
+Airline-Check-In.txt	2	3	33	18
+LaserTec-Production-Process.txt	3	3	19	3
+New-Car-Sales.txt	4	3	23	9
+Order-Processing.txt	3	2	14	9
+Book-Writing-and-Publishing.txt	2	3	14	7
+BPI-Web-Registration-without-Moderator.txt	5	4	25	9
+Credit-Review-and-Approval.txt	1	2	24	10
+Customer-Quotation-Request.txt	2	2	11	8
+Incident-Management-as-Collaboration.txt	3	4	20	11
+Travel-Booking-with-Event-Sub-processes.txt	4	5	32	22
+Acquisition-following-RFQ.txt	3	2	13	9
+Patient-Treatment-Abstract-Process.txt	4	3	17	15
+Ship-Process-of-a-Hardware-Retailer.txt	4	4	28	10
+Incident-Management-as-Detailed-Collaboration.txt	3	4	20	11
+Employee-Expense-Reimbursement-Alternative-2.txt	3	2	17	8
+Insurance-Claim-Processing.txt	3	3	22	8
+Morgage-Approval.txt	4	2	18	8
+Travel-Booking.txt	4	4	27	19
+Pizza-Co.-Delivery-Process.txt	4	3	30	11
+Order-Fulfillment-and-Procurement.txt	5	3	11	14
+Employee-Expense-Reimbursement-Alternative-1.txt	3	2	17	8
+Patient-Treatment-Collaboration-Choreography.txt	4	3	17	15
+BPI-Web-Registration-with-Moderator.txt	5	4	25	10
+Order-Processing-with-Credit-Card-Authorization.txt	4	3	18	9
+Order-Fulfillment.txt	4	4	17	14
+Amazon-Fulfillment.txt	5	5	28	15
+Patient-Treatment-Collaboration.txt	4	3	17	15
+OrderFulfillment_new.txt	3	4	17	4
+The-Pizza-Collaboration.txt	123	0.003715	TRUE	5	8	4	8	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.444444	0.000000	0.214286	0.000000
+Commercial-Financing.txt	123	0.030532	FALSE	25	245	122	142	52	10	6	2	0.000000	0.000000	0.010000	0.000000	0.661049	0.359116	0.260465	0.000000
+Property-and-Casualty-Insurance-Claim-Processing.txt	123	0.004292	FALSE	9	25	20	20	15	1	1	1	0.000000	0.000000	0.000000	0.000000	0.400000	0.285714	0.148148	0.000000
+Bank-Account-Opening.txt	123	0.002582	TRUE	3	9	5	7	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.300000	0.142857	0.000000	0.000000
+Journal-Review-Process.txt	123	0.008083	TRUE	4	14	9	12	7	1	1	1	0.000000	0.000000	0.000000	0.000000	0.250000	0.000000	0.058824	0.000000
+Airline-Check-In.txt	123	28.842839	TRUE	6	47570	47522	35735	35690	1	1	1	1.390000	22.280001	2.110000	0.520000	0.567745	0.979304	0.000000	0.000000
+LaserTec-Production-Process.txt	123	0.021207	FALSE	7	22	21	22	21	0	0	0	0.000000	0.000000	0.010000	0.000000	0.901961	0.000000	0.441860	0.000000
+New-Car-Sales.txt	123	0.018698	TRUE	6	102	37	88	37	0	0	0	0.000000	0.000000	0.010000	0.000000	0.293103	0.130081	0.062937	0.010000
+Order-Processing.txt	123	0.007066	FALSE	10	74	55	38	30	6	4	2	0.000000	0.000000	0.000000	0.000000	0.628099	0.577778	0.071429	0.000000
+Book-Writing-and-Publishing.txt	123	0.018839	FALSE	11	120	114	35	29	6	6	3	0.010000	0.000000	0.000000	0.000000	0.480000	0.259615	0.515464	0.000000
+BPI-Web-Registration-without-Moderator.txt	123	0.006157	TRUE	6	13	10	7	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.421053	0.000000	0.117647	0.000000
+Credit-Review-and-Approval.txt	123	0.012627	FALSE	7	76	45	28	18	3	2	2	0.000000	0.000000	0.010000	0.000000	0.698113	0.562500	0.170732	0.000000
+Customer-Quotation-Request.txt	123	0.034175	FALSE	22	212	148	76	40	13	8	5	0.000000	0.000000	0.010000	0.000000	0.346939	0.645833	0.081250	0.000000
+Incident-Management-as-Collaboration.txt	123	0.006970	FALSE	8	40	16	34	12	1	1	1	0.000000	0.000000	0.000000	0.000000	0.522388	0.187500	0.000000	0.000000
+Travel-Booking-with-Event-Sub-processes.txt	123	0.157902	FALSE	31	1305	1199	403	337	8	4	2	0.000000	0.000000	0.100000	0.030000	0.563297	0.529213	0.425300	0.000000
+Acquisition-following-RFQ.txt	123	0.396581	FALSE	17	981	784	287	157	14	13	13	0.060000	0.050000	0.170000	0.050000	0.856275	0.784553	0.112069	0.010000
+Patient-Treatment-Abstract-Process.txt	123	0.010456	FALSE	9	93	63	51	27	7	3	3	0.000000	0.000000	0.010000	0.000000	0.627907	0.541667	0.153846	0.000000
+Ship-Process-of-a-Hardware-Retailer.txt	123	0.085839	FALSE	10	220	134	197	111	0	0	0	0.000000	0.000000	0.060000	0.010000	0.696481	0.173913	0.108614	0.020000
+Incident-Management-as-Detailed-Collaboration.txt	123	0.007616	FALSE	8	41	16	35	12	1	1	1	0.000000	0.000000	0.000000	0.000000	0.554054	0.181818	0.024390	0.000000
+Employee-Expense-Reimbursement-Alternative-2.txt	123	0.025337	FALSE	13	102	89	96	83	0	0	0	0.000000	0.000000	0.010000	0.000000	0.515000	0.113402	0.051546	0.010000
+Insurance-Claim-Processing.txt	123	0.009909	FALSE	7	132	65	107	63	5	5	3	0.000000	0.000000	0.000000	0.000000	0.517857	0.296296	0.063291	0.000000
+Morgage-Approval.txt	123	0.010499	TRUE	23	56	37	36	23	2	1	1	0.000000	0.000000	0.000000	0.000000	0.788136	0.320000	0.040816	0.000000
+Travel-Booking.txt	123	0.179631	FALSE	31	1419	1348	452	394	7	4	2	0.010000	0.000000	0.070000	0.050000	0.588983	0.523711	0.418347	0.000000
+Pizza-Co.-Delivery-Process.txt	123	0.003183	TRUE	2	4	2	4	2	0	0	0	0.000000	0.000000	0.000000	0.000000	0.333333	0.000000	0.000000	0.000000
+Order-Fulfillment-and-Procurement.txt	123	0.013865	FALSE	23	100	72	60	32	4	4	4	0.000000	0.000000	0.010000	0.000000	0.554502	0.478723	0.300000	0.010000
+Employee-Expense-Reimbursement-Alternative-1.txt	123	0.024460	FALSE	18	98	85	93	80	0	0	0	0.000000	0.000000	0.020000	0.000000	0.624000	0.138298	0.054348	0.000000
+Patient-Treatment-Collaboration-Choreography.txt	123	0.005908	FALSE	10	91	46	49	19	7	3	2	0.000000	0.000000	0.000000	0.000000	0.580645	0.569231	0.120000	0.000000
+BPI-Web-Registration-with-Moderator.txt	123	0.002948	TRUE	6	13	10	7	4	0	0	0	0.000000	0.000000	0.000000	0.000000	0.421053	0.000000	0.117647	0.000000
+Order-Processing-with-Credit-Card-Authorization.txt	123	0.015377	FALSE	11	90	54	49	29	6	4	2	0.010000	0.000000	0.000000	0.000000	0.638298	0.549020	0.108108	0.000000
+Order-Fulfillment.txt	123	0.004543	TRUE	3	14	10	9	5	0	0	0	0.000000	0.000000	0.000000	0.000000	0.315789	0.230769	0.210526	0.000000
+Amazon-Fulfillment.txt	123	0.049050	FALSE	7	225	96	149	64	5	4	2	0.000000	0.000000	0.040000	0.000000	0.649329	0.346890	0.170974	0.000000
+Patient-Treatment-Collaboration.txt	123	0.005775	FALSE	10	91	46	49	19	7	3	2	0.000000	0.000000	0.000000	0.000000	0.580645	0.569231	0.120000	0.000000
+OrderFulfillment_new.txt	123	0.001252	FALSE	4	14	5	14	5	0	0	0	0.000000	0.000000	0.000000	0.000000	0.333333	0.000000	0.000000	0.000000
+The-Pizza-Collaboration.txt	4	4	32	13
+Commercial-Financing.txt	5	4	14	13
+Property-and-Casualty-Insurance-Claim-Processing.txt	3	3	7	10
+Bank-Account-Opening.txt	3	4	25	10
+Journal-Review-Process.txt	4	3	25	20
+Airline-Check-In.txt	2	3	33	18
+LaserTec-Production-Process.txt	3	3	19	3
+New-Car-Sales.txt	4	3	23	9
+Order-Processing.txt	3	2	14	9
+Book-Writing-and-Publishing.txt	2	3	14	7
+BPI-Web-Registration-without-Moderator.txt	5	4	25	9
+Credit-Review-and-Approval.txt	1	2	24	10
+Customer-Quotation-Request.txt	2	2	11	8
+Incident-Management-as-Collaboration.txt	3	4	20	11
+Travel-Booking-with-Event-Sub-processes.txt	4	5	32	22
+Acquisition-following-RFQ.txt	3	2	13	9
+Patient-Treatment-Abstract-Process.txt	4	3	17	15
+Ship-Process-of-a-Hardware-Retailer.txt	4	4	28	10
+Incident-Management-as-Detailed-Collaboration.txt	3	4	20	11
+Employee-Expense-Reimbursement-Alternative-2.txt	3	2	17	8
+Insurance-Claim-Processing.txt	3	3	22	8
+Morgage-Approval.txt	4	2	18	8
+Travel-Booking.txt	4	4	27	19
+Pizza-Co.-Delivery-Process.txt	4	3	30	11
+Order-Fulfillment-and-Procurement.txt	5	3	11	14
+Employee-Expense-Reimbursement-Alternative-1.txt	3	2	17	8
+Patient-Treatment-Collaboration-Choreography.txt	4	3	17	15
+BPI-Web-Registration-with-Moderator.txt	5	4	25	10
+Order-Processing-with-Credit-Card-Authorization.txt	4	3	18	9
+Order-Fulfillment.txt	4	4	17	14
+Amazon-Fulfillment.txt	5	5	28	15
+Patient-Treatment-Collaboration.txt	4	3	17	15
+OrderFulfillment_new.txt	3	4	17	4

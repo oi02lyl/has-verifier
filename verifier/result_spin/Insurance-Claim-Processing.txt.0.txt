@@ -1,7 +1,10 @@
 warning: for p.o. reduction to be valid the never claim must be stutter-invariant
 (never claims generated from LTL formulae are stutter-invariant)
 error: max search depth too small
-pan:1: acceptance cycle (at depth 9994)
+Depth=    9999 States=    1e+06 Transitions= 1.54e+06 Memory=   199.628	t=     2.63 R=   4e+05
+Depth=    9999 States=    2e+06 Transitions= 2.96e+06 Memory=   286.737	t=     5.14 R=   4e+05
+Depth=    9999 States=    3e+06 Transitions= 4.34e+06 Memory=   374.823	t=     7.65 R=   4e+05
+pan:1: acceptance cycle (at depth 5991)
 pan: wrote output.pml.trail
 
 (Spin Version 6.4.5 -- 1 January 2016)
@@ -15,24 +18,27 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness disabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 84 byte, depth reached 9999, errors: 1
-    58947 states, stored (58949 visited)
-  4468382 states, matched
-  4527331 transitions (= visited+matched)
- 38105117 atomic steps
-hash conflicts:      4214 (resolved)
+State-vector 460 byte, depth reached 9999, errors: 1
+  2914849 states, stored (3.82044e+06 visited)
+  1606159 states, matched
+  5426598 transitions (= visited+matched)
+  1802887 atomic steps
+hash conflicts:    148670 (resolved)
 
 Stats on memory usage (in Megabytes):
-    6.746	equivalent memory usage for states (stored*(State-vector + overhead))
-    7.542	actual memory usage for states
+ 1378.789	equivalent memory usage for states (stored*(State-vector + overhead))
+  312.305	actual memory usage for states (compression: 22.65%)
+         	state-vector as stored = 76 byte + 36 byte overhead
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
-  135.956	total actual memory usage
+  440.644	total actual memory usage
 
 
 nr of templates: [ 0:globals 1:chans 2:procs ]
-collapse counts: [ 0:52435 2:8 3:2 ]
+collapse counts: [ 0:549627 2:3 3:4 4:3 5:3 6:3 7:8 8:1 9:8 10:1 11:1 12:1 13:3 14:1 15:1 16:1 17:1 18:1 19:1 20:3 21:4 22:3 23:3 24:38 25:3 ]
 
-pan: elapsed time 3.04 seconds
-pan: rate 19391.118 states/second
-time = 4.642833
+pan: elapsed time 9.73 seconds
+pan: rate 392645.32 states/second
+avg_as_size = 2.075472
+avg_as_naive = 21.037736
+time = 0.022234,2.557401,9.799463

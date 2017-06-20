@@ -4,7 +4,7 @@ from os.path import isfile, join
 
 mypath = '../bpmn/'
 files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-naives = [0]
+naives = [2]
 # files = ['Book-Writing-and-Publishing.txt']
 
 for fname in files:

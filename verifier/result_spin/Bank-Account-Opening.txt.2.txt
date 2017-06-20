@@ -8,267 +8,254 @@ warning: for p.o. reduction to be valid the never claim must be stutter-invarian
 Full statespace search for:
 	never claim         	+ (never_0)
 	assertion violations	+ (if within scope of claim)
-	acceptance   cycles 	- (not selected)
+	acceptance   cycles 	+ (fairness disabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 76 byte, depth reached 32, errors: 0
-    57339 states, stored
-  1400000 states, matched
-  1457339 transitions (= stored+matched)
-  5570158 atomic steps
-hash conflicts:      3449 (resolved)
+State-vector 500 byte, depth reached 115, errors: 0
+     4973 states, stored
+     2351 states, matched
+     7324 transitions (= stored+matched)
+     4114 atomic steps
+hash conflicts:         2 (resolved)
 
 Stats on memory usage (in Megabytes):
-    6.124	equivalent memory usage for states (stored*(State-vector + overhead))
-    6.362	actual memory usage for states
+    2.542	equivalent memory usage for states (stored*(State-vector + overhead))
+    1.097	actual memory usage for states (compression: 43.14%)
+         	state-vector as stored = 195 byte + 36 byte overhead
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
-  134.784	total actual memory usage
+  129.511	total actual memory usage
 
 
 nr of templates: [ 0:globals 1:chans 2:procs ]
-collapse counts: [ 0:43004 2:5 3:3 4:2 ]
-unreached in proctype exec
-	output.pml:95, state 91, "T0_X3 = S0"
-	output.pml:95, state 91, "T0_X3 = S5"
-	output.pml:95, state 91, "T0_X3 = S7"
-	output.pml:95, state 91, "T0_X3 = 0"
-	output.pml:95, state 91, "T0_X3 = 11"
-	output.pml:96, state 100, "T0_X4 = S1"
-	output.pml:96, state 100, "T0_X4 = S3"
-	output.pml:96, state 100, "T0_X4 = S2"
-	output.pml:96, state 100, "T0_X4 = S4"
-	output.pml:96, state 100, "T0_X4 = S6"
-	output.pml:96, state 100, "T0_X4 = 0"
-	output.pml:96, state 100, "T0_X4 = 11"
-	output.pml:97, state 104, "T0_X7 = 0"
-	output.pml:97, state 104, "T0_X7 = 11"
-	output.pml:98, state 108, "T0_X8 = 0"
-	output.pml:98, state 108, "T0_X8 = 11"
-	output.pml:99, state 112, "T0_X9 = 0"
-	output.pml:99, state 112, "T0_X9 = 11"
-	output.pml:100, state 116, "T0_X10 = 0"
-	output.pml:100, state 116, "T0_X10 = 11"
-	output.pml:101, state 120, "T0_X11 = 0"
-	output.pml:101, state 120, "T0_X11 = 11"
-	output.pml:110, state 137, "T0_X5 = 0"
-	output.pml:110, state 137, "T0_X5 = 11"
-	output.pml:111, state 141, "T0_X7 = 0"
-	output.pml:111, state 141, "T0_X7 = 11"
-	output.pml:112, state 145, "T0_X8 = 0"
-	output.pml:112, state 145, "T0_X8 = 11"
-	output.pml:113, state 149, "T0_X9 = 0"
-	output.pml:113, state 149, "T0_X9 = 11"
-	output.pml:114, state 153, "T0_X10 = 0"
-	output.pml:114, state 153, "T0_X10 = 11"
-	output.pml:115, state 157, "T0_X11 = 0"
-	output.pml:115, state 157, "T0_X11 = 11"
-	output.pml:124, state 179, "T0_X4 = S1"
-	output.pml:124, state 179, "T0_X4 = S3"
-	output.pml:124, state 179, "T0_X4 = S2"
-	output.pml:124, state 179, "T0_X4 = S4"
-	output.pml:124, state 179, "T0_X4 = S6"
-	output.pml:124, state 179, "T0_X4 = 0"
-	output.pml:124, state 179, "T0_X4 = 11"
-	output.pml:125, state 183, "T0_X7 = 0"
-	output.pml:125, state 183, "T0_X7 = 11"
-	output.pml:126, state 187, "T0_X8 = 0"
-	output.pml:126, state 187, "T0_X8 = 11"
-	output.pml:127, state 191, "T0_X9 = 0"
-	output.pml:127, state 191, "T0_X9 = 11"
-	output.pml:128, state 195, "T0_X10 = 0"
-	output.pml:128, state 195, "T0_X10 = 11"
-	output.pml:129, state 199, "T0_X11 = 0"
-	output.pml:129, state 199, "T0_X11 = 11"
-	output.pml:136, state 213, "(1)"
-	output.pml:140, state 219, "running[1] = 1"
-	output.pml:141, state 220, "T1_X0 = 0"
-	output.pml:142, state 221, "T1_X0_1 = 0"
-	output.pml:143, state 222, "T1_X0_2 = 0"
-	output.pml:144, state 223, "T1_X0_3 = 0"
-	output.pml:145, state 224, "T1_X1 = 0"
-	output.pml:146, state 225, "T1_X2 = 0"
-	output.pml:147, state 226, "T1_X3 = 0"
-	output.pml:148, state 227, "T1_X4 = 0"
-	output.pml:152, state 231, "running[2] = 1"
-	output.pml:153, state 232, "T2_X0 = T0_X0"
-	output.pml:154, state 233, "T2_X1 = T0_X1"
-	output.pml:155, state 234, "T2_X2 = T0_X2"
-	output.pml:156, state 235, "T2_X3 = T0_X3"
-	output.pml:157, state 236, "T2_X4 = 0"
-	output.pml:158, state 237, "T2_X5 = 0"
-	output.pml:159, state 238, "T2_X5_1 = 0"
-	output.pml:160, state 239, "T2_X6 = 0"
-	output.pml:161, state 240, "T2_X6_1 = 0"
-	output.pml:165, state 244, "running[3] = 1"
-	output.pml:166, state 245, "T3_X0 = T0_X0"
-	output.pml:167, state 246, "T3_X1 = T0_X1"
-	output.pml:168, state 247, "T3_X2 = T0_X2"
-	output.pml:169, state 248, "T3_X3 = T0_X3"
-	output.pml:170, state 249, "T3_X4 = 0"
-	output.pml:171, state 250, "T3_X5 = 0"
-	output.pml:172, state 251, "T3_X5_1 = 0"
-	output.pml:173, state 252, "T3_X5_1_1 = 0"
-	output.pml:174, state 253, "T3_X5_1_2 = 0"
-	output.pml:175, state 254, "T3_X5_1_3 = 0"
-	output.pml:176, state 255, "T3_X5_2 = 0"
-	output.pml:177, state 256, "T3_X5_3 = 0"
-	output.pml:178, state 257, "T3_X6 = 0"
-	output.pml:179, state 258, "T3_X6_1 = 0"
-	output.pml:180, state 259, "T3_X6_2 = 0"
-	output.pml:181, state 260, "T3_X6_3 = 0"
-	output.pml:182, state 261, "T3_X7 = 0"
-	output.pml:183, state 262, "T3_X7_1 = 0"
-	output.pml:184, state 263, "T3_X7_1_1 = 0"
-	output.pml:185, state 264, "T3_X7_1_2 = 0"
-	output.pml:186, state 265, "T3_X7_1_3 = 0"
-	output.pml:187, state 266, "T3_X7_2 = 0"
-	output.pml:188, state 267, "T3_X7_3 = 0"
-	output.pml:192, state 271, "running[1] = 0"
-	output.pml:193, state 272, "T0_X0 = T1_X1"
-	output.pml:194, state 273, "T0_X1 = T1_X2"
-	output.pml:195, state 274, "T0_X2 = T1_X3"
-	output.pml:196, state 275, "T0_X4 = T1_X4"
-	output.pml:200, state 279, "running[2] = 0"
-	output.pml:201, state 280, "T0_X4 = T2_X4"
-	output.pml:205, state 284, "running[3] = 0"
-	output.pml:206, state 285, "T0_X6 = T3_X4"
-	output.pml:215, state 295, "T1_X0 = 0"
-	output.pml:215, state 295, "T1_X0 = 11"
-	output.pml:216, state 298, "T1_X0_1 = 11"
-	output.pml:217, state 301, "T1_X0_2 = 11"
-	output.pml:218, state 304, "T1_X0_3 = 11"
-	output.pml:219, state 311, "T1_X1 = S0"
-	output.pml:219, state 311, "T1_X1 = S5"
-	output.pml:219, state 311, "T1_X1 = S7"
-	output.pml:219, state 311, "T1_X1 = 0"
-	output.pml:219, state 311, "T1_X1 = 11"
-	output.pml:220, state 318, "T1_X2 = S0"
-	output.pml:220, state 318, "T1_X2 = S5"
-	output.pml:220, state 318, "T1_X2 = S7"
-	output.pml:220, state 318, "T1_X2 = 0"
-	output.pml:220, state 318, "T1_X2 = 11"
-	output.pml:221, state 325, "T1_X3 = S0"
-	output.pml:221, state 325, "T1_X3 = S5"
-	output.pml:221, state 325, "T1_X3 = S7"
-	output.pml:221, state 325, "T1_X3 = 0"
-	output.pml:221, state 325, "T1_X3 = 11"
-	output.pml:222, state 334, "T1_X4 = S1"
-	output.pml:222, state 334, "T1_X4 = S3"
-	output.pml:222, state 334, "T1_X4 = S2"
-	output.pml:222, state 334, "T1_X4 = S4"
-	output.pml:222, state 334, "T1_X4 = S6"
-	output.pml:222, state 334, "T1_X4 = 0"
-	output.pml:222, state 334, "T1_X4 = 11"
-	output.pml:231, state 354, "T1_X1 = S0"
-	output.pml:231, state 354, "T1_X1 = S5"
-	output.pml:231, state 354, "T1_X1 = S7"
-	output.pml:231, state 354, "T1_X1 = 0"
-	output.pml:231, state 354, "T1_X1 = 11"
-	output.pml:232, state 361, "T1_X2 = S0"
-	output.pml:232, state 361, "T1_X2 = S5"
-	output.pml:232, state 361, "T1_X2 = S7"
-	output.pml:232, state 361, "T1_X2 = 0"
-	output.pml:232, state 361, "T1_X2 = 11"
-	output.pml:233, state 368, "T1_X3 = S0"
-	output.pml:233, state 368, "T1_X3 = S5"
-	output.pml:233, state 368, "T1_X3 = S7"
-	output.pml:233, state 368, "T1_X3 = 0"
-	output.pml:233, state 368, "T1_X3 = 11"
-	output.pml:234, state 377, "T1_X4 = S1"
-	output.pml:234, state 377, "T1_X4 = S3"
-	output.pml:234, state 377, "T1_X4 = S2"
-	output.pml:234, state 377, "T1_X4 = S4"
-	output.pml:234, state 377, "T1_X4 = S6"
-	output.pml:234, state 377, "T1_X4 = 0"
-	output.pml:234, state 377, "T1_X4 = 11"
-	output.pml:241, state 391, "(1)"
-	output.pml:213, state 392, "((T1_X1==S0))"
-	output.pml:213, state 392, "((T1_X1==S0))"
-	output.pml:213, state 392, "else"
-	output.pml:245, state 397, "ready[1] = 1"
-	output.pml:254, state 412, "T2_X4 = S1"
-	output.pml:254, state 412, "T2_X4 = S3"
-	output.pml:254, state 412, "T2_X4 = S2"
-	output.pml:254, state 412, "T2_X4 = S4"
-	output.pml:254, state 412, "T2_X4 = S6"
-	output.pml:254, state 412, "T2_X4 = 0"
-	output.pml:254, state 412, "T2_X4 = 11"
-	output.pml:255, state 416, "T2_X5 = 0"
-	output.pml:255, state 416, "T2_X5 = 11"
-	output.pml:256, state 419, "T2_X5_1 = 11"
-	output.pml:257, state 423, "T2_X6 = 0"
-	output.pml:257, state 423, "T2_X6 = 11"
-	output.pml:258, state 426, "T2_X6_1 = 11"
-	output.pml:265, state 440, "(1)"
-	output.pml:252, state 441, "(1)"
-	output.pml:252, state 441, "else"
-	output.pml:269, state 446, "ready[2] = 1"
-	output.pml:278, state 459, "T3_X4 = S0"
-	output.pml:278, state 459, "T3_X4 = S5"
-	output.pml:278, state 459, "T3_X4 = S7"
-	output.pml:278, state 459, "T3_X4 = 0"
-	output.pml:278, state 459, "T3_X4 = 11"
-	output.pml:279, state 463, "T3_X5 = 0"
-	output.pml:279, state 463, "T3_X5 = 11"
-	output.pml:280, state 466, "T3_X5_1 = 11"
-	output.pml:281, state 469, "T3_X5_1_1 = 11"
-	output.pml:282, state 472, "T3_X5_1_2 = 11"
-	output.pml:283, state 475, "T3_X5_1_3 = 11"
-	output.pml:284, state 478, "T3_X5_2 = 11"
-	output.pml:285, state 481, "T3_X5_3 = 11"
-	output.pml:286, state 485, "T3_X6 = 0"
-	output.pml:286, state 485, "T3_X6 = 11"
-	output.pml:287, state 488, "T3_X6_1 = 11"
-	output.pml:288, state 491, "T3_X6_2 = 11"
-	output.pml:289, state 494, "T3_X6_3 = 11"
-	output.pml:290, state 498, "T3_X7 = 0"
-	output.pml:290, state 498, "T3_X7 = 11"
-	output.pml:291, state 501, "T3_X7_1 = 11"
-	output.pml:292, state 504, "T3_X7_1_1 = 11"
-	output.pml:293, state 507, "T3_X7_1_2 = 11"
-	output.pml:294, state 510, "T3_X7_1_3 = 11"
-	output.pml:295, state 513, "T3_X7_2 = 11"
-	output.pml:296, state 516, "T3_X7_3 = 11"
-	output.pml:305, state 536, "T3_X4 = S0"
-	output.pml:305, state 536, "T3_X4 = S5"
-	output.pml:305, state 536, "T3_X4 = S7"
-	output.pml:305, state 536, "T3_X4 = 0"
-	output.pml:305, state 536, "T3_X4 = 11"
-	output.pml:306, state 540, "T3_X7 = 0"
-	output.pml:306, state 540, "T3_X7 = 11"
-	output.pml:307, state 543, "T3_X7_1 = 11"
-	output.pml:308, state 546, "T3_X7_1_1 = 11"
-	output.pml:309, state 549, "T3_X7_1_2 = 11"
-	output.pml:310, state 552, "T3_X7_1_3 = 11"
-	output.pml:311, state 555, "T3_X7_2 = 11"
-	output.pml:312, state 558, "T3_X7_3 = 11"
-	output.pml:321, state 578, "T3_X4 = S0"
-	output.pml:321, state 578, "T3_X4 = S5"
-	output.pml:321, state 578, "T3_X4 = S7"
-	output.pml:321, state 578, "T3_X4 = 0"
-	output.pml:321, state 578, "T3_X4 = 11"
-	output.pml:322, state 582, "T3_X7 = 0"
-	output.pml:322, state 582, "T3_X7 = 11"
-	output.pml:323, state 585, "T3_X7_1 = 11"
-	output.pml:324, state 588, "T3_X7_1_1 = 11"
-	output.pml:325, state 591, "T3_X7_1_2 = 11"
-	output.pml:326, state 594, "T3_X7_1_3 = 11"
-	output.pml:327, state 597, "T3_X7_2 = 11"
-	output.pml:328, state 600, "T3_X7_3 = 11"
-	output.pml:335, state 614, "(1)"
-	output.pml:276, state 615, "(1)"
-	output.pml:276, state 615, "((T3_X4==S0))"
-	output.pml:276, state 615, "((T3_X4==S0))"
-	output.pml:276, state 615, "else"
-	output.pml:339, state 620, "ready[3] = 1"
-	(133 of 628 states)
+collapse counts: [ 0:1765 2:3 3:3 4:3 5:3 6:3 7:3 8:3 9:6 10:3 11:3 12:3 13:3 14:1 15:1 16:1 17:1 18:1 19:1 20:1 21:1 22:1 23:1 24:1 25:1 26:1 27:24 28:1 ]
+unreached in proctype get_val_0_0
+	output.pml:63, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_0_1
+	output.pml:74, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_0_2
+	output.pml:85, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_0_3
+	output.pml:96, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_0_4
+	output.pml:107, state 14, "-end-"
+	(1 of 14 states)
+unreached in proctype get_val_0_5
+	output.pml:118, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_0_6
+	output.pml:129, state 12, "-end-"
+	(1 of 12 states)
+unreached in proctype get_val_1_0
+	output.pml:143, state 22, "-end-"
+	(1 of 22 states)
+unreached in proctype get_val_1_1
+	output.pml:154, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_1_2
+	output.pml:165, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_1_3
+	output.pml:176, state 10, "-end-"
+	(1 of 10 states)
+unreached in proctype get_val_1_4
+	output.pml:187, state 14, "-end-"
+	(1 of 14 states)
+unreached in proctype get_val_2_0
+	output.pml:195, state 4, "T2_X0 = S0"
+	output.pml:195, state 4, "T2_X0 = 13"
+	output.pml:196, state 6, "val_2_0!1"
+	output.pml:198, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_2_1
+	output.pml:206, state 4, "T2_X1 = S0"
+	output.pml:206, state 4, "T2_X1 = 14"
+	output.pml:207, state 6, "val_2_1!1"
+	output.pml:209, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_2_2
+	output.pml:217, state 4, "T2_X2 = S0"
+	output.pml:217, state 4, "T2_X2 = 15"
+	output.pml:218, state 6, "val_2_2!1"
+	output.pml:220, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_2_3
+	output.pml:228, state 4, "T2_X3 = S0"
+	output.pml:228, state 4, "T2_X3 = 11"
+	output.pml:229, state 6, "val_2_3!1"
+	output.pml:231, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_2_4
+	output.pml:239, state 8, "T2_X4 = S0"
+	output.pml:239, state 8, "T2_X4 = S1"
+	output.pml:239, state 8, "T2_X4 = S2"
+	output.pml:239, state 8, "T2_X4 = S3"
+	output.pml:239, state 8, "T2_X4 = S4"
+	output.pml:239, state 8, "T2_X4 = S6"
+	output.pml:240, state 10, "val_2_4!1"
+	output.pml:242, state 14, "-end-"
+	(3 of 14 states)
+unreached in proctype get_val_2_5
+	output.pml:250, state 4, "T2_X5 = CONST_NULL"
+	output.pml:250, state 4, "T2_X5 = 17"
+	output.pml:251, state 8, "T2_X5_1 = S0"
+	output.pml:251, state 8, "T2_X5_1 = 11"
+	output.pml:252, state 10, "val_2_5!1"
+	output.pml:254, state 14, "-end-"
+	(4 of 14 states)
+unreached in proctype get_val_3_0
+	output.pml:262, state 4, "T3_X0 = S0"
+	output.pml:262, state 4, "T3_X0 = 13"
+	output.pml:263, state 6, "val_3_0!1"
+	output.pml:265, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_3_1
+	output.pml:273, state 4, "T3_X1 = S0"
+	output.pml:273, state 4, "T3_X1 = 14"
+	output.pml:274, state 6, "val_3_1!1"
+	output.pml:276, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_3_2
+	output.pml:284, state 4, "T3_X2 = S0"
+	output.pml:284, state 4, "T3_X2 = 15"
+	output.pml:285, state 6, "val_3_2!1"
+	output.pml:287, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_3_3
+	output.pml:295, state 4, "T3_X3 = S0"
+	output.pml:295, state 4, "T3_X3 = 11"
+	output.pml:296, state 6, "val_3_3!1"
+	output.pml:298, state 10, "-end-"
+	(3 of 10 states)
+unreached in proctype get_val_3_4
+	output.pml:306, state 6, "T3_X4 = S0"
+	output.pml:306, state 6, "T3_X4 = S5"
+	output.pml:306, state 6, "T3_X4 = S6"
+	output.pml:306, state 6, "T3_X4 = S7"
+	output.pml:307, state 8, "val_3_4!1"
+	output.pml:309, state 12, "-end-"
+	(3 of 12 states)
+unreached in proctype get_val_3_5
+	output.pml:317, state 4, "T3_X5 = CONST_NULL"
+	output.pml:317, state 4, "T3_X5 = 18"
+	output.pml:318, state 8, "T3_X5_1_1 = S0"
+	output.pml:318, state 8, "T3_X5_1_1 = 13"
+	output.pml:319, state 12, "T3_X5_1_2 = S0"
+	output.pml:319, state 12, "T3_X5_1_2 = 14"
+	output.pml:320, state 16, "T3_X5_1_3 = S0"
+	output.pml:320, state 16, "T3_X5_1_3 = 15"
+	output.pml:321, state 18, "val_3_5!1"
+	output.pml:323, state 22, "-end-"
+	(6 of 22 states)
+unreached in proctype get_val_3_6
+	output.pml:331, state 4, "T3_X6 = CONST_NULL"
+	output.pml:331, state 4, "T3_X6 = 16"
+	output.pml:332, state 8, "T3_X6_1 = S0"
+	output.pml:332, state 8, "T3_X6_1 = 13"
+	output.pml:333, state 12, "T3_X6_2 = S0"
+	output.pml:333, state 12, "T3_X6_2 = 14"
+	output.pml:334, state 16, "T3_X6_3 = S0"
+	output.pml:334, state 16, "T3_X6_3 = 15"
+	output.pml:335, state 18, "val_3_6!1"
+	output.pml:337, state 22, "-end-"
+	(6 of 22 states)
 unreached in init
-	(0 of 76 states)
+	output.pml:392, state 47, "val_0_3!1"
+	output.pml:393, state 48, "val_0_3?msg"
+	output.pml:394, state 49, "val_0_4!1"
+	output.pml:395, state 50, "val_0_4?msg"
+	output.pml:398, state 52, "(1)"
+	output.pml:398, state 53, "(((T0_X3!=S0)&&(T0_X4==S3)))"
+	output.pml:403, state 58, "val_0_5!1"
+	output.pml:404, state 59, "val_0_5?msg"
+	output.pml:407, state 61, "(1)"
+	output.pml:407, state 62, "((T0_X5!=N0))"
+	output.pml:412, state 67, "val_0_4!1"
+	output.pml:413, state 68, "val_0_4?msg"
+	output.pml:416, state 70, "(1)"
+	output.pml:416, state 71, "((T0_X4==S6))"
+	output.pml:434, state 91, "running[2] = 1"
+	output.pml:435, state 92, "T2_X0 = T0_X0"
+	output.pml:436, state 93, "T2_X1 = T0_X1"
+	output.pml:437, state 94, "T2_X2 = T0_X2"
+	output.pml:438, state 95, "T2_X3 = T0_X3"
+	output.pml:439, state 96, "T2_X4 = S0"
+	output.pml:440, state 97, "T2_X5 = CONST_NULL"
+	output.pml:441, state 98, "T2_X5_1 = S0"
+	output.pml:445, state 102, "running[3] = 1"
+	output.pml:446, state 103, "T3_X0 = T0_X0"
+	output.pml:447, state 104, "T3_X1 = T0_X1"
+	output.pml:448, state 105, "T3_X2 = T0_X2"
+	output.pml:449, state 106, "T3_X3 = T0_X3"
+	output.pml:450, state 107, "T3_X4 = S0"
+	output.pml:451, state 108, "T3_X5 = CONST_NULL"
+	output.pml:452, state 109, "T3_X5_1 = CONST_NULL"
+	output.pml:453, state 110, "T3_X5_1_1 = S0"
+	output.pml:454, state 111, "T3_X5_1_2 = S0"
+	output.pml:455, state 112, "T3_X5_1_3 = S0"
+	output.pml:456, state 113, "T3_X5_2 = S0"
+	output.pml:457, state 114, "T3_X5_3 = S0"
+	output.pml:458, state 115, "T3_X6 = CONST_NULL"
+	output.pml:459, state 116, "T3_X6_1 = S0"
+	output.pml:460, state 117, "T3_X6_2 = S0"
+	output.pml:461, state 118, "T3_X6_3 = S0"
+	output.pml:465, state 122, "running[1] = 0"
+	output.pml:466, state 123, "T0_X0 = T1_X1"
+	output.pml:467, state 124, "T0_X1 = T1_X2"
+	output.pml:468, state 125, "T0_X2 = T1_X3"
+	output.pml:469, state 126, "T0_X4 = T1_X4"
+	output.pml:473, state 130, "running[2] = 0"
+	output.pml:474, state 131, "T0_X4 = T2_X4"
+	output.pml:478, state 135, "running[3] = 0"
+	output.pml:479, state 136, "T0_X6 = T3_X4"
+	output.pml:506, state 167, "(1)"
+	output.pml:506, state 168, "((((((T1_X0!=CONST_NULL)&&(T1_X0_1==T1_X1))&&(T1_X0_2==T1_X2))&&(T1_X0_3==T1_X3))&&(T1_X4==S2)))"
+	output.pml:527, state 194, "(1)"
+	output.pml:527, state 195, "(((((T1_X1!=S0)&&(T1_X2!=S0))&&(T1_X3!=S0))&&(T1_X4==S2)))"
+	output.pml:533, state 203, "ready[1] = 1"
+	output.pml:542, state 211, "val_2_4!1"
+	output.pml:543, state 212, "val_2_4?msg"
+	output.pml:544, state 213, "val_2_5!1"
+	output.pml:545, state 214, "val_2_5?msg"
+	output.pml:550, state 220, "(1)"
+	output.pml:550, state 221, "(((T2_X5!=CONST_NULL)&&(T2_X5_1==T2_X3)))"
+	output.pml:540, state 224, "(1)"
+	output.pml:556, state 229, "ready[2] = 1"
+	output.pml:565, state 237, "val_3_4!1"
+	output.pml:566, state 238, "val_3_4?msg"
+	output.pml:567, state 239, "val_3_5!1"
+	output.pml:568, state 240, "val_3_5?msg"
+	output.pml:569, state 241, "val_3_6!1"
+	output.pml:570, state 242, "val_3_6?msg"
+	output.pml:587, state 272, "(1)"
+	output.pml:587, state 273, "(((((((T3_X5!=CONST_NULL)&&(T3_X5_1==T3_X6))&&(T3_X6!=CONST_NULL))&&(T3_X6_1==T3_X0))&&(T3_X6_2==T3_X1))&&(T3_X6_3==T3_X2)))"
+	output.pml:592, state 278, "val_3_4!1"
+	output.pml:593, state 279, "val_3_4?msg"
+	output.pml:610, state 309, "(1)"
+	output.pml:610, state 310, "((((T3_X5!=CONST_NULL)&&(T3_X5_3==S7))&&(T3_X4==S7)))"
+	output.pml:615, state 315, "val_3_4!1"
+	output.pml:616, state 316, "val_3_4?msg"
+	output.pml:633, state 346, "(1)"
+	output.pml:633, state 347, "((T3_X4==S5))"
+	output.pml:563, state 350, "(1)"
+	output.pml:563, state 350, "((T3_X4==S0))"
+	output.pml:563, state 350, "((T3_X4==S0))"
+	output.pml:639, state 355, "ready[3] = 1"
+	output.pml:644, state 363, "-end-"
+	(80 of 363 states)
 unreached in claim never_0
-	output.pml:422, state 8, "-end-"
-	(1 of 8 states)
+	output.pml:653, state 11, "(!(((current==0)&&(T0_X1==S5))))"
+	output.pml:653, state 11, "(((current==0)&&!(((current==0)&&(T0_X1==S5)))))"
+	output.pml:658, state 17, "(!(((current==0)&&(T0_X1==S5))))"
+	output.pml:658, state 17, "(((current==0)&&!(((current==0)&&(T0_X1==S5)))))"
+	output.pml:661, state 19, "-end-"
+	(3 of 19 states)
 
-pan: elapsed time 0.59 seconds
-pan: rate 97184.746 states/second
-time = 2.236441
+pan: elapsed time 0.01 seconds
+avg_as_size = 2.368421
+avg_as_naive = 34.026316
+time = 0.026874,2.574672,0.074243

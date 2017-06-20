@@ -1058,7 +1058,7 @@ bool Verifier::intersect(State& s, vector<Conjunct>& conjuncts,
         }
 	}
 
-    res.insert(res.end(), res_set.begin(), res_set.end());
+    res = vector<State>(res_set.begin(), res_set.end());
 	return !res.empty();
 }
 
@@ -2402,10 +2402,16 @@ int Verifier::profile_get_cyclomatic(int task_id, vector<VASSState*>& que, vecto
         vector<int> nonid_vars(1, vid);
         for (int i = 0; i < N; i++) {
             State p;
+            State tmp = que[i]->state;
+            tmp.uneqs.clear();
 
-            project(que[i]->state, task_id, nonid_vars, p);
-            if (proj_map.count(p) == 0)
+            project(tmp, task_id, nonid_vars, p);
+            
+
+            if (proj_map.count(p) == 0) {
                 proj_map[p] = (int) proj_map.size();
+                // dump_state(p);
+            }
             projected.push_back(proj_map[p]);
         }
 
@@ -2422,6 +2428,7 @@ int Verifier::profile_get_cyclomatic(int task_id, vector<VASSState*>& que, vecto
         // TODO
         // print out debug info when cyc > 100
         max_cyc = max(max_cyc, (int) edge_set.size() - (int) proj_map.size() + 2);
+        // printf("%d\n-----------------------\n", max_cyc);
     }
     return max_cyc;
 }

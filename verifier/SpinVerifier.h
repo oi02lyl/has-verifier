@@ -25,6 +25,8 @@ public:
 	string promela_translate_condition(int task_id, Formula* form);
 
 	string promela_get_assignment(int task_id, vector<int>& prop_vars);
+	
+    string promela_get_assignment(int task_id, int vid);
 
     void get_prop_exprs(int task_id, vector<int>& prop_vars, vector<int>& res);
 

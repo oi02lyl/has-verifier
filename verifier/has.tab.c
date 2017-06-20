@@ -2804,6 +2804,7 @@ yyreturn:
 
 int main(int argc, char** argv) {
 	// open a file handle to a particular file:
+    int seed = 123;
 	FILE *myfile = fopen(argv[1], "r");
     bool debug = false;
     int naive = 0;
@@ -2812,7 +2813,7 @@ int main(int argc, char** argv) {
 
     if (argc >= 3) {
         verifier_option = atoi(argv[2]);
-        if (verifier_option == 2)
+        if (verifier_option == 2 || verifier_option == 1)
             without_set = true;
         else
             without_set = false;
@@ -2842,20 +2843,31 @@ int main(int argc, char** argv) {
     double elapsed = 0.0;
 	
     if (verifier_option == 1) {
+        srand(seed);
         LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
+        // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
         SpinVerifier sver(art, atms, prop, naive);
         // Formula* target = std::generate_safety(0, art);
         
+        double t1, t2, t3;
         
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 10m ./pan -a");
-
+        system("spin -a output.pml");
         gettimeofday(&tv, NULL);
-        elapsed = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        t1 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        start_tv = tv;
 
-        printf("time = %lf\n", elapsed);
+        system("cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE");
+        gettimeofday(&tv, NULL);
+        t2 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        start_tv = tv;
+
+        system("timeout 10m ./pan -a");
+        gettimeofday(&tv, NULL);
+        t3 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        printf("time = %lf,%lf,%lf\n", t1, t2, t3);
     } else {
 
     // art.dump();
@@ -2863,19 +2875,25 @@ int main(int argc, char** argv) {
     //for (int aid = 0; aid < num_atms; aid++)
     //    atms[aid].dump();
         if (atms.size() == 0) {
-            int num_atms = 1;
-            int num_atm_states = 5;
-            int num_trans = 5;
+            srand(seed);
+            // int num_atms = 1;
+            // int num_atm_states = 5;
+            // int num_trans = 5;
             // generate_atms(art, num_atms, num_atm_states, num_trans, atms);
+            LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
+            prop.generate_atms(atms);
+            // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
         }
         
-        int seed = 0;
+        // printf("\n");
+        // art.print_stat();
+        // return 0;
         int num_tasks = art.tasks.size();
 
         Verifier ver(art, atms, naive, debug);
-        vector<tuple<State, State, vector<int> > > res;
+
         ver.preprocess();
-        ver.reachable_root(res);
+        string res = ver.satisfy() ? "FALSE" : "TRUE";
         
         gettimeofday(&tv, NULL);
         elapsed = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
@@ -2903,10 +2921,11 @@ int main(int argc, char** argv) {
             max_counters = max(max_counters, vec_num_counter_states[i]);
             max_cyclomatic = max(max_cyclomatic, ver.profile_cyclomatic[i]);
         }
-        printf("seed\ttime\tcyclomatic\tnum_vstates\tmax_vstates\tnum_states\tmax_states\tnum_counters\tmax_counters\tmax_active_counters\ttime_superstate\ttime_substate\ttime_nextstate\ttime_omega\thit_rate_superstate\thit_rate_substate\thit_rate_reach_map\ttime_scc\n");
-        printf("%d\t%lf\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
+        printf("seed\ttime\toutput\tcyclomatic\tnum_vstates\tmax_vstates\tnum_states\tmax_states\tnum_counters\tmax_counters\tmax_active_counters\ttime_superstate\ttime_substate\ttime_nextstate\ttime_omega\thit_rate_superstate\thit_rate_substate\thit_rate_reach_map\ttime_scc\n");
+        printf("%d\t%lf\t%s\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
                 seed,
                 elapsed,
+                res.c_str(),
                 max_cyclomatic,
                 num_vstates,
                 max_vstates,

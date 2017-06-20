@@ -38,6 +38,9 @@ public:
 
 	void dump();
 
+    // print statistics
+    void print_stat();
+
 	Artifact();
 	virtual ~Artifact();
 };

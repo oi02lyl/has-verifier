@@ -123,6 +123,19 @@ void Artifact::dump() {
 	}
 }
 
+void Artifact::print_stat() {
+	int num_rels = db.relations.size();
+    int num_tasks = tasks.size();
+    int num_services = 0;
+    int num_vars = 0;
+
+	for (Task& t : tasks) {
+		num_vars += t.vars.size();
+        num_services += t.services.size();
+	}
+    printf("%d\t%d\t%d\t%d\n", num_rels, num_tasks, num_vars, num_services);
+}
+
 
 int get_rand_var_type(int type, Task& task) {
     vector<int> ids;

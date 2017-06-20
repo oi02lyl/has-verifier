@@ -875,16 +875,25 @@ int main(int argc, char** argv) {
         SpinVerifier sver(art, atms, prop, naive);
         // Formula* target = std::generate_safety(0, art);
         
+        double t1, t2, t3;
         
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 10m ./pan -a");
-
+        system("spin -a output.pml");
         gettimeofday(&tv, NULL);
-        elapsed = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        t1 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        start_tv = tv;
 
-        printf("time = %lf\n", elapsed);
+        system("cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE");
+        gettimeofday(&tv, NULL);
+        t2 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        start_tv = tv;
+
+        system("timeout 10m ./pan -a");
+        gettimeofday(&tv, NULL);
+        t3 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        printf("time = %lf,%lf,%lf\n", t1, t2, t3);
     } else {
 
     // art.dump();
@@ -902,9 +911,13 @@ int main(int argc, char** argv) {
             // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
         }
         
+        // printf("\n");
+        // art.print_stat();
+        // return 0;
         int num_tasks = art.tasks.size();
 
         Verifier ver(art, atms, naive, debug);
+
         ver.preprocess();
         string res = ver.satisfy() ? "FALSE" : "TRUE";
         

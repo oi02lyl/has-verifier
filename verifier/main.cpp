@@ -36,15 +36,27 @@ int main(int argc, char** argv) {
     if (argc >= 5)
         debug = atoi(argv[4]);
 	
+    /*
 	int num_rels = 5;
 	int num_tasks = 5;
 	int num_const = 10;
-	int num_vars = 20;
+	int num_vars = 15;
+	int num_services = 15;
+	int form_size = 5;
+    int num_atms = 1;
+    int num_atm_states = 5;
+    int num_trans = 5;
+    */
+	int num_rels = 3;
+	int num_tasks = 1;
+	int num_const = 20;
+	int num_vars = 5;
 	int num_services = 10;
 	int form_size = 5;
     int num_atms = 1;
     int num_atm_states = 5;
     int num_trans = 5;
+
 
 	srand(seed);
 
@@ -67,15 +79,25 @@ int main(int argc, char** argv) {
         SpinVerifier sver(art, atms, prop, naive);
         // Formula* target = std::generate_safety(0, art);
         
+        double t1, t2, t3;
+        
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml && cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE && timeout 10m ./pan -a");
-
+        system("spin -a output.pml");
         gettimeofday(&tv, NULL);
-        elapsed = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        t1 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        start_tv = tv;
 
-        printf("time = %lf\n", elapsed);
+        system("cc -o pan pan.c -O2 -DVECTORSZ=2048 -DMEMLIM=8192 -DCOLLAPSE");
+        gettimeofday(&tv, NULL);
+        t2 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        start_tv = tv;
+
+        system("timeout 10m ./pan -a");
+        gettimeofday(&tv, NULL);
+        t3 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
+        printf("time = %lf,%lf,%lf\n", t1, t2, t3);
     } else {
         if (atms.size() == 0) {
             srand(seed);

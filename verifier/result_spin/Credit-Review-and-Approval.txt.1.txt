@@ -1,1 +1,98 @@
-time = 602.189050
+warning: for p.o. reduction to be valid the never claim must be stutter-invariant
+(never claims generated from LTL formulae are stutter-invariant)
+Depth=      93 States=    1e+06 Transitions= 3.35e+06 Memory=   274.042	t=     5.28 R=   2e+05
+Depth=      93 States=    2e+06 Transitions=  6.7e+06 Memory=   420.136	t=     10.6 R=   2e+05
+Depth=      93 States=    3e+06 Transitions= 1.01e+07 Memory=   566.230	t=       16 R=   2e+05
+Depth=      93 States=    4e+06 Transitions= 1.34e+07 Memory=   712.323	t=     21.4 R=   2e+05
+Depth=      93 States=    5e+06 Transitions= 1.68e+07 Memory=   858.417	t=     26.8 R=   2e+05
+Depth=      93 States=    6e+06 Transitions= 2.01e+07 Memory=  1004.511	t=     32.3 R=   2e+05
+Depth=      93 States=    7e+06 Transitions= 2.35e+07 Memory=  1150.605	t=     37.8 R=   2e+05
+Depth=      93 States=    8e+06 Transitions= 2.68e+07 Memory=  1296.698	t=     43.3 R=   2e+05
+Depth=      93 States=    9e+06 Transitions= 3.02e+07 Memory=  1442.792	t=     48.9 R=   2e+05
+Depth=      93 States=    1e+07 Transitions= 3.35e+07 Memory=  1588.886	t=     54.5 R=   2e+05
+Depth=      93 States=  1.1e+07 Transitions= 3.69e+07 Memory=  1734.980	t=     60.2 R=   2e+05
+Depth=      93 States=  1.2e+07 Transitions= 4.02e+07 Memory=  1881.073	t=     65.8 R=   2e+05
+Depth=      93 States=  1.3e+07 Transitions= 4.36e+07 Memory=  2027.167	t=     71.5 R=   2e+05
+Depth=      93 States=  1.4e+07 Transitions= 4.69e+07 Memory=  2173.261	t=     77.1 R=   2e+05
+Depth=      93 States=  1.5e+07 Transitions= 5.03e+07 Memory=  2319.355	t=     82.8 R=   2e+05
+Depth=      93 States=  1.6e+07 Transitions= 5.36e+07 Memory=  2465.448	t=     88.5 R=   2e+05
+Depth=      93 States=  1.7e+07 Transitions=  5.7e+07 Memory=  2611.542	t=     94.3 R=   2e+05
+Depth=      93 States=  1.8e+07 Transitions= 6.03e+07 Memory=  2757.636	t=      100 R=   2e+05
+Depth=      93 States=  1.9e+07 Transitions= 6.37e+07 Memory=  2903.730	t=      106 R=   2e+05
+Depth=      93 States=    2e+07 Transitions=  6.7e+07 Memory=  3049.823	t=      112 R=   2e+05
+Depth=      93 States=  2.1e+07 Transitions= 7.04e+07 Memory=  3195.917	t=      117 R=   2e+05
+Depth=      93 States=  2.2e+07 Transitions= 7.37e+07 Memory=  3342.011	t=      123 R=   2e+05
+Depth=      93 States=  2.3e+07 Transitions= 7.71e+07 Memory=  3488.105	t=      129 R=   2e+05
+Depth=      93 States=  2.4e+07 Transitions= 8.04e+07 Memory=  3634.198	t=      135 R=   2e+05
+Depth=      93 States=  2.5e+07 Transitions= 8.38e+07 Memory=  3780.292	t=      141 R=   2e+05
+Depth=      93 States=  2.6e+07 Transitions= 8.71e+07 Memory=  3926.386	t=      147 R=   2e+05
+Depth=      93 States=  2.7e+07 Transitions= 9.05e+07 Memory=  4072.480	t=      153 R=   2e+05
+Depth=      93 States=  2.8e+07 Transitions= 9.38e+07 Memory=  4218.573	t=      158 R=   2e+05
+Depth=      93 States=  2.9e+07 Transitions= 9.72e+07 Memory=  4364.667	t=      164 R=   2e+05
+Depth=      93 States=    3e+07 Transitions= 1.01e+08 Memory=  4510.761	t=      170 R=   2e+05
+Depth=      93 States=  3.1e+07 Transitions= 1.04e+08 Memory=  4656.855	t=      176 R=   2e+05
+Depth=      93 States=  3.2e+07 Transitions= 1.07e+08 Memory=  4802.948	t=      182 R=   2e+05
+Depth=      93 States=  3.3e+07 Transitions= 1.11e+08 Memory=  4949.042	t=      188 R=   2e+05
+Depth=      93 States=  3.4e+07 Transitions= 1.14e+08 Memory=  5095.136	t=      194 R=   2e+05
+pan: resizing hashtable to -w26..  done
+Depth=      93 States=  3.5e+07 Transitions= 1.17e+08 Memory=  5737.409	t=      207 R=   2e+05
+Depth=      93 States=  3.6e+07 Transitions= 1.21e+08 Memory=  5883.503	t=      212 R=   2e+05
+Depth=      93 States=  3.7e+07 Transitions= 1.24e+08 Memory=  6029.597	t=      218 R=   2e+05
+Depth=      93 States=  3.8e+07 Transitions= 1.27e+08 Memory=  6175.690	t=      224 R=   2e+05
+Depth=      93 States=  3.9e+07 Transitions= 1.31e+08 Memory=  6321.784	t=      229 R=   2e+05
+Depth=      93 States=    4e+07 Transitions= 1.34e+08 Memory=  6467.878	t=      235 R=   2e+05
+Depth=      93 States=  4.1e+07 Transitions= 1.37e+08 Memory=  6613.972	t=      240 R=   2e+05
+Depth=      93 States=  4.2e+07 Transitions= 1.41e+08 Memory=  6760.065	t=      246 R=   2e+05
+Depth=      93 States=  4.3e+07 Transitions= 1.44e+08 Memory=  6906.159	t=      251 R=   2e+05
+Depth=      93 States=  4.4e+07 Transitions= 1.47e+08 Memory=  7052.253	t=      257 R=   2e+05
+Depth=      93 States=  4.5e+07 Transitions= 1.51e+08 Memory=  7198.347	t=      262 R=   2e+05
+Depth=      93 States=  4.6e+07 Transitions= 1.54e+08 Memory=  7344.440	t=      268 R=   2e+05
+Depth=      93 States=  4.7e+07 Transitions= 1.58e+08 Memory=  7490.534	t=      273 R=   2e+05
+Depth=      93 States=  4.8e+07 Transitions= 1.61e+08 Memory=  7636.628	t=      279 R=   2e+05
+Depth=      93 States=  4.9e+07 Transitions= 1.64e+08 Memory=  7782.722	t=      285 R=   2e+05
+Depth=      93 States=    5e+07 Transitions= 1.68e+08 Memory=  7928.815	t=      290 R=   2e+05
+Depth=      93 States=  5.1e+07 Transitions= 1.71e+08 Memory=  8074.909	t=      296 R=   2e+05
+pan: reached -DMEMLIM bound
+	8.58983e+09 bytes used
+	204800 bytes more needed
+	8.58993e+09 bytes limit
+hint: to reduce memory, recompile with
+  -DMA=492   # better/slower compression, or
+  -DBITSTATE # supertrace, approximation
+
+(Spin Version 6.4.5 -- 1 January 2016)
+Warning: Search not completed
+	+ Partial Order Reduction
+	+ Compression
+
+Full statespace search for:
+	never claim         	+ (never_0)
+	assertion violations	+ (if within scope of claim)
+	acceptance   cycles 	+ (fairness disabled)
+	invalid end states	- (disabled by never claim)
+
+State-vector 492 byte, depth reached 93, errors: 0
+ 51801649 states, stored
+1.217915e+08 states, matched
+1.7359315e+08 transitions (= stored+matched)
+ 25740146 atomic steps
+hash conflicts:  96586321 (resolved)
+
+Stats on memory usage (in Megabytes):
+26084.204	equivalent memory usage for states (stored*(State-vector + overhead))
+ 7680.541	actual memory usage for states (compression: 29.45%)
+         	state-vector as stored = 119 byte + 36 byte overhead
+  512.000	memory used for hash table (-w26)
+    0.534	memory used for DFS stack (-m10000)
+    1.174	memory lost to fragmentation
+ 8191.901	total actual memory usage
+
+
+nr of templates: [ 0:globals 1:chans 2:procs ]
+collapse counts: [ 0:23137220 2:3 3:3 4:3 5:5 6:5 7:5 8:5 9:5 10:3 11:1 12:1 13:1 14:1 15:1 16:1 17:1 18:1 19:1 20:1 21:1 22:1 23:1 24:1 25:1 26:14 27:1 ]
+
+pan: elapsed time 300 seconds
+pan: rate 172608.87 states/second
+avg_as_size = 2.304348
+avg_as_naive = 35.347826
+time = 0.040389,7.066120,300.445714
