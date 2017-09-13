@@ -2,7 +2,8 @@
 Implementation of two Verifiers for Hierarchical Artifact Systems
 1. Spin-based [link](https://arxiv.org/abs/1705.09427)
 2. Karp-Miller-based (VERIFAS) [link](https://arxiv.org/abs/1705.10007)
-2. VLDB PhD workshop paper [link](http://ceur-ws.org/Vol-1882/paper14.pdf)
+3. VLDB PhD workshop paper [link](http://ceur-ws.org/Vol-1882/paper14.pdf)
+4. More on the theory [link](https://arxiv.org/abs/1604.00967)
 
 ## Prerequisite
 * Boost
