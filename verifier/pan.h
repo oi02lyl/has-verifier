@@ -102,6 +102,7 @@
 #ifndef NFAIR
 	#define NFAIR	2	/* must be >= 2 */
 #endif
+#define HAS_LTL	1
 #define HAS_CODE	1
 #if defined(RANDSTORE) && !defined(RANDSTOR)
 	#define RANDSTOR	RANDSTORE
@@ -120,12 +121,12 @@
 #endif
 #ifdef NP
 	#define HAS_NP	2
-	#define VERI	26	/* np_ */
+	#define VERI	19	/* np_ */
 #endif
 #ifndef NOCLAIM
 	#define NCLAIMS	1
 	#ifndef NP
-		#define VERI	25
+		#define VERI	18
 	#endif
 #endif
 
@@ -135,143 +136,101 @@ typedef struct S_F_MAP {
 	int upto;
 } S_F_MAP;
 
-#define nstates25	20	/* never_0 */
-#define minseq25	3112
-#define maxseq25	3130
-#define endstate25	19
+#define nstates18	37	/* ltl_prop */
+#define minseq18	7639
+#define maxseq18	7674
+#define endstate18	36
 
-#define nstates24	2771	/* :init: */
-#define minseq24	342
-#define maxseq24	3111
-#define endstate24	2770
+#define nstates17	7139	/* :init: */
+#define minseq17	501
+#define maxseq17	7638
+#define endstate17	7138
 
-#define nstates23	12	/* get_val_1_14 */
-#define minseq23	331
-#define maxseq23	341
-#define endstate23	11
+#define nstates16	11	/* get_val_2_7 */
+#define minseq16	491
+#define maxseq16	500
+#define endstate16	10
 
-#define nstates22	12	/* get_val_1_13 */
-#define minseq22	320
-#define maxseq22	330
-#define endstate22	11
+#define nstates15	11	/* get_val_2_6 */
+#define minseq15	481
+#define maxseq15	490
+#define endstate15	10
 
-#define nstates21	12	/* get_val_1_12 */
-#define minseq21	309
-#define maxseq21	319
-#define endstate21	11
+#define nstates14	12	/* get_val_2_5 */
+#define minseq14	470
+#define maxseq14	480
+#define endstate14	11
 
-#define nstates20	12	/* get_val_1_11 */
-#define minseq20	298
-#define maxseq20	308
-#define endstate20	11
+#define nstates13	16	/* get_val_2_4 */
+#define minseq13	455
+#define maxseq13	469
+#define endstate13	15
 
-#define nstates19	12	/* get_val_1_10 */
-#define minseq19	287
-#define maxseq19	297
-#define endstate19	11
+#define nstates12	125	/* get_val_2_3 */
+#define minseq12	331
+#define maxseq12	454
+#define endstate12	124
 
-#define nstates18	11	/* get_val_1_9 */
-#define minseq18	277
-#define maxseq18	286
-#define endstate18	10
+#define nstates11	27	/* get_val_2_2 */
+#define minseq11	305
+#define maxseq11	330
+#define endstate11	26
 
-#define nstates17	19	/* get_val_1_8 */
-#define minseq17	259
-#define maxseq17	276
-#define endstate17	18
+#define nstates10	27	/* get_val_2_1 */
+#define minseq10	279
+#define maxseq10	304
+#define endstate10	26
 
-#define nstates16	19	/* get_val_1_7 */
-#define minseq16	241
-#define maxseq16	258
-#define endstate16	18
+#define nstates9	27	/* get_val_2_0 */
+#define minseq9	253
+#define maxseq9	278
+#define endstate9	26
 
-#define nstates15	19	/* get_val_1_6 */
-#define minseq15	223
-#define maxseq15	240
-#define endstate15	18
+#define nstates8	16	/* get_val_1_5 */
+#define minseq8	238
+#define maxseq8	252
+#define endstate8	15
 
-#define nstates14	19	/* get_val_1_5 */
-#define minseq14	205
-#define maxseq14	222
-#define endstate14	18
+#define nstates7	27	/* get_val_1_4 */
+#define minseq7	212
+#define maxseq7	237
+#define endstate7	26
 
-#define nstates13	19	/* get_val_1_4 */
-#define minseq13	187
-#define maxseq13	204
-#define endstate13	18
+#define nstates6	27	/* get_val_1_3 */
+#define minseq6	186
+#define maxseq6	211
+#define endstate6	26
 
-#define nstates12	19	/* get_val_1_3 */
-#define minseq12	169
-#define maxseq12	186
-#define endstate12	18
+#define nstates5	27	/* get_val_1_2 */
+#define minseq5	160
+#define maxseq5	185
+#define endstate5	26
 
-#define nstates11	12	/* get_val_1_2 */
-#define minseq11	158
-#define maxseq11	168
-#define endstate11	11
+#define nstates4	68	/* get_val_1_1 */
+#define minseq4	93
+#define maxseq4	159
+#define endstate4	67
 
-#define nstates10	14	/* get_val_1_1 */
-#define minseq10	145
-#define maxseq10	157
-#define endstate10	13
+#define nstates3	11	/* get_val_1_0 */
+#define minseq3	83
+#define maxseq3	92
+#define endstate3	10
 
-#define nstates9	11	/* get_val_1_0 */
-#define minseq9	135
-#define maxseq9	144
-#define endstate9	10
+#define nstates2	7	/* get_val_0_2 */
+#define minseq2	77
+#define maxseq2	82
+#define endstate2	6
 
-#define nstates8	12	/* get_val_0_8 */
-#define minseq8	124
-#define maxseq8	134
-#define endstate8	11
-
-#define nstates7	19	/* get_val_0_7 */
-#define minseq7	106
-#define maxseq7	123
-#define endstate7	18
-
-#define nstates6	19	/* get_val_0_6 */
-#define minseq6	88
-#define maxseq6	105
-#define endstate6	18
-
-#define nstates5	19	/* get_val_0_5 */
-#define minseq5	70
-#define maxseq5	87
-#define endstate5	18
-
-#define nstates4	19	/* get_val_0_4 */
-#define minseq4	52
-#define maxseq4	69
-#define endstate4	18
-
-#define nstates3	19	/* get_val_0_3 */
-#define minseq3	34
-#define maxseq3	51
-#define endstate3	18
-
-#define nstates2	12	/* get_val_0_2 */
-#define minseq2	23
-#define maxseq2	33
-#define endstate2	11
-
-#define nstates1	14	/* get_val_0_1 */
+#define nstates1	68	/* get_val_0_1 */
 #define minseq1	10
-#define maxseq1	22
-#define endstate1	13
+#define maxseq1	76
+#define endstate1	67
 
 #define nstates0	11	/* get_val_0_0 */
 #define minseq0	0
 #define maxseq0	9
 #define endstate0	10
 
-extern short src_ln25[];
-extern short src_ln24[];
-extern short src_ln23[];
-extern short src_ln22[];
-extern short src_ln21[];
-extern short src_ln20[];
-extern short src_ln19[];
 extern short src_ln18[];
 extern short src_ln17[];
 extern short src_ln16[];
@@ -291,13 +250,6 @@ extern short src_ln3[];
 extern short src_ln2[];
 extern short src_ln1[];
 extern short src_ln0[];
-extern S_F_MAP src_file25[];
-extern S_F_MAP src_file24[];
-extern S_F_MAP src_file23[];
-extern S_F_MAP src_file22[];
-extern S_F_MAP src_file21[];
-extern S_F_MAP src_file20[];
-extern S_F_MAP src_file19[];
 extern S_F_MAP src_file18[];
 extern S_F_MAP src_file17[];
 extern S_F_MAP src_file16[];
@@ -319,10 +271,10 @@ extern S_F_MAP src_file1[];
 extern S_F_MAP src_file0[];
 
 #define T_ID	unsigned short
-#define _T5	965
-#define _T2	966
+#define _T5	2222
+#define _T2	2223
 #define WS		8 /* word size in bytes */
-#define SYNC	24
+#define SYNC	17
 #define ASYNC	0
 
 #ifndef NCORE
@@ -335,116 +287,32 @@ extern S_F_MAP src_file0[];
 	#endif
 #endif
 
-typedef struct P25 { /* never_0 */
+typedef struct P18 { /* ltl_prop */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-} P25;
-#define Air25	(sizeof(P25) - 4)
-
-#define Pinit	((P24 *)this)
-typedef struct P24 { /* :init: */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-} P24;
-#define Air24	(sizeof(P24) - 4)
-
-#define Pget_val_1_14	((P23 *)this)
-typedef struct P23 { /* get_val_1_14 */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-	uchar _msg;
-} P23;
-#define Air23	(sizeof(P23) - Offsetof(P23, _msg) - 1*sizeof(uchar))
-
-#define Pget_val_1_13	((P22 *)this)
-typedef struct P22 { /* get_val_1_13 */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-	uchar _msg;
-} P22;
-#define Air22	(sizeof(P22) - Offsetof(P22, _msg) - 1*sizeof(uchar))
-
-#define Pget_val_1_12	((P21 *)this)
-typedef struct P21 { /* get_val_1_12 */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-	uchar _msg;
-} P21;
-#define Air21	(sizeof(P21) - Offsetof(P21, _msg) - 1*sizeof(uchar))
-
-#define Pget_val_1_11	((P20 *)this)
-typedef struct P20 { /* get_val_1_11 */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-	uchar _msg;
-} P20;
-#define Air20	(sizeof(P20) - Offsetof(P20, _msg) - 1*sizeof(uchar))
-
-#define Pget_val_1_10	((P19 *)this)
-typedef struct P19 { /* get_val_1_10 */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-	uchar _msg;
-} P19;
-#define Air19	(sizeof(P19) - Offsetof(P19, _msg) - 1*sizeof(uchar))
-
-#define Pget_val_1_9	((P18 *)this)
-typedef struct P18 { /* get_val_1_9 */
-	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
-#ifdef HAS_PRIORITY
-	unsigned _priority : 8; /* 0..255 */
-#endif
-	uchar _msg;
 } P18;
-#define Air18	(sizeof(P18) - Offsetof(P18, _msg) - 1*sizeof(uchar))
+#define Air18	(sizeof(P18) - 4)
 
-#define Pget_val_1_8	((P17 *)this)
-typedef struct P17 { /* get_val_1_8 */
+#define Pinit	((P17 *)this)
+typedef struct P17 { /* :init: */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-	uchar _msg;
 } P17;
-#define Air17	(sizeof(P17) - Offsetof(P17, _msg) - 1*sizeof(uchar))
+#define Air17	(sizeof(P17) - 4)
 
-#define Pget_val_1_7	((P16 *)this)
-typedef struct P16 { /* get_val_1_7 */
+#define Pget_val_2_7	((P16 *)this)
+typedef struct P16 { /* get_val_2_7 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -452,11 +320,11 @@ typedef struct P16 { /* get_val_1_7 */
 } P16;
 #define Air16	(sizeof(P16) - Offsetof(P16, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_6	((P15 *)this)
-typedef struct P15 { /* get_val_1_6 */
+#define Pget_val_2_6	((P15 *)this)
+typedef struct P15 { /* get_val_2_6 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -464,11 +332,11 @@ typedef struct P15 { /* get_val_1_6 */
 } P15;
 #define Air15	(sizeof(P15) - Offsetof(P15, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_5	((P14 *)this)
-typedef struct P14 { /* get_val_1_5 */
+#define Pget_val_2_5	((P14 *)this)
+typedef struct P14 { /* get_val_2_5 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -476,11 +344,11 @@ typedef struct P14 { /* get_val_1_5 */
 } P14;
 #define Air14	(sizeof(P14) - Offsetof(P14, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_4	((P13 *)this)
-typedef struct P13 { /* get_val_1_4 */
+#define Pget_val_2_4	((P13 *)this)
+typedef struct P13 { /* get_val_2_4 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -488,11 +356,11 @@ typedef struct P13 { /* get_val_1_4 */
 } P13;
 #define Air13	(sizeof(P13) - Offsetof(P13, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_3	((P12 *)this)
-typedef struct P12 { /* get_val_1_3 */
+#define Pget_val_2_3	((P12 *)this)
+typedef struct P12 { /* get_val_2_3 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -500,11 +368,11 @@ typedef struct P12 { /* get_val_1_3 */
 } P12;
 #define Air12	(sizeof(P12) - Offsetof(P12, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_2	((P11 *)this)
-typedef struct P11 { /* get_val_1_2 */
+#define Pget_val_2_2	((P11 *)this)
+typedef struct P11 { /* get_val_2_2 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -512,11 +380,11 @@ typedef struct P11 { /* get_val_1_2 */
 } P11;
 #define Air11	(sizeof(P11) - Offsetof(P11, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_1	((P10 *)this)
-typedef struct P10 { /* get_val_1_1 */
+#define Pget_val_2_1	((P10 *)this)
+typedef struct P10 { /* get_val_2_1 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -524,11 +392,11 @@ typedef struct P10 { /* get_val_1_1 */
 } P10;
 #define Air10	(sizeof(P10) - Offsetof(P10, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_1_0	((P9 *)this)
-typedef struct P9 { /* get_val_1_0 */
+#define Pget_val_2_0	((P9 *)this)
+typedef struct P9 { /* get_val_2_0 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -536,11 +404,11 @@ typedef struct P9 { /* get_val_1_0 */
 } P9;
 #define Air9	(sizeof(P9) - Offsetof(P9, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_0_8	((P8 *)this)
-typedef struct P8 { /* get_val_0_8 */
+#define Pget_val_1_5	((P8 *)this)
+typedef struct P8 { /* get_val_1_5 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -548,11 +416,11 @@ typedef struct P8 { /* get_val_0_8 */
 } P8;
 #define Air8	(sizeof(P8) - Offsetof(P8, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_0_7	((P7 *)this)
-typedef struct P7 { /* get_val_0_7 */
+#define Pget_val_1_4	((P7 *)this)
+typedef struct P7 { /* get_val_1_4 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -560,11 +428,11 @@ typedef struct P7 { /* get_val_0_7 */
 } P7;
 #define Air7	(sizeof(P7) - Offsetof(P7, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_0_6	((P6 *)this)
-typedef struct P6 { /* get_val_0_6 */
+#define Pget_val_1_3	((P6 *)this)
+typedef struct P6 { /* get_val_1_3 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -572,11 +440,11 @@ typedef struct P6 { /* get_val_0_6 */
 } P6;
 #define Air6	(sizeof(P6) - Offsetof(P6, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_0_5	((P5 *)this)
-typedef struct P5 { /* get_val_0_5 */
+#define Pget_val_1_2	((P5 *)this)
+typedef struct P5 { /* get_val_1_2 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -584,11 +452,11 @@ typedef struct P5 { /* get_val_0_5 */
 } P5;
 #define Air5	(sizeof(P5) - Offsetof(P5, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_0_4	((P4 *)this)
-typedef struct P4 { /* get_val_0_4 */
+#define Pget_val_1_1	((P4 *)this)
+typedef struct P4 { /* get_val_1_1 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -596,11 +464,11 @@ typedef struct P4 { /* get_val_0_4 */
 } P4;
 #define Air4	(sizeof(P4) - Offsetof(P4, _msg) - 1*sizeof(uchar))
 
-#define Pget_val_0_3	((P3 *)this)
-typedef struct P3 { /* get_val_0_3 */
+#define Pget_val_1_0	((P3 *)this)
+typedef struct P3 { /* get_val_1_0 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -612,7 +480,7 @@ typedef struct P3 { /* get_val_0_3 */
 typedef struct P2 { /* get_val_0_2 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -624,7 +492,7 @@ typedef struct P2 { /* get_val_0_2 */
 typedef struct P1 { /* get_val_0_1 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -636,7 +504,7 @@ typedef struct P1 { /* get_val_0_1 */
 typedef struct P0 { /* get_val_0_0 */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
@@ -644,15 +512,15 @@ typedef struct P0 { /* get_val_0_0 */
 } P0;
 #define Air0	(sizeof(P0) - Offsetof(P0, _msg) - 1*sizeof(uchar))
 
-typedef struct P26 { /* np_ */
+typedef struct P19 { /* np_ */
 	unsigned _pid : 8;  /* 0..255 */
 	unsigned _t   : 6; /* proctype */
-	unsigned _p   : 13; /* state    */
+	unsigned _p   : 14; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-} P26;
-#define Air26	(sizeof(P26) - 4)
+} P19;
+#define Air19	(sizeof(P19) - 4)
 
 #define Pclaim	P0
 #ifndef NCLAIMS
@@ -844,9 +712,11 @@ typedef struct State {
 		unsigned short _event;
 	#endif
 #endif
-	uchar running[2];
-	uchar ready[2];
+	uchar running[3];
+	uchar ready[3];
 	uchar current;
+	uchar N0;
+	uchar N1;
 	uchar S0;
 	uchar S1;
 	uchar S2;
@@ -855,78 +725,78 @@ typedef struct State {
 	uchar S5;
 	uchar S6;
 	uchar S7;
+	uchar S8;
 	uchar CONST_NULL;
 	uchar T0_X0;
+	uchar T0_X0_1;
+	uchar T0_X0_2;
 	uchar T0_X1;
-	uchar T0_X2;
-	uchar T0_X3;
-	uchar T0_X3_1;
-	uchar T0_X3_2;
-	uchar T0_X4;
-	uchar T0_X4_1;
-	uchar T0_X4_2;
-	uchar T0_X5;
-	uchar T0_X5_1;
-	uchar T0_X5_2;
-	uchar T0_X6;
-	uchar T0_X6_1;
-	uchar T0_X6_2;
-	uchar T0_X7;
-	uchar T0_X7_1;
-	uchar T0_X7_2;
-	uchar T0_X8;
+	uchar T0_X1_1;
+	uchar T0_X1_2;
+	uchar T0_X1_2_1;
+	uchar T0_X1_3;
+	uchar T0_X1_3_1;
+	uchar T0_X1_4;
+	uchar T0_X1_4_1;
 	uchar T1_X0;
+	uchar T1_X0_1;
+	uchar T1_X0_2;
 	uchar T1_X1;
+	uchar T1_X1_1;
+	uchar T1_X1_2;
+	uchar T1_X1_2_1;
+	uchar T1_X1_3;
+	uchar T1_X1_3_1;
+	uchar T1_X1_4;
+	uchar T1_X1_4_1;
 	uchar T1_X2;
+	uchar T1_X2_1;
 	uchar T1_X3;
 	uchar T1_X3_1;
-	uchar T1_X3_2;
 	uchar T1_X4;
 	uchar T1_X4_1;
-	uchar T1_X4_2;
 	uchar T1_X5;
-	uchar T1_X5_1;
-	uchar T1_X5_2;
-	uchar T1_X6;
-	uchar T1_X6_1;
-	uchar T1_X6_2;
-	uchar T1_X7;
-	uchar T1_X7_1;
-	uchar T1_X7_2;
-	uchar T1_X8;
-	uchar T1_X8_1;
-	uchar T1_X8_2;
-	uchar T1_X9;
-	uchar T1_X10;
-	uchar T1_X11;
-	uchar T1_X12;
-	uchar T1_X13;
-	uchar T1_X14;
+	uchar T2_X0;
+	uchar T2_X0_1;
+	uchar T2_X1;
+	uchar T2_X1_1;
+	uchar T2_X2;
+	uchar T2_X2_1;
+	uchar T2_X3;
+	uchar T2_X3_1;
+	uchar T2_X3_1_1;
+	uchar T2_X3_2;
+	uchar T2_X3_2_1;
+	uchar T2_X3_3;
+	uchar T2_X3_3_1;
+	uchar T2_X3_4;
+	uchar T2_X3_4_1;
+	uchar T2_X3_5;
+	uchar T2_X3_5_1;
+	uchar T2_X3_6;
+	uchar T2_X3_6_1;
+	uchar T2_X4;
+	uchar T2_X5;
+	uchar T2_X6;
+	uchar T2_X7;
 	uchar msg;
 	uchar val_0_0;
 	uchar val_0_1;
 	uchar val_0_2;
-	uchar val_0_3;
-	uchar val_0_4;
-	uchar val_0_5;
-	uchar val_0_6;
-	uchar val_0_7;
-	uchar val_0_8;
 	uchar val_1_0;
 	uchar val_1_1;
 	uchar val_1_2;
 	uchar val_1_3;
 	uchar val_1_4;
 	uchar val_1_5;
-	uchar val_1_6;
-	uchar val_1_7;
-	uchar val_1_8;
-	uchar val_1_9;
-	uchar val_1_10;
-	uchar val_1_11;
-	uchar val_1_12;
-	uchar val_1_13;
-	uchar val_1_14;
+	uchar val_2_0;
+	uchar val_2_1;
+	uchar val_2_2;
+	uchar val_2_3;
+	uchar val_2_4;
+	uchar val_2_5;
+	uchar val_2_6;
+	uchar val_2_7;
 #ifdef TRIX
 	/* room for 512 proc+chan ptrs, + safety margin */
 	char *_ids_[MAXPROC+MAXQ+4];
@@ -948,45 +818,38 @@ typedef struct TRIX_v6 {
 #endif
 
 #define HAS_TRACK	0
-/* hidden variable: */	uchar N0;
+/* hidden variable: */	uchar T0_X2;
 #define FORWARD_MOVES	"pan.m"
 #define BACKWARD_MOVES	"pan.b"
 #define TRANSITIONS	"pan.t"
-#define _NP_	26
-#define nstates26	3 /* np_ */
-#define endstate26	2 /* np_ */
+#define _NP_	19
+#define nstates19	3 /* np_ */
+#define endstate19	2 /* np_ */
 
-#define start26	0 /* np_ */
-#define start25	5
-#define start24	16
-#define start23	8
-#define start22	8
-#define start21	8
-#define start20	8
-#define start19	8
-#define start18	7
-#define start17	15
-#define start16	15
-#define start15	15
-#define start14	15
-#define start13	15
-#define start12	15
-#define start11	8
-#define start10	10
-#define start9	7
-#define start8	8
-#define start7	15
-#define start6	15
-#define start5	15
-#define start4	15
-#define start3	15
-#define start2	8
-#define start1	10
+#define start19	0 /* np_ */
+#define start18	9
+#define start17	20
+#define start16	7
+#define start15	7
+#define start14	8
+#define start13	12
+#define start12	121
+#define start11	23
+#define start10	23
+#define start9	23
+#define start8	12
+#define start7	23
+#define start6	23
+#define start5	23
+#define start4	64
+#define start3	7
+#define start2	3
+#define start1	64
 #define start0	7
 #ifdef NP
 	#define ACCEPT_LAB	1 /* at least 1 in np_ */
 #else
-	#define ACCEPT_LAB	1 /* user-defined accept labels */
+	#define ACCEPT_LAB	2 /* user-defined accept labels */
 #endif
 #ifdef MEMCNT
 	#ifdef MEMLIM
@@ -1015,56 +878,7 @@ typedef struct TRIX_v6 {
 	#define MEMLIM	(2048)	/* need a default, using 2 GB */
 #endif
 #define PROG_LAB	0 /* progress labels */
-#define NQS	24
-typedef struct Q24 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q24;
-typedef struct Q23 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q23;
-typedef struct Q22 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q22;
-typedef struct Q21 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q21;
-typedef struct Q20 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q20;
-typedef struct Q19 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q19;
-typedef struct Q18 {
-	uchar Qlen;	/* q_size */
-	uchar _t;	/* q_type */
-	struct {
-		uchar fld0;
-	} contents[1];
-} Q18;
+#define NQS	17
 typedef struct Q17 {
 	uchar Qlen;	/* q_size */
 	uchar _t;	/* q_type */
@@ -1510,8 +1324,8 @@ void qsend(int, int, int, int);
 #define GLOBAL	7
 #define BAD	8
 #define ALPHA_F	9
-#define NTRANS	967
-unsigned char Is_Recv[3131];
+#define NTRANS	2224
+unsigned char Is_Recv[7675];
 #if defined(BFS_PAR) || NCORE>1
 	void e_critical(int);
 	void x_critical(int);

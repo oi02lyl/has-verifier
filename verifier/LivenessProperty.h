@@ -28,6 +28,18 @@ public:
 	Formula* form2;
 };
 
+class LtlfoProperty {
+public:
+    LtlfoProperty(string _ltl, vector<Formula*>& _forms):
+        ltl(_ltl), forms(_forms) { };
+
+    string ltl;
+    vector<Formula*> forms;
+};
+
+
+void generate_random_atm(string ltl, Artifact& art, Automaton& atm);
+
 }
 
 #endif /* TEMPORALPROPERTY_H_ */

@@ -111,6 +111,8 @@ Formula* generate_formula(int size, Task& task, Artifact& art);
 // generate a safety property of task T
 Formula* generate_safety(int task_id, Artifact& art);
 
+Formula* generate_safety_synthetic(int task_id, Artifact& art);
+
 } /* namespace std */
 
 #endif /* FORMULA_H_ */

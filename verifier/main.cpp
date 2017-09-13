@@ -12,6 +12,9 @@
 #include "LivenessProperty.h"
 using namespace std;
 
+const string ltls[] = {"false", "[] p", "(!p U q)", "(!p U q) && [] (p -> X (!p U q))", 
+    "[] (p -> (q || X q || X X q))", "[] (p || [] (! p))", "[] (p -> <> q )", "<> p", "([] <> p) -> ([] <> q)",
+    "[] <> p", "[] (p || ([] q))", "(<> [] p) -> ([] <> q)"};
 
 int main(int argc, char** argv) {
     int seed = 123;
@@ -19,6 +22,8 @@ int main(int argc, char** argv) {
     int verifier_option = 0;
     bool without_set = false;
     bool debug = false;
+    string ltl = "true";
+    int ltl_seed = 123;
 
     if (argc >= 2)
         seed = atoi(argv[1]);
@@ -33,29 +38,21 @@ int main(int argc, char** argv) {
 
     if (argc >= 4)
         naive = atoi(argv[3]);
-    if (argc >= 5)
-        debug = atoi(argv[4]);
+    if (argc >= 5) {
+        ltl = ltls[atoi(argv[4])];
+        ltl = "!( " + ltl + " )";
+    }
+
+    if (argc >= 6)
+        ltl_seed = atoi(argv[5]);
+    
 	
-    /*
 	int num_rels = 5;
 	int num_tasks = 5;
 	int num_const = 10;
 	int num_vars = 15;
 	int num_services = 15;
 	int form_size = 5;
-    int num_atms = 1;
-    int num_atm_states = 5;
-    int num_trans = 5;
-    */
-	int num_rels = 3;
-	int num_tasks = 1;
-	int num_const = 20;
-	int num_vars = 5;
-	int num_services = 10;
-	int form_size = 5;
-    int num_atms = 1;
-    int num_atm_states = 5;
-    int num_trans = 5;
 
 
 	srand(seed);
@@ -67,15 +64,25 @@ int main(int argc, char** argv) {
 	std::generate_dbschema(num_rels, 4, db);
 	std::generate_artifact(num_tasks, num_const, num_vars, num_services, form_size, db, without_set, art);
 
+    srand(ltl_seed);
+    Automaton atm(0);
+    generate_random_atm(ltl, art, atm);
+    atms.push_back(atm);
+    // atms[0].dump();
+
     struct timeval tv;
     struct timeval start_tv;
     gettimeofday(&start_tv, NULL);
     double elapsed = 0.0;
 	
     if (verifier_option == 1) {
-        srand(seed);
-        LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
+        srand(ltl_seed);
+        //LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
         // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
+        vector<Formula*> ltl_forms;
+        ltl_forms.push_back(generate_safety(0, art));
+        ltl_forms.push_back(generate_safety(0, art));
+        LtlfoProperty prop(ltl, ltl_forms);
         SpinVerifier sver(art, atms, prop, naive);
         // Formula* target = std::generate_safety(0, art);
         
@@ -84,7 +91,7 @@ int main(int argc, char** argv) {
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml");
+        system("spin -a -DNXT output.pml");
         gettimeofday(&tv, NULL);
         t1 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
         start_tv = tv;
@@ -99,11 +106,6 @@ int main(int argc, char** argv) {
         t3 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
         printf("time = %lf,%lf,%lf\n", t1, t2, t3);
     } else {
-        if (atms.size() == 0) {
-            srand(seed);
-            LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
-            prop.generate_atms(atms);
-        }
         
         int num_tasks = art.tasks.size();
 

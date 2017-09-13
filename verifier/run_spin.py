@@ -1,16 +1,17 @@
 import os
+import pickle
 from os import listdir
 from os.path import isfile, join
 
 mypath = '../bpmn/'
 files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-naives = [2]
-# files = ['Book-Writing-and-Publishing.txt']
+seeds = pickle.load(open('seed_real.pkl', 'rb'))
 
 for fname in files:
-    for naive in naives:
-        print fname
-        cmd = './has_real ../bpmn/%s 1 %d > result_spin/%s.%d.txt' % (fname, naive, fname, naive)
-        os.system(cmd)
+    for p in range(12):
+        for n in range(1,3):
+            print fname
+            cmd = './has_real ../bpmn/%s 1 %d %d %d> result_spin/%s.%d.%d.txt' % (fname, n, p, seeds[(fname, p)], fname, n, p)
+            os.system(cmd)
 
 

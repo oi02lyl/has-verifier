@@ -15,7 +15,7 @@ namespace std {
 
 class SpinVerifier : public Verifier {
 public:
-	SpinVerifier(Artifact& a, vector<Automaton>& _atms, LivenessProperty& p, int _naive = 0) : Verifier(a, _atms, false, false), property(p), naive(_naive) { }
+	SpinVerifier(Artifact& a, vector<Automaton>& _atms, LtlfoProperty& p, int _naive = 0) : Verifier(a, _atms, false, false), property(p), naive(_naive) { }
 
 	// generate the promela code to verifier the target safety property
 	string generate_promela();
@@ -40,6 +40,8 @@ public:
 
 	string promela_all_child_inactive(int task_id);
 
+    string promela_ltl();
+
     void get_minimal_assignment_sets(vector<tuple<int, int, bool> >& edges);
 
     void compute_expr_domains();
@@ -50,7 +52,7 @@ public:
 
     vector<vector<string> > assignment_sets;
 
-	LivenessProperty& property;
+	LtlfoProperty& property;
     
     int naive;
 };

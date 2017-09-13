@@ -299,7 +299,29 @@ Formula* generate_formula(int size, Task& task, Artifact& art) {
 	return root;
 }
 
+void collect_all_formulas(Formula* form, vector<Formula*>& res) {
+    res.push_back(form);
+    if (form->is_internal()) {
+        Internal* iform = (Internal*) form;
+        for (Formula* f : iform->paras)
+            collect_all_formulas(f, res);
+    }
+}
+
 Formula* generate_safety(int task_id, Artifact& art) {
+    // return generate_safety_synthetic(task_id, art);
+    // return generate_formula(5, art.tasks[task_id], art);
+    vector<Formula*> all_forms;
+    Task& task = art.tasks[task_id];
+    for (Service& ser : task.services) {
+        collect_all_formulas(ser.pre_cond, all_forms);
+        collect_all_formulas(ser.post_cond, all_forms);
+    }
+
+    return all_forms[rand() % ((int) all_forms.size())]->copy();
+}
+
+Formula* generate_safety_synthetic(int task_id, Artifact& art) {
     CmpTerm* term = new CmpTerm();
     term->equal = true;
     Parameter p1;

@@ -367,11 +367,13 @@ void SpinVerifier::get_minimal_assignment_sets(vector<tuple<int, int, bool> >& e
 void SpinVerifier::compute_expr_domains() {
     vector<tuple<int, int, bool> > eql_sets;
     get_eql_sets(eql_sets);
-    get_eql_sets(property.task_id, property.form1, eql_sets);
 
-    Internal* negated = new Internal("!");
-    negated->paras[0] = property.form2->copy();
-    get_eql_sets(property.task_id, negated, eql_sets);
+    for (Formula* form : property.forms) {
+        get_eql_sets(0, form, eql_sets);
+        Internal* negated = new Internal("!");
+        negated->paras[0] = form->copy();
+        get_eql_sets(0, negated, eql_sets);
+    }
 
     // remove the ones with unique sign
     vector<tuple<int, int, bool> > new_eql_sets;
@@ -428,6 +430,31 @@ void SpinVerifier::get_expr_domain(int expr, vector<string>& res) {
                 //    break;
             }
     }
+}
+
+string SpinVerifier::promela_ltl() {
+    string cond0 = "(current == 0)";
+    vector<string> conds;
+
+    for (Formula* form : property.forms)
+        conds.push_back("(" + cond0 + " && " +
+            promela_translate_condition(0, form) + ")");
+    
+    string ltl_str = "";
+    map<char, int> mp;
+    int counter = 0;
+
+    for (int i = 0; i < (int) property.ltl.length(); i++) {
+        if (property.ltl[i] == 'p' || property.ltl[i] == 'q') {
+            printf("%c\n", property.ltl[i]);
+            if (mp.count(property.ltl[i]) == 0)
+                mp[property.ltl[i]] = counter++;
+            ltl_str += conds[mp[property.ltl[i]]];
+        } else
+            ltl_str += property.ltl[i];
+    }
+    return "ltl ltl_prop { (" + ltl_str + ") }";
+    //return "ltl ltl_prop { ([] (" + cond1 + " -> <> " + cond2 + ")) }\n";
 }
 
 string SpinVerifier::generate_promela() {
@@ -587,27 +614,26 @@ string SpinVerifier::generate_promela() {
     promela += "end:\n";
 	promela += "}\n";
 
-    string cond0 = "(current == " + to_string(property.task_id) + ")";
-	string cond1 = "(" + cond0 + " && " + promela_translate_condition(property.task_id, property.form1) + ")";
-	string cond2 = "(" + cond0 + " && " + promela_translate_condition(property.task_id, property.form2) + ")";
-    
-    promela += "never { /* (G (F r)) && !( G (p -> F q)) */\n";
-    promela += "T0_init :    /* init */\n";
-    promela += "    if\n";
-    promela += "    :: (1) -> goto T0_init\n";
-    promela += "    :: (!" + cond2 +" && " + cond1 + ") -> goto T0_S4\n";
-    promela += "                            fi;\n";
-    promela += "T0_S4 :    /* 1 */\n";
-    promela += "    if\n";
-    promela += "    :: (!" + cond2 + ") -> goto T0_S4\n";
-    promela += "    :: (" + cond0 + " && !(" + cond2 + ")) -> goto accept_S4\n";
-    promela += "    fi;\n";
-    promela += "accept_S4 :    /* 2 */\n";
-    promela += "    if\n";
-    promela += "    :: (!" + cond2 + ") -> goto T0_S4\n";
-    promela += "    :: (" + cond0 + " && !" + cond2 + ") -> goto accept_S4\n";
-    promela += "    fi;\n";
-    promela += "}\n";
+    promela += promela_ltl() + "\n";
+
+
+    //promela += "never { /* (G (F r)) && !( G (p -> F q)) */\n";
+    //promela += "T0_init :    /* init */\n";
+    //promela += "    if\n";
+    //promela += "    :: (1) -> goto T0_init\n";
+    //promela += "    :: (!" + cond2 +" && " + cond1 + ") -> goto T0_S4\n";
+    //promela += "                            fi;\n";
+    //promela += "T0_S4 :    /* 1 */\n";
+    //promela += "    if\n";
+    //promela += "    :: (!" + cond2 + ") -> goto T0_S4\n";
+    //promela += "    :: (" + cond0 + " && !(" + cond2 + ")) -> goto accept_S4\n";
+    //promela += "    fi;\n";
+    //promela += "accept_S4 :    /* 2 */\n";
+    //promela += "    if\n";
+    //promela += "    :: (!" + cond2 + ") -> goto T0_S4\n";
+    //promela += "    :: (" + cond0 + " && !" + cond2 + ") -> goto accept_S4\n";
+    //promela += "    fi;\n";
+    //promela += "}\n";
 
 	return promela;
 }

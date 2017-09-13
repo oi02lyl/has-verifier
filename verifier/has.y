@@ -829,12 +829,18 @@ fo_list:
 %%
 
 int main(int argc, char** argv) {
-	// open a file handle to a particular file:
+    const string ltls[] = {"false", "[] p", "(!p U q)", "(!p U q) && [] (p -> X (!p U q))", 
+    "[] (p -> (q || X q || X X q))", "[] (p || [] (! p))", "[] (p -> <> q )", "<> p", "([] <> p) -> ([] <> q)",
+    "[] <> p", "[] (p || ([] q))", "(<> [] p) -> ([] <> q)"};
+	
+    // open a file handle to a particular file:
     int seed = 123;
 	FILE *myfile = fopen(argv[1], "r");
     bool debug = false;
     int naive = 0;
     int verifier_option = 0;
+    string ltl = "true";
+    int ltl_seed = 123;
     without_set = false;
 
     if (argc >= 3) {
@@ -848,8 +854,13 @@ int main(int argc, char** argv) {
 
     if (argc >= 4)
         naive = atoi(argv[3]);
-    if (argc >= 5)
-        debug = atoi(argv[4]);
+    if (argc >= 5) {
+        ltl = ltls[atoi(argv[4])];
+        ltl = "!( " + ltl + " )";
+    }
+
+    if (argc >= 6)
+        ltl_seed = atoi(argv[5]);
 	
     // make sure it's valid:
 	if (!myfile) {
@@ -870,17 +881,18 @@ int main(int argc, char** argv) {
 	
     if (verifier_option == 1) {
         srand(seed);
-        LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
-        // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
+        vector<Formula*> ltl_forms;
+        ltl_forms.push_back(generate_safety(0, art));
+        ltl_forms.push_back(generate_safety(0, art));
+        LtlfoProperty prop(ltl, ltl_forms);
         SpinVerifier sver(art, atms, prop, naive);
-        // Formula* target = std::generate_safety(0, art);
         
         double t1, t2, t3;
         
         FILE* fout = fopen("output.pml", "w"); 
         fprintf(fout, "%s\n", sver.generate_promela().c_str());
         fclose(fout);
-        system("spin -a output.pml");
+        system("spin -a -DNXT output.pml");
         gettimeofday(&tv, NULL);
         t1 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
         start_tv = tv;
@@ -895,25 +907,13 @@ int main(int argc, char** argv) {
         t3 = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
         printf("time = %lf,%lf,%lf\n", t1, t2, t3);
     } else {
-
-    // art.dump();
-    // int num_atms = atms.size();
-    //for (int aid = 0; aid < num_atms; aid++)
-    //    atms[aid].dump();
-        if (atms.size() == 0) {
-            srand(seed);
-            // int num_atms = 1;
-            // int num_atm_states = 5;
-            // int num_trans = 5;
-            // generate_atms(art, num_atms, num_atm_states, num_trans, atms);
-            LivenessProperty prop(art, 0, generate_safety(0, art), generate_safety(0, art));
-            prop.generate_atms(atms);
-            // printf("%s\n%s\n", prop.form1->to_string().c_str(), prop.form2->to_string().c_str());
-        }
+        srand(ltl_seed);
+        Automaton atm(0);
+        generate_random_atm(ltl, art, atm);
+        atms.push_back(atm);
+        gettimeofday(&start_tv, NULL);
         
-        // printf("\n");
-        // art.print_stat();
-        // return 0;
+
         int num_tasks = art.tasks.size();
 
         Verifier ver(art, atms, naive, debug);

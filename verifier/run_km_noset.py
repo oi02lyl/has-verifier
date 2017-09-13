@@ -1,5 +1,4 @@
 import os
-import random
 import pickle
 from os import listdir
 from os.path import isfile, join
@@ -9,40 +8,23 @@ def check_empty(fn):
 
 
 def run_real(fn, n, p, sd):
-    output = 'result_km/%s.%d.%d.txt' % (fn, n, p)
-    cmd = './has_real ../bpmn/%s 0 %d %d %d > %s' % (fn, n, p, sd, output)
+    output = 'result_km_noset/%s.%d.%d.txt' % (fn, n, p)
+    cmd = './has_real ../bpmn/%s 2 %d %d %d > %s' % (fn, n, p, sd, output)
     print cmd
     os.system(cmd)
     return check_empty(output)
 
 mypath = '../bpmn/'
 files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-random.seed(123)
-seeds = {}
-seed_file = 'seed_real.pkl'
-if os.path.isfile(seed_file):
-    f = open(seed_file, 'rb')
-    seeds = pickle.load(f)
-    f.close()
+f = open('seed_real.pkl', 'rb')
+seeds = pickle.load(f)
+f.close()
 
 for fn in files:
     for p in range(12):
-        if (fn, p) in seeds:
-            sd = seeds[(fn, p)]
-        else:
-            sd = random.randint(0, 1000000000)
-
-        while run_real(fn, 0, p, sd):
-            sd = random.randint(0, 1000000000)
-        seeds[(fn, p)] = sd
-
-        for n in range(1, 5):
+        sd = seeds[(fn, p)]
+        for n in range(5):
             run_real(fn, n, p, sd)
-
-f = open(seed_file, 'wb')
-pickle.dump(seeds, f)
-f.close()
-
 
 """
         naive = 0
