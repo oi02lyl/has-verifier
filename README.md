@@ -10,6 +10,7 @@ Implementation of two Verifiers for Hierarchical Artifact Systems
 * Flex + Bison
 * [g++-6](https://gcc.gnu.org/gcc-6/)
 * [Spin](http://spinroot.com/spin/Bin/)
+* Python 2.7 (for running the experiment scripts)
 
 ## How to compile
 Simply use the Makefile in verifier/
