@@ -2,6 +2,7 @@
 Implementation of two Verifiers for Hierarchical Artifact Systems
 1. Spin-based [link](https://arxiv.org/abs/1705.09427)
 2. Karp-Miller-based (VERIFAS) [link](https://arxiv.org/abs/1705.10007)
+2. VLDB PhD workshop paper [link](http://ceur-ws.org/Vol-1882/paper14.pdf)
 
 ## Prerequisite
 * Boost
@@ -20,5 +21,12 @@ Simply use the Makefile in verifier/
 The verifier generates and verifier a simple liveness property
 
 ## How to run batch experiment
-* Spin-based: `python run_spin.py`
-* Karp-Miller-based: `python run_km.py`
+#### Real set of workflows
+* Spin: `python run_spin.py`
+* Karp-Miller: `python run_km.py`
+* Karp-Miller with no artifact relations: `python run_km_noset.py`
+
+#### Synthetic set of workflows
+* Spin: `python run_spin_synthetic.py`
+* Karp-Miller: `python run_km_synthetic.py`
+* Karp-Miller with no artifact relations: `python run_km_noset_synthetic.py`
