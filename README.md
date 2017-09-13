@@ -21,7 +21,7 @@ Simply use the Makefile in verifier/
   * 2 -> VERIFAS with artifact relations ignored
 * NAIVE:
   * 0 -> All opimizations are on
-  * 1-4 (1-2 for Spin) -> One opimizations is turned off
+  * 1-4 (1-2 for Spin) -> One of the opimizations is turned off
 * PROPERTY: 0 - 11, template of the LTL-FO property to be verified. Please refer to Table 4 of [link](https://arxiv.org/abs/1705.10007) for more details. A LTL-FO property will be generated from the template and verified by the verifier.
 
 ## How to run batch experiment
